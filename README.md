@@ -16,21 +16,21 @@ Contributing
 We appreciate any contributions to this guide. See the [contribution guide][contrib] for
 more information.
 
-[contrib]: http://peterstuifzand.nl/marpa-guide/contribution.html
+[contrib]: http://ronsavage/marpa.papers/contribution.html
 
 When you submit text to which you hold the copyright, you agree to license it under:
 
 * Creative Commons Attribution-ShareAlike 3.0 Unported License (“CC BY-SA”), and
 
 * GNU Free Documentation License (“GFDL”) (unversioned, with no invariant
-  sections, front-cover texts, or back-cover texts). 
+  sections, front-cover texts, or back-cover texts).
 
 Copyright / License
 -------------------
 
-This guide is copyright (c) 2013 Peter Stuifzand and Contributors.
+This guide is copyright (c) 2013 Ron Savage and Contributors.
 
-It is licensed under both 
+It is licensed under both
 
 * [Creative Commons Attribution-ShareAlike 3.0 Unported License][cc-by-sa] (“CC BY-SA”), and
 
@@ -51,7 +51,7 @@ It is licensed under both
 The examples are copyright their respective authors and licensed under MIT/X11
 as follows:
 
-    Copyright (c) 2013 Peter Stuifzand and Contributors
+    Copyright (c) 2013 Ron Savage and Contributors
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
