@@ -1,0 +1,256 @@
+Chapter 6 - FAQ
+===============
+
+!include "guide/menu.inc"
+
+What is the meaning of G0 and G1?
+---------------------------------
+
+G0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
+syntax of the tokens, but not the syntax of how these tokens can be combined.
+
+G1 defines the structure of the language. These rules define legal statements within the given language.
+Legal statements are thus legal combinations of tokens.
+
+Also, G1 rules have a semantics, whereas G0 rules do not.
+
+G0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2-Scanless-DSL), and, very
+briefly, in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2-Semantics). In both cases, search for 'G0'.
+
+How do I parse numbers?
+-----------------------
+
+Chapter 2 discusses this issue at length. And if you fork the project on github, you'll find the directory
+examples/ contains about a dozen sample programs.
+
+Alternately, download [MarpaX::Languages::SVG::Parser](https://metacpan.org/release/MarpaX-Languages-SVG-Parser),
+which contains similar logic (in data/*.bnf). Further, the distro includes sample code (float.pl and number.pl)
+in the scripts/ directory. The last-named script includes grammars for binary, octal and hex numbers.
+
+How do I represent choice in the grammar?
+-----------------------------------------
+
+Briefly, use '|'. Sample code from the above named module (data/d.bnf):
+
+	coordinate  ::= float      action => float
+	                | integer  action => integer
+
+Also note that '||' is available to control the relative priorities of the alternatives. This issue is expanded
+in a later item in this FAQ.
+
+See also the next item.
+
+Is there any other way of representing choice?
+----------------------------------------------
+
+Sure. Consider these G0 rules (also from data/d.bnf):
+
+	sign_maybe  ~ [+-]
+	sign_maybe  ~
+
+	digit       ~ [0-9]
+	digit_any   ~ digit*
+	digit_many  ~ digit+
+
+	E           ~ [Ee] sign_maybe digit_many
+	E_maybe     ~ E
+	E_maybe     ~
+
+	:lexeme     ~ float
+	float       ~ sign_maybe digit_many E
+	              | sign_maybe digit_any '.' digit_many E_maybe
+	              | sign_maybe digit_many '.' E_maybe
+	              | sign_maybe non_zero digit_any
+
+This is saying:
+
+* The sign is optional after E or e (sign_maybe)
+
+* The E is optional (E_maybe)
+
+* The sign is optional before a digit (the first alternative for 'float')
+
+* And so on
+
+What does it mean to hide (mask) tokens?
+-----------------------------------------
+
+It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
+for [Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2-Scanless-DSL).
+
+Here is an example (from [Graph::Easy::Marpa::Parser](https://metacpan.org/release/Graph-Easy-Marpa-Parser)):
+
+	node_definition  ::= node_statement
+	                 | node_statement graph_definition
+
+	node_statement   ::= node_name
+	                 | node_name attribute_definition
+	                 | node_statement (',') node_statement
+
+	node_name        ::= start_node end_node
+
+	:lexeme          ~ start_node  pause => before  event => start_node
+	start_node       ~ '['
+
+	:lexeme          ~ end_node
+	end_node         ~ ']'
+
+The comma is hidden. But what does this mean, exactly?
+
+It means the comma may appear in the input stream (in this context), but I am not interested in it. So, Marpa will not
+return this token to me when an action is called. It has become invisible to the semantics.
+
+Semantics are documented in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2-Semantics).
+
+Close study of the above grammar will show that another path is possible thru the grammar, in the case of
+2 nodes side-by-side (i.e. without a comma between them). Thus the grammar accepts both these input streams
+as valid:
+
+	Stream 1: [node.a], [node.b]
+	Stream 2: [node.a]  [node.b]
+
+Hence, from the end-user's viewpoint, the comma is defined - at least in this particular grammar - to be optional.
+
+What's the difference between '|' and '||' in grammar definitions?
+------------------------------------------------------------------
+
+'|' expresses a simple alternative, while '||' separates alternatives at different levels of precedence. For example:
+
+	E ::=    E '*' E
+	      |  E '/' E
+	      || E '+' E
+	      |  E '-' E
+
+This describes syntax for a simple 4-operation calculator, where multiplication and division take precedence over
+addition and subtraction.
+
+This construct forces alternatives before the '||' to have higher precedence than the alternatives after that token.
+
+Each of the alternatives separated by '|' are at the same precedence.
+
+In Mark Dominus's 'Higher-Order Perl' book, he describes how he handles precedence in his recursive descent parsers
+for a similar calculator, beginning on p. 394. This is a good description of how the same situation would be handled
+with pre-Marpa techniques.
+
+If precedence is not an issue for you, just use single bar alternation ('|').
+
+Note also that Marpa supports a 'priority' adverb, discussed in the
+[Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2-Scanless-DSL) docs mentioned above.
+
+How to I implement recursion in a grammar?
+------------------------------------------
+See the next item.
+
+Why does using '+' or '*' in a rule only work sometimes?
+--------------------------------------------------------
+
+I assume you're referring to cases like this:
+
+Case 1 (fails):
+
+	node_definition  ::= node_statement+
+	                 | node_statement graph_definition
+
+Case 2 (succeeds):
+
+	coordinate_list  ::= coordinate+
+
+Case 3 (succeeds):
+
+	whitespace       ~ [\s]+
+
+Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
+alternative. Thus case 1 fails due to the combination of '+' and '|'.
+
+This is documented in [Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2-Scanless-DSL), under
+'Quantified rules'.
+
+So we must re-write rule 1:
+
+	graph_definition  ::= node_definition
+	                  | edge_definition
+	                  | subgraph_definition
+
+	node_definition  ::= node_statement
+	                 | node_statement graph_definition
+
+	node_statement   ::= node_name
+	                 | node_name attribute_definition
+	                 | node_statement (',') node_statement
+
+Now the rule 'node_definition ::= node_statement' allows a node definition to consist of a single node statement.
+
+And the alternative - via the '|' - 'node_definition ::= node_statement graph_definition' allows a node
+definition to consist of a node statement followed by a graph definition, which just happens to include the line
+'graph_definition ::= node_definition'!
+
+So we've managed to write the grammar using indirect recursion, thus allowing an indefinite list of node
+definitions to follow one another. And the last rule allows the input stream to separate them with commas as
+well as the usual spaces.
+
+How do I associate an action class with my grammar?
+---------------------------------------------------
+
+The synopsis in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2-Semantics) shows one way. See
+'bless_package'.
+
+Another way is to note that the Scanless interface recognizer accepts a 'semantics_package' argument.
+
+Here's how I declare a recognizer:
+
+	$self -> recce
+	(
+		Marpa::R2::Scanless::R -> new
+		({
+			grammar           => $self -> grammar,
+			semantics_package => 'MarpaX::Languages::SVG::Parser::Actions',
+		})
+	);
+
+So actions referenced in the grammar, as in:
+
+	coordinate  ::= float      action => float
+	                | integer  action => integer
+
+are declared in the named package, and that's where Marpa looks for them.
+
+This is discussed both in [Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2-Scanless-R), and in
+[Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2-Semantics).
+
+From an OO point of view, there is still a problem. After reading the 'The per-parse argument' and
+'The per-parse constructor' sections of the semantics document, you might think:
+
+	Marpa calls the constructor of the semantics package.
+	That means Marpa has an instance of that package.
+
+This immediately raises some questions:
+
+* How do I access that instance?
+
+I don't know.
+
+* If I use Moo to write this package, what happens?
+
+The problem here is that with [Moo](https://metacpan.org/release/Moo), the new() constructor is generated automatically.
+My tests show such a package is not initialized (by calling new() ) by Marpa. That is, Marpa cannot find new(), and
+so it passes an unblessed hash into each action sub, as the per-parse (1st) parameter.
+
+* In the latter case, which instance is Marpa calling?
+
+I don't know.
+
+* If my action subs accumulate instance-level data, how can I retrieve such data?
+
+I don't know, but it 'just works'. I use this code:
+
+	$self -> actions
+	(
+		MarpaX::Languages::SVG::Parser::Actions -> new(logger => $self -> logger)
+	);
+
+along with the initialization of $self -> recce(...) above.
+
+Later, when I use $self -> action to access data with my instance, I get the data generated in the calls by Marpa
+to my action subs.
+
+!include "guide/menu.inc"

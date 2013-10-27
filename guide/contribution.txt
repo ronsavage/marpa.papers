@@ -1,0 +1,32 @@
+Contributing
+============
+
+!include "guide/menu.inc"
+
+Your contributions to this Guide are greatly appreciated.
+
+Please follow the following procedure when contributing.
+
+1. Fork the [marpa-guide](https://github.com/marpa-guide/marpa-guide) on GitHub,
+  with the Fork button
+2. Clone the repository to your computer
+3. Create a branch in which you make your patch 
+    `git checkout -b <branchname>`
+4. Make your changes, commit and push the branch
+    1. edit, edit, edit
+    2. `git add files`, `git commit`
+    3. `git push origin <branchname>`
+5. Create a pull request for the branch `<branchname>` you created (not 'master')
+6. The maintainers review and discuss your pull request
+7. Your patch is merged with the master branch
+
+Licensing
+---------
+
+When you submit text to which you hold the copyright, you agree to license it under:
+
+* Creative Commons Attribution-ShareAlike 3.0 Unported License (“CC BY-SA”), and
+
+* GNU Free Documentation License (“GFDL”) (unversioned, with no invariant
+  sections, front-cover texts, or back-cover texts). 
+

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html><head>
+<title>Chapter 1 - Marpa's Advantages</title>
+<meta charset='utf-8'>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="offset2 span8">
+<p>Chapter 1</p>
+
+<h1>Marpa's Advantages</h1>
+
+<p><a href="index.html">Index</a></p>
+
+<p>Of course, the heading means advantages over other methods of parsing.</p>
+
+<ul>
+<li><p>It is available as a linkable library</p></li>
+<li><p>It is written in C for speed</p></li>
+<li><p>Marpa parses in times considered theoretically optimal</p></li>
+<li><p>Marpa parses all classes of grammar in practical use today in linear time, O(n)</p></li>
+<li><p>Grammars can be ambiguous</p></li>
+<li><p>Marpa supports grammars having nullable symbols</p></li>
+<li><p>Rules can be recursive</p></li>
+</ul>
+
+<p>Try that with a regexp!</p>
+
+<ul>
+<li>Grammars can be ambiguous</li>
+</ul>
+
+<p>This means Marpa can tell you how many different ways there are of interpreting the token stream.</p>
+
+<ul>
+<li>Your grammar can be described in an extended version of BNF</li>
+</ul>
+
+<p>This means you provide the rules as text, not as code. Marpa provides the code to implement these rules.
+That is, Marpa generates a parser tailored to your BNF.</p>
+
+<p>This is declarative parsing.</p>
+
+<p>Rules have an optional <em>action</em> adverb, indicating where Marpa is to trigger your callback to handle intermediate results.</p>
+
+<p>This provides an exceptionally clean interface between the rules and any code you need to handle specific cases.</p>
+
+<p>You action subs can communicate with each other via a 'per-parse argument', which is passed to each action sub as
+its first parameter. This per-parse argument defaults to an empty hashref. For Marpa, it is read-only:
+It is reserved for the exclusive use of your code.</p>
+
+<p>This Marpa-specific BNF is called SLIF DSL (Scanless Interface Domain-Specific Language).</p>
+
+<ul>
+<li>Marpa lexes the token stream</li>
+</ul>
+
+<p>This means you do not have to provide a separate lexer.</p>
+
+<p>In special cases you can of course take over the lexing yourself.</p>
+
+<ul>
+<li>Marpa is extensively documented</li>
+</ul>
+
+<p><a href="https://metacpan.org/release/Marpa-R2">Start here</a>.</p>
+
+<p>And, the author has a <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/">Marpa-oriented blog</a>.</p>
+
+<ul>
+<li>Marpa can pause parsing at any place in the token stream, hand control over to you, then resume parsing at any place in the input stream</li>
+</ul>
+
+<p>This is procedural parsing.</p>
+
+<p>Consequently, you can freely switch back and forth between declarative and procedural parsing.</p>
+
+<p>Rules have an optional <em>pause</em> adverb, indicating where Marpa is to return to your calling code, until such time as you
+call resume(). This is not the same as the callback trigger mechanism mentioned above.</p>
+
+<p>During the pause, a set of methods allows you to interrogate Marpa about the current state of the parse.</p>
+
+<p>It also means you can parse the next part of the token stream yourself, and tell Marpa to skip what you've handled.</p>
+
+<ul>
+<li>Error reporting can provide the precise location of an error</li>
+</ul>
+
+<p>This means the string just preceeding and just following the error can be retrieved, as well as a list of the tokens
+Marpa was expecting to see at that point.</p>
+
+<p>Even better, Marpa can tell you which rule(s) it was evaluating.</p>
+
+<ul>
+<li>Marpa allows you to fabricate input, using its knowledge of what was expected when it errored</li>
+</ul>
+
+<p>This is called <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html">Ruby Slippers parsing</a>.</p>
+
+<ul>
+<li>Rules can have an <em>event</em> adverb</li>
+</ul>
+
+<p>Rules can share events via their (event) name.</p>
+
+<p>Events can be activated and deactivated.</p>
+
+<p>The current status of each event can be interrogated by your code during a pause.</p>
+
+<ul>
+<li><p>Marpa has built-in tracing facilities</p></li>
+<li><p>Marpa has a 'thin' interface, for direct access to libmarpa</p></li>
+<li><p>Marpa prunes all nulled subtrees back to their topmost nulled node</p></li>
+</ul>
+
+<p>In Marpa parses, rules and symbols can be nulled. In other words they can derive the zero-length, or null, string.</p>
+
+<ul>
+<li>Further, you can short-circuit evaluation during any <em>action</em> sub</li>
+</ul>
+
+<p>See 'Bailing out of parse evaluation' in the docs for the Marpa::R2::Semantics package.</p>
+
+<p>Recall from <a href="chapter1.html">Chapter 1</a>, Marpa has 3 phases: Grammar pre-processing; Recognition; and Evaluation.</p>
+
+<ul>
+<li>Marpa changes the way we think about parsing</li>
+</ul>
+
+<p>This automatically leads us to greatly expand what problems now fit the definition of 'parseable'.</p>
+
+<ul>
+<li>Marpa has many other advantages, but we have to stop somewhere</li>
+</ul>
+
+<p><a href="index.html">Index</a></p>
+        </div>
+    </div>
+    <div class="row footer">
+        <div class="offset2 span8">
+            <p>
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="float:left; margin-right:12px; border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Marpa Guide</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Peter Stuifzand and Contributors</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> and the <a rel="license" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3</a></p>
+        </div>
+    </div>
+</div>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+</body></html>

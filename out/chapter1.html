@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html><head>
+<title>Chapter 1 - Getting Started</title>
+<meta charset='utf-8'>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="offset2 span8">
+<p>Chapter 1</p>
+
+<h1>Getting Started</h1>
+
+<p><a href="index.html">Index</a></p>
+
+<h2>What is Marpa?</h2>
+
+<p>Marpa is a library written in C, with a Perl wrapper. It is dedicated to <a href="https://en.wikipedia.org/wiki/Parsing">parsing</a>.
+That is, people who wish to write parsers incorporate Marpa into their programs.</p>
+
+<p>You start using Marpa by providing it with 2 inputs, a grammar, and an input stream which may or may not conform to
+the given grammar.</p>
+
+<p>This means Marpa starts by parsing the grammar and storing it in RAM in some convenient form.
+Such a grammar specifies both what tokens are acceptable, and the order in which they may appear. Together,
+these determine the syntax of the language defined by the grammar.</p>
+
+<p>In practice, this means you express your grammar in a string, and Marpa treats that as a set of rules as to how
+you want Marpa to treat your input stream.</p>
+
+<p>Next, Marpa parses your input stream and tests each token it finds there against the grammar you provided.
+This includes determining if the token appears at an acceptable position within the grammr, and hence at an
+acceptable position within the input stream.</p>
+
+<p>It is in fact doing exactly the same as you are doing reading this text.
+For us humans, the grammar (e.g. English) is pre-loaded in our minds, and the input stream is any text we are
+reading or hearing (for instance, text, music or noise).</p>
+
+<p>We test the latter against the grammar, and declare that it either matches what we expect, or fails to match.</p>
+
+<p>Upon failure, we could switch the internal grammar we're using, from say English to Spanish or Chinese.
+If that fails we may well give up. That is, we conclude the input stream is grammatically incorrect,
+i.e. it contains one of more syntax errors, or, at the worst, it is visual (textual) or audible noise.</p>
+
+<p>But if it matches, we conclude the input stream was grammatically correct, or roughly so, since humans don't
+always speak in grammatically perfect speech of course. Indeed, in songs and advertisments, correct grammar is
+often noticably distorted or even absent.</p>
+
+<p>Likewise, Marpa attempts to verify whether or not the input stream does in fact match the given grammar.</p>
+
+<p>This is described as: The input was 'recognized' (or not) by Marpa. Hence the (Perl) variable $recce in the docs.</p>
+
+<p>We can express this as: The input stream conforms, or doesn't conform, to the given grammar.</p>
+
+<p>If it doesn't, and we're dealing with a fixed text which we want to match, then we modify the grammar step-by-step,
+until it Just Works. This tells us that the point of test data is to test the grammar.</p>
+
+<p>Deciding that work on the grammar is finished is equivalent to saying:</p>
+
+<ul>
+<li><p>Every grammatically correct input stream will result in Marpa returning some sort of valid result, and</p></li>
+<li><p>Every grammatically incorrect input stream will result in Marpa returning some sort of error result.</p></li>
+</ul>
+
+<h2>Constructing a mental picture of lexing and parsing</h2>
+
+<p>With the advent of Marpa's SLIF, we need to feel comfortable with both Marpa's approach and the fact that, classically,
+lexing and parsing were often such visibly distinct phases, perhaps even requiring 2 programs.</p>
+
+<p>Marpa's SLIF follows the classical separation of lexing and parsing, but it introduces a notation which is
+friendly to those programmers more accustomed to regular expressions and recursive descent.</p>
+
+<p>So instead of two completely separate modules, lexer and parser, each with its own interface, you have a single
+DSL source  file, and the lexing and parsing statements look similar, with only the  different operators
+("::=" versus "~") to tell them apart.</p>
+
+<p>Underneath however, in the implementation, the distinction is still there, as sharp as ever.</p>
+
+<p>Marpa has 3 phases: Grammar pre-processing; Recognition; and Evaluation. That is, Marpa:</p>
+
+<ul>
+<li><p>Precomputes a grammar.</p></li>
+<li><p>Recognizes an input, creating a table.</p></li>
+<li><p>Turns that table into a tree, and evaluates it.</p></li>
+</ul>
+
+<p>Events occur during the recognition phase. Actions are executed during the evaluation phase.
+In other words, by the time the first action is executed, the last event is ancient history.</p>
+
+<p>And all this takes place in a single pass of the input stream, i.e. very efficiently indeed.</p>
+
+<p>Consequently, Marpa's new design completely eliminates the necessity for you to write code to perform
+your own lexing.</p>
+
+<h2>Constructing a visual picture of lexing and parsing</h2>
+
+<p>The previous section is more of a descriptive explanation of Marpa's internal process. It's reasonable to ask:
+Is there another way to view this?</p>
+
+<p>Sure. Take the first of the 3 points above: 'Precomputes a grammar'.</p>
+
+<p>Marpa creates various data structures from such a grammar during the phase called 'Precomputes a grammar'.
+A simplistic view of this is that a grammar expressed as a multi-line string is converted into the same grammar
+expressed as a tree.</p>
+
+<p>And these structures, combined with the input stream, become the basis for the recognition and evaluation phases.</p>
+
+<p>For more on this, see Wikipeida's article on <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract Syntax Trees</a>.</p>
+
+<p>Briefly, the parsing process converted a grammar as a tree, plus input, into another structure, representable as a
+tree, which is evaluated (analyzed) as per instructions embedded in the grammar. A example of such an instruction is
+given above as 'action => graph', whose exact effect will be discussed later.</p>
+
+<p>But why not use regular expressions?</p>
+
+<p>Regular expressions are a brilliant invention, and a perfectly suited for many applications.</p>
+
+<p>But the requirement to process structured grammars, and solutions such as Marpa, are what distinguises parsing
+from simpler techniques such as lexing and regular expressions.</p>
+
+<p>Lexers and regular expressions recognize strings, but do not assign any structure to them.</p>
+
+<p>When captures are added to regular expressions, you begin to see bits and pieces of a structure, but regular
+expressions and captures have a hard time with a structure of any complexity. Lastly, when the structure is recursive
+they break down completely.</p>
+
+<p>You can see such a case in the grammar fragment which follows - specifially in the last rule - where 'node_statement'
+is defined to be a series of 'node_statement's separated by commas. Marpa handles such cases effortlessly.</p>
+
+<pre class="prettyprint linenums"><code>:start            ::= graph_grammar
+
+graph_grammar     ::= graph_definition  action =&gt; graph
+
+graph definition  ::= node_definition
+                      | edge_definition
+
+node_definition   ::= node_statement
+                      | node_statement &lt;graph definition&gt;
+
+node_statement    ::= node_name
+                      | node_name attribute_definition
+                      | node_statement (',') node_statement
+
+...
+</code></pre>
+
+<p>The complete set of rules can be represented graphically as a tree, rooted at the start rule.
+See <a href="http://savage.net.au/Perl-modules/html/marpax.grammar.graphviz2/stringparser.svg">this SVG version</a>,
+as produced by <a href="https://metacpan.org/release/MarpaX-Grammar-GraphViz2">MarpaX::Grammar::GraphViz2</a>, which graphs grammars.
+The grammar itself actually comes from the module
+<a href="https://metacpan.org/release/MarpaX-Demo-StringParser">MarpaX::Demo::StringParser</a>.</p>
+
+<p>Alternately, the grammar fragment can be represented as a textural tree:</p>
+
+<pre class="prettyprint linenums"><code>
+statements
+   |---:start
+   |   |---::=
+   |   |---graph_grammar
+   |---graph_grammar
+   |   |---::=
+   |   |---graph_definition
+   |   |---action
+   |   |---=>
+   |   |---graph
+   |---graph_definition
+   |   |---::=
+   |   |---node_definition
+   |   |---|
+   |   |---edge_definition
+   |---node_definition
+   |   |---::=
+   |   |---node_statement
+   |   |---|
+   |   |---node_statement
+   |   |---graph_definition
+   |---node_statement
+   |   |---::=
+   |   |---node_name
+   |   |---|
+   |   |---node_name
+   |   |---attribute_definition
+   |   |---|
+   |   |---node_statement
+   |   |---(',')
+   |   |---node_statement
+...
+</code></pre>
+
+<p>This tree (for the whole grammar) is shipped as share/stringparser.cooked.tree in
+<a href="https://metacpan.org/release/MarpaX-Demo-StringParser">MarpaX::Demo::StringParser</a>.</p>
+
+<h2>Where does a grammar come from?</h2>
+
+<p>The simplest way is to copy a suitable grammar, but that's not possible, we must write it ourselves.</p>
+
+<p>And this leads to developing a set of test files, whose purpose is to test the grammar, rule by rule.
+This includes tests that are deliberately faulty. That is, some tests must cause Marpa to report a syntax error
+in the input stream. Whether or not the grammar or the input stream is the real culprit is of course dependent
+on the user's expertise.</p>
+
+<p>Marpa's grammars are written in what we call a SLIF-DSL. Here, SLIF stands for Scanless Interface, and DSL is
+<a href="https://en.wikipedia.org/wiki/Domain-specific_language">Domain-specific Language</a>.</p>
+
+<p>Many programmers will have heard of <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BNF</a>. Well, Marpa's
+SLIF-DSL is an extended BNF. That is, it includes special tokens which only make sense within the context of a Marpa
+grammar. Hence the 'Domain Specific' part of the name.</p>
+
+<p>BNF can be thought of as a generator for DSLs.</p>
+
+<p>The example above includes such extensions - the pseudo-rule ':start'.</p>
+
+<p>Marpa's docs for this SLIF-DSL <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">are here</a>.</p>
+
+<h2>Some of Marpa's features</h2>
+
+<ul>
+<li><p>Is written in C for speed.</p></li>
+<li><p>Can precisely identify the location (within the input stream) of syntax errors.</p></li>
+<li><p>Has extensive documentation. <a href="https://metacpan.org/release/Marpa-R2">Start here</a> if you wish to delve into the docs.</p></li>
+<li><p>Extends the BNF concept in various ways.</p></li>
+<li><p>Has an exceptionally straight-forward interface via Perl.</p></li>
+<li><p>Has a low-level ('thin') interface as well.</p></li>
+<li><p>Has convenient tracing and reporting features.</p></li>
+<li><p>Ships as a stand-alone library module, for inclusion into end-user code.</p></li>
+<li><p>Ships with a broad test suite.</p></li>
+<li><p>Intriguingly, Marpa's own grammar (for its DSL) ships in a file (metag.bnf) which has the same format as end-user
+grammars.</p></li>
+<li><p>Has a <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/">homepage</a>, maintained by library's author.</p></li>
+<li><p>Has a <a href="https://groups.google.com/forum/#!forum/marpa-parser">Google Group</a> and email list (marpa-parser@googlegroups.com).</p></li>
+</ul>
+
+<h2>Sample Code</h2>
+
+<p>A number of Perl modules use Marpa::R2, and can be freely downloaded for inspection. In alphabetical order:</p>
+
+<ul>
+<li><p>Graph::Easy::Marpa.</p></li>
+<li><p>MarpaX::Demo::JSONParser.</p></li>
+<li><p>MarpaX::Demo::StringParser.</p></li>
+<li><p>MarpaX::Grammar::GraphViz2.</p></li>
+<li><p>MarpaX::Grammar::Parser.</p></li>
+<li><p>MarpaX::Languages::C::AST.</p></li>
+<li><p>MarpaX::Repa.</p></li>
+<li><p>MarpaX::xPathLike.</p></li>
+</ul>
+
+<p>Search <a href="https://metacpan.org">MetaCPAN</a> for more.</p>
+
+<p>Note: Ignore any modules using the obsolete (NAIF) interface. That interface was provided by the obsolete Marpa::XS.</p>
+
+<h2>Getting the code for Marpa</h2>
+
+<p>Marpa is a Perl library. We will use
+<a href="http://metacpan.org/release/Marpa-R2">Marpa::R2</a> for the examples in this guide.</p>
+
+<p>If you have Perl already installed you can install Marpa with <code>cpan</code> or <code>cpanm</code>.</p>
+
+<pre class="prettyprint linenums"><code>$ cpan Marpa::R2
+</code></pre>
+
+<p>or</p>
+
+<pre class="prettyprint linenums"><code>$ cpanm Marpa::R2
+</code></pre>
+
+<p>This will install Marpa::R2.</p>
+
+<p>In the rest of this guide we'll assume you have installed Marpa::R2. The examples
+that end in '.pl' can be executed using <code>perl</code>.</p>
+
+<h2>References</h2>
+
+<ul>
+<li><p><a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/">Marpa's homepage</a></p></li>
+<li><p><a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BNF</a></p></li>
+<li><p><a href="https://en.wikipedia.org/wiki/Parsing">Parsing</a></p></li>
+<li><p><a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract Syntax Trees</a></p></li>
+<li><p><a href="http://blog.reverberate.org/2013/07/ll-and-lr-parsing-demystified.html">LL and LR Parsing</a></p></li>
+<li><p><a href="https://en.wikipedia.org/wiki/Domain-specific_language">Domain-specific Language</a></p></li>
+<li><p><a href="https://metacpan.org/release/Marpa-R2">Marpa::R2</a></p></li>
+<li><p><a href="https://groups.google.com/forum/#!forum/marpa-parser">Marpa's Google Group</a></p></li>
+<li><p><a href="http://longanswers.blogspot.de/2013/06/transforming-syntax.html">amon's article on translating C syntax to BNF syntax</a></p></li>
+</ul>
+
+<p><a href="index.html">Index</a></p>
+        </div>
+    </div>
+    <div class="row footer">
+        <div class="offset2 span8">
+            <p>
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="float:left; margin-right:12px; border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Marpa Guide</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Peter Stuifzand and Contributors</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> and the <a rel="license" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3</a></p>
+        </div>
+    </div>
+</div>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+</body></html>
