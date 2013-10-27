@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head>
-<title>Chapter 3 - Parsing an Expression</title>
+<title>Chapter 3 - FAQ</title>
 <meta charset='utf-8'>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -12,102 +12,271 @@
         <div class="offset2 span8">
 <p>Chapter 3</p>
 
-<h1>Parsing an Expression</h1>
+<h1>FAQ</h1>
 
 <p><a href="index.html">Index</a></p>
 
-<p>Parsers shine in situations where there are many discrete parts in sequence
-with a certain structure. A grammar describes the rules of this structure.</p>
+<h2>What is the meaning of G0 and G1?</h2>
 
-<p>The discrete parts of the structure are the lexemes (or tokens) that make up
-the sequences. The lexemes are groups of one or more characters. These are the
-atoms of the language.</p>
+<p>G0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
+syntax of the tokens, but not the syntax of how these tokens can be combined.</p>
 
-<p>Any group of characters will do. And the nice thing is that for a grammar it
-doesn't matter what these characters look like. The rules of the grammar only
-describe how these lexeme relate to each other.</p>
+<p>G1 defines the structure of the language. These rules define legal statements within the given language.
+Legal statements are thus legal combinations of tokens.</p>
 
-<p>Let's start with a little example of an input string.</p>
+<p>Also, G1 rules have a semantics, whereas G0 rules do not.</p>
 
-<pre class="prettyprint linenums"><code>100+200
+<p>G0 and G1 discussed in <a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a>, and, very
+briefly, in <a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a>. In both cases, search for 'G0'.</p>
+
+<h2>How do I parse numbers?</h2>
+
+<p>Chapter 2 discusses this issue at length. And if you fork the project on github, you'll find the directory
+examples/ contains about a dozen sample programs.</p>
+
+<p>Alternately, download <a href="https://metacpan.org/release/MarpaX-Languages-SVG-Parser">MarpaX::Languages::SVG::Parser</a>,
+which contains similar logic (in data/*.bnf). Further, the distro includes sample code (float.pl and number.pl)
+in the scripts/ directory. The last-named script includes grammars for binary, octal and hex numbers.</p>
+
+<h2>How do I represent choice in the grammar?</h2>
+
+<p>Briefly, use '|'. Sample code from the above named module (data/d.bnf):</p>
+
+<pre class="prettyprint linenums"><code>coordinate  ::= float      action =&gt; float
+                | integer  action =&gt; integer
 </code></pre>
 
-<p>The lexemes of this input string depends of the language. Let's say we want to
-create a grammar that understands the structure of a number followed by an
-operator "+", followed by another number.</p>
+<p>Also note that '||' is available to control the relative priorities of the alternatives. This issue is expanded
+in a later item in this FAQ.</p>
 
-<pre class="prettyprint linenums"><code>language ::= number op_plus number
+<p>See also the next item.</p>
+
+<h2>Is there any other way of representing choice?</h2>
+
+<p>Sure. Consider these G0 rules (also from data/d.bnf):</p>
+
+<pre class="prettyprint linenums"><code>sign_maybe  ~ [+-]
+sign_maybe  ~
+
+digit       ~ [0-9]
+digit_any   ~ digit*
+digit_many  ~ digit+
+
+E           ~ [Ee] sign_maybe digit_many
+E_maybe     ~ E
+E_maybe     ~
+
+:lexeme     ~ float
+float       ~ sign_maybe digit_many E
+              | sign_maybe digit_any '.' digit_many E_maybe
+              | sign_maybe digit_many '.' E_maybe
+              | sign_maybe non_zero digit_any
 </code></pre>
 
-<p>In Marpa this means <code>language</code> is defined as <code>number</code> followed by <code>op_plus</code>
-followed by <code>number</code>. Marpa doesn't know what each of the names means. To remedy that we will
-write the definitions of the lexemes.</p>
+<p>This is saying:</p>
 
-<pre class="prettyprint linenums"><code>number  ~ [\d]+
-op_plus ~ '+'
+<ul>
+<li><p>The sign is optional after E or e (sign_maybe)</p></li>
+<li><p>The E is optional (E_maybe)</p></li>
+<li><p>The sign is optional before a digit (the first alternative for 'float')</p></li>
+<li><p>And so on</p></li>
+</ul>
+
+<h2>What does it mean to hide (mask) tokens?</h2>
+
+<p>It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
+for <a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a>.</p>
+
+<p>Here is an example (from <a href="https://metacpan.org/release/Graph-Easy-Marpa-Parser">Graph::Easy::Marpa::Parser</a>):</p>
+
+<pre class="prettyprint linenums"><code>node_definition  ::= node_statement
+                 | node_statement graph_definition
+
+node_statement   ::= node_name
+                 | node_name attribute_definition
+                 | node_statement (',') node_statement
+
+node_name        ::= start_node end_node
+
+:lexeme          ~ start_node  pause =&gt; before  event =&gt; start_node
+start_node       ~ '['
+
+:lexeme          ~ end_node
+end_node         ~ ']'
 </code></pre>
 
-<p>The complete grammar looks like the following.</p>
+<p>The comma is hidden. But what does this mean, exactly?</p>
 
-<pre class="prettyprint linenums"><code>:start    ::= language
+<p>It means the comma may appear in the input stream (in this context), but I am not interested in it. So, Marpa will not
+return this token to me when an action is called. It has become invisible to the semantics.</p>
 
-language  ::= number op_plus number
+<p>Semantics are documented in <a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a>.</p>
 
-number    ~ [\d]+
-op_plus   ~ '+'
+<p>Close study of the above grammar will show that another path is possible thru the grammar, in the case of
+2 nodes side-by-side (i.e. without a comma between them). Thus the grammar accepts both these input streams
+as valid:</p>
+
+<pre class="prettyprint linenums"><code>Stream 1: [node.a], [node.b]
+Stream 2: [node.a]  [node.b]
 </code></pre>
 
-<p class='example-filename'><a href='examples/number2-1.pl'>examples/number2-1.pl</a></p>
+<p>Hence, from the end-user's viewpoint, the comma is defined - at least in this particular grammar - to be optional.</p>
 
-<p>When we run the program we get the output that follows:</p>
+<h2>What's the difference between '|' and '||' in grammar definitions?</h2>
 
-<pre class="prettyprint linenums"><code>Trying to parse:
-100+200
-Output:
-$VAR1 = [
-    '100',
-    '+',
-    '200'
-];
+<p>'|' expresses a simple alternative, while '||' separates alternatives at different levels of precedence. For example:</p>
+
+<pre class="prettyprint linenums"><code>E ::=    E '*' E
+      |  E '/' E
+      || E '+' E
+      |  E '-' E
 </code></pre>
 
-<h2>Whitespace</h2>
+<p>This describes syntax for a simple 4-operation calculator, where multiplication and division take precedence over
+addition and subtraction.</p>
 
-<p>Now try and add some whitespace between certain tokens. A space after the first
-number. Marpa will complain that it can't lex a certain character:</p>
+<p>This construct forces alternatives before the '||' to have higher precedence than the alternatives after that token.</p>
 
-<pre class="prettyprint linenums"><code>Lexing failed at unacceptable character 0x0020 (non-graphic character)
+<p>Each of the alternatives separated by '|' are at the same precedence.</p>
+
+<p>In Mark Dominus's 'Higher-Order Perl' book, he describes how he handles precedence in his recursive descent parsers
+for a similar calculator, beginning on p. 394. This is a good description of how the same situation would be handled
+with pre-Marpa techniques.</p>
+
+<p>If precedence is not an issue for you, just use single bar alternation ('|').</p>
+
+<p>Note also that Marpa supports a 'priority' adverb, discussed in the
+<a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a> docs mentioned above.</p>
+
+<h2>How to I implement recursion in a grammar?</h2>
+
+<p>See the next item.</p>
+
+<h2>Why does using '+' or '*' in a rule only work sometimes?</h2>
+
+<p>I assume you're referring to cases like this:</p>
+
+<p>Case 1 (fails):</p>
+
+<pre class="prettyprint linenums"><code>node_definition  ::= node_statement+
+                 | node_statement graph_definition
 </code></pre>
 
-<p>We would like to be able to parse expression with whitespace between them.
-There are two ways to do that. One way is to add a whitespace lexeme in every
-place where whitespace could occur. Let start with an example.</p>
+<p>Case 2 (succeeds):</p>
 
-<pre class="prettyprint linenums"><code>language  ::= (ws) number (ws) op_plus (ws) number (ws)
-
-ws        ::= sp
-ws        ::=
-
-sp          ~ [ ]+
+<pre class="prettyprint linenums"><code>coordinate_list  ::= coordinate+
 </code></pre>
 
-<p class='example-filename'><a href='examples/number2-2.pl'>examples/number2-2.pl</a></p>
+<p>Case 3 (succeeds):</p>
 
-<p>We fix the whitespace problem by adding an optional whitespace token at every
-place where it could occur. This makes for one big mess, especially if you have
-many rules, each with specific whitespace requirements.</p>
-
-<p>The other way to parse rules with whitespace in between lexemes is with the
-<code>:discard</code> pseudo rule. This rule allow you to specify which parts of the input
-stream Marpa should discard when it encounters these.</p>
-
-<pre class="prettyprint linenums"><code>language  ::= number op_plus number
-
-:discard    ~ sp
-sp          ~ [ ]+
+<pre class="prettyprint linenums"><code>whitespace       ~ [\s]+
 </code></pre>
 
-<p class='example-filename'><a href='examples/number2-3.pl'>examples/number2-3.pl</a></p>
+<p>Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
+alternative. Thus case 1 fails due to the combination of '+' and '|'.</p>
+
+<p>This is documented in <a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a>, under
+'Quantified rules'.</p>
+
+<p>So we must re-write rule 1:</p>
+
+<pre class="prettyprint linenums"><code>graph_definition  ::= node_definition
+                  | edge_definition
+                  | subgraph_definition
+
+node_definition  ::= node_statement
+                 | node_statement graph_definition
+
+node_statement   ::= node_name
+                 | node_name attribute_definition
+                 | node_statement (',') node_statement
+</code></pre>
+
+<p>Now the rule 'node_definition ::= node_statement' allows a node definition to consist of a single node statement.</p>
+
+<p>And the alternative - via the '|' - 'node_definition ::= node_statement graph_definition' allows a node
+definition to consist of a node statement followed by a graph definition, which just happens to include the line
+'graph_definition ::= node_definition'!</p>
+
+<p>So we've managed to write the grammar using indirect recursion, thus allowing an indefinite list of node
+definitions to follow one another. And the last rule allows the input stream to separate them with commas as
+well as the usual spaces.</p>
+
+<h2>How do I associate an action class with my grammar?</h2>
+
+<p>The synopsis in <a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a> shows one way. See
+'bless_package'.</p>
+
+<p>Another way is to note that the Scanless interface recognizer accepts a 'semantics_package' argument.</p>
+
+<p>Here's how I declare a recognizer:</p>
+
+<pre class="prettyprint linenums"><code>$self -&gt; recce
+(
+    Marpa::R2::Scanless::R -&gt; new
+    ({
+        grammar           =&gt; $self -&gt; grammar,
+        semantics_package =&gt; 'MarpaX::Languages::SVG::Parser::Actions',
+    })
+);
+</code></pre>
+
+<p>So actions referenced in the grammar, as in:</p>
+
+<pre class="prettyprint linenums"><code>coordinate  ::= float      action =&gt; float
+                | integer  action =&gt; integer
+</code></pre>
+
+<p>are declared in the named package, and that's where Marpa looks for them.</p>
+
+<p>This is discussed both in <a href="https://metacpan.org/release/Marpa-R2-Scanless-R">Marpa::R2::Scanless::R</a>, and in
+<a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a>.</p>
+
+<p>From an OO point of view, there is still a problem. After reading the 'The per-parse argument' and
+'The per-parse constructor' sections of the semantics document, you might think:</p>
+
+<pre class="prettyprint linenums"><code>Marpa calls the constructor of the semantics package.
+That means Marpa has an instance of that package.
+</code></pre>
+
+<p>This immediately raises some questions:</p>
+
+<ul>
+<li>How do I access that instance?</li>
+</ul>
+
+<p>I don't know.</p>
+
+<ul>
+<li>If I use Moo to write this package, what happens?</li>
+</ul>
+
+<p>The problem here is that with <a href="https://metacpan.org/release/Moo">Moo</a>, the new() constructor is generated automatically.
+My tests show such a package is not initialized (by calling new() ) by Marpa. That is, Marpa cannot find new(), and
+so it passes an unblessed hash into each action sub, as the per-parse (1st) parameter.</p>
+
+<ul>
+<li>In the latter case, which instance is Marpa calling?</li>
+</ul>
+
+<p>I don't know.</p>
+
+<ul>
+<li>If my action subs accumulate instance-level data, how can I retrieve such data?</li>
+</ul>
+
+<p>I don't know, but it 'just works'. I use this code:</p>
+
+<pre class="prettyprint linenums"><code>$self -&gt; actions
+(
+    MarpaX::Languages::SVG::Parser::Actions -&gt; new(logger =&gt; $self -&gt; logger)
+);
+</code></pre>
+
+<p>along with the initialization of $self -> recce(...) above.</p>
+
+<p>Later, when I use $self -> action to access data with my instance, I get the data generated in the calls by Marpa
+to my action subs.</p>
 
 <p><a href="index.html">Index</a></p>
         </div>

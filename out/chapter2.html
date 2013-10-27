@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head>
-<title>Chapter 2 - Parsing Numbers</title>
+<title>Chapter 2 - Marpa's Advantages</title>
 <meta charset='utf-8'>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -12,374 +12,130 @@
         <div class="offset2 span8">
 <p>Chapter 2</p>
 
-<h1>Parsing Numbers</h1>
+<h1>Marpa's Advantages</h1>
 
 <p><a href="index.html">Index</a></p>
 
-<p>Let's start with an example. What follows is the smallest code that parses a
-list of numbers.</p>
-
-<pre class="prettyprint linenums"><code>use strict;
-use Marpa::R2;
-use Data::Dumper;
-
-my $g = Marpa::R2::Scanless::G-&gt;new({
-        default_action =&gt; '::array',
-        source         =&gt; \(&lt;&lt;'END_OF_SOURCE'),
-
-:start        ::= numbers
-numbers       ::= number+
-number          ~ [\d]+
-:discard        ~ ws
-ws              ~ [\s]+
-
-END_OF_SOURCE
-});
-
-my $re = Marpa::R2::Scanless::R-&gt;new({ grammar =&gt; $g });
-my $input = "1 3 5 8 13 21 34 55";
-
-print "Trying to parse:\n$input\n\n";
-$re-&gt;read(\$input);
-my $value = ${$re-&gt;value};
-print "Output:\n".Dumper($value);
-</code></pre>
-
-<p class='example-filename'><a href='examples/number.pl'>examples/number.pl</a></p>
-
-<p>In this example we parse a few numbers separated by spaces. Let's run the code first.
-You can run the code by calling it with <code>perl</code>.</p>
-
-<pre class="prettyprint linenums"><code>$ perl number.pl
-Trying to parse:
-1 3 5 8 13 21 34 55
-
-Output:
-$VAR1 = [
-    '1',
-    '3',
-    '5',
-    '8',
-    '13',
-    '21',
-    '34',
-    '55'
-];
-</code></pre>
+<p>Of course, the heading means advantages over other methods of parsing.</p>
 
-<p>The example shows which text it tries to parse followed by the array that it
-found.</p>
+<ul>
+<li><p>It is available as a linkable library</p></li>
+<li><p>It is written in C for speed</p></li>
+<li><p>Marpa parses in times considered theoretically optimal</p></li>
+<li><p>Marpa parses all classes of grammar in practical use today in linear time, O(n)</p></li>
+<li><p>Grammars can be ambiguous</p></li>
+<li><p>Marpa supports grammars having nullable symbols</p></li>
+<li><p>Rules can be recursive</p></li>
+</ul>
 
-<p>In the next sections we'll just show the notation used by Marpa. The examples
-contain the full code.</p>
+<p>Try that with a regexp!</p>
 
-<pre class="prettyprint linenums"><code>:start        ::= numbers
-numbers       ::= number+            action =&gt; ::array
-number          ~ [\d]+
-:discard        ~ ws
-ws              ~ [\s]+
-</code></pre>
+<ul>
+<li>Grammars can be ambiguous</li>
+</ul>
 
-<p class='example-filename'><a href='examples/number2.pl'>examples/number2.pl</a></p>
+<p>This means Marpa can tell you how many different ways there are of interpreting the token stream.</p>
 
-<p>In the specification language that Marpa uses, the <code>:start</code> rule specifies
-which rule is the top most rule that should match. The declaration operator
-<code>::=</code> separates the name of the rule, on left side, from the specification, on the right side.</p>
-
-<p>The symbol on the left side of the declaration operator is the name of the
-rule. The symbols on the right side of the operator specify what it matches
-to.</p>
-
-<p>According to the <code>:start</code> declaration Marpa will start to parse from the
-<code>numbers</code> rule. The <code>numbers</code> rule contains <code>number</code> followed by a <code>+</code>
-operator. The <code>+</code> operator lets Marpa know that we expect one or more <code>number</code>
-lexemes.</p>
-
-<p>The next line specifies what a number looks like. The <code>~</code> operator separates the name of the token
-from the character class on the right. We specify <code>number</code> to be one or more digits. Marpa uses the
-same character classes as Perl does internally.</p>
-
-<p>Then we specify a <code>:discard</code> rule. With this we can specify what tokens Marpa
-can discard. The input language contains whitespace between the numbers. With
-the <code>ws</code> rule we say what this looks like.</p>
-
-<p>This grammar will parse input strings like the following.</p>
-
-<pre class="prettyprint linenums"><code>123    9 45 83 1000 1001          39201
-</code></pre>
-
-<p>The input string with numbers could be much longer than this as long as each
-number is separated by one or more whitespace characters. This includes spaces,
-tabs and newlines.</p>
-
-<h3>Lexical rules</h3>
-
-<p>The rules <code>ws</code> and <code>number</code> are examples of lexical rules. A lexical rule
-specifies which characters can be matched in the input string. A lexical rule
-can contain character classes and quoted strings.</p>
-
-<p>A character class specifies each character or group of characters that can be
-matched. These character classes are evaluated by Perl. This means that
-everything that would work in Perl itself, can be used in a Marpa character
-class. We already saw how to match a number. This is how you could match a
-variable name.</p>
-
-<pre class="prettyprint linenums"><code>identifier      ~ [_a-zA-Z] id_rest
-id_rest         ~ [_0-9a-zA-Z]*
-</code></pre>
-
-<p class='example-filename'><a href='examples/identifier.pl'>examples/identifier.pl</a></p>
-
-<p>The rule for matching an identifier (or name) is split into two rules. The first
-rule specifies the structure of the token. The first part of it matches the
-first character of an identifier. It can be an underscore, a lowercase
-character or an uppercase character. It can't be a number however.
-The second part <code>id_rest</code> references the second rule, which specifies the
-rest of the identifier. This can include numbers as well. The asterisk <code>*</code> at the
-end says that this character class can match zero of more times.</p>
-
-<p>The asterisk is also the reason why we split the identifier rule into two
-parts. The asterisk can only be used on rules with a single item on the right
-hand side.</p>
-
-<p>A lexical rule can also use a quoted string. A quoted string is surrounded
-with single quotes <code>'</code>. The text between the quotes will match as literal text.
-You could use this for single characters or keywords.</p>
-
-<pre class="prettyprint linenums"><code>kw_for    ~ 'for'
-kw_if     ~ 'if'
-</code></pre>
-
-<h3>Keywords</h3>
-
-<p>Let's take a look at a small declarative part of a language with two keywords: 'Deny', 'Allow'.</p>
-
-<pre class="prettyprint linenums"><code>Deny baduser
-Allow admin
-</code></pre>
-
-<p>The semantics (or meaning) of the language could be anything. Parsing the
-language can be really easy with Marpa.</p>
-
-<pre class="prettyprint linenums"><code>:start        ::= rules
-rules         ::= rule+
-
-rule          ::= cmd_type username
-
-cmd_type        ~ 'Deny' | 'Allow'
-username        ~ [\w]+
-
-:discard        ~ ws
-ws              ~ [\s]+
-</code></pre>
+<ul>
+<li>Your grammar can be described in an extended version of BNF</li>
+</ul>
 
-<p class='example-filename'><a href='examples/deny-allow.pl'>examples/deny-allow.pl</a></p>
-
-<pre class="prettyprint linenums"><code>Trying to parse:
-Deny baduser
-Allow admin
+<p>This means you provide the rules as text, not as code. Marpa provides the code to implement these rules.
+That is, Marpa generates a parser tailored to your BNF.</p>
 
-Output:
-$VAR1 = [
-    [
-        'Deny',
-        'baduser'
-    ],
-    [
-        'Allow',
-        'admin'
-    ]
-];
-</code></pre>
+<p>This is declarative parsing.</p>
 
-<p>The output shows that Marpa parsed two rules. The first rule with the
-'Deny' keyword and the second with the 'Allow' keyword. It seems that the
-keywords could interfere with the usernames. The <code>cmd_type</code>s are a subset of
-the usernames.</p>
+<p>Rules have an optional <em>action</em> adverb, indicating where Marpa is to trigger your callback to handle intermediate results.</p>
 
-<p>Let's see what happens when we change the first username from baduser to Allow.
-Can Marpa see the difference between keywords and usernames?</p>
-
-<pre class="prettyprint linenums"><code>Output:
-$VAR1 = [
-    [
-        'Deny',
-        'Allow'
-    ],
-    [
-        'Allow',
-        'admin'
-    ]
-];
-</code></pre>
+<p>This provides an exceptionally clean interface between the rules and any code you need to handle specific cases.</p>
 
-<p>It doesn't matter that the first username matches a <code>cmd_type</code>. Marpa knows
-that the word 'Allow' could also be a username.</p>
+<p>You action subs can communicate with each other via a 'per-parse argument', which is passed to each action sub as
+its first parameter. This per-parse argument defaults to an empty hashref. For Marpa, it is read-only:
+It is reserved for the exclusive use of your code.</p>
 
-<p>Now let's see what happens when we use an input that doesn't match by switching
-around the username and the keyword. A keyword could be a username, but it
-can't be the other way around.</p>
+<p>This Marpa-specific BNF is called SLIF DSL (Scanless Interface Domain-Specific Language).</p>
 
-<p>I change the input to:</p>
+<ul>
+<li>Marpa lexes the token stream</li>
+</ul>
 
-<pre class="prettyprint linenums"><code>baduser Deny
-admin Allow
-</code></pre>
+<p>This means you do not have to provide a separate lexer.</p>
 
-<p>When we run the examples we get the following output:</p>
+<p>In special cases you can of course take over the lexing yourself.</p>
 
-<pre class="prettyprint linenums"><code>Error in SLIF G1 read: No lexemes accepted at position 0
-* String before error: baduser
-* The error  was at line 1, column 8, and at character 0x0020 (non-graphic character), ...
-* here:  Deny\nadmin Allow\n
-Marpa::R2 exception at examples/deny-allow.pl line 33.
-</code></pre>
+<ul>
+<li>Marpa is extensively documented</li>
+</ul>
 
-<p>Marpa tries to point to the error as best as it can. Marpa starts with the
-problem: <code>No lexemes accepted at position 0</code>. This is Marpa's way of telling us
-that Marpa couldn't find a way to match <code>baduser</code> to one of the expected
-lexemes, <code>Deny</code> or <code>Allow</code>.</p>
+<p><a href="https://metacpan.org/release/Marpa-R2">Start here</a>.</p>
 
-<h3>More syntax</h3>
+<p>And, the author has a <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/">Marpa-oriented blog</a>.</p>
 
-<p>Now let's add a way to specify groups of users. The syntax could look like this.</p>
+<ul>
+<li>Marpa can pause parsing at any place in the token stream, hand control over to you, then resume parsing at any place in the input stream</li>
+</ul>
 
-<pre class="prettyprint linenums"><code>admins = admin root
-Deny baduser
-Allow @admins
-</code></pre>
+<p>This is procedural parsing.</p>
 
-<p>The first line specifies a list of admin users. The second line stays the same
-and the third line contains a reference to the <code>admins</code> list of users. The <code>@</code>
-operators makes it a reference.</p>
+<p>Consequently, you can freely switch back and forth between declarative and procedural parsing.</p>
 
-<p>We start by changing the input in the file. We run the code and find that it
-doesn't parse. That's what we expected.</p>
+<p>Rules have an optional <em>pause</em> adverb, indicating where Marpa is to return to your calling code, until such time as you
+call resume(). This is not the same as the callback trigger mechanism mentioned above.</p>
 
-<p>Now we need to add a rule for parsing the <code>admins = ...</code> line. In this case
-<code>admins</code> is similar to a username so let's use that.</p>
+<p>During the pause, a set of methods allows you to interrogate Marpa about the current state of the parse.</p>
 
-<pre class="prettyprint linenums"><code>user_list  ::= username '=' username username
-</code></pre>
+<p>It also means you can parse the next part of the token stream yourself, and tell Marpa to skip what you've handled.</p>
 
-<p>This line should work. We add it in the grammar. Let's add it to the
-<code>rule</code> rule as an alternative. We use the <code>|</code> (or) operator.</p>
+<ul>
+<li>Error reporting can provide the precise location of an error</li>
+</ul>
 
-<pre class="prettyprint linenums"><code>rule    ::= cmd_type username
-          | user_list
-</code></pre>
+<p>This means the string just preceeding and just following the error can be retrieved, as well as a list of the tokens
+Marpa was expecting to see at that point.</p>
 
-<p>When we run this code we get the following:</p>
+<p>Even better, Marpa can tell you which rule(s) it was evaluating.</p>
 
-<pre class="prettyprint linenums"><code>Lexing failed at unacceptable character 0x0040 '@'
-Marpa::R2 exception at examples/deny-allow2.pl line 37.
-</code></pre>
+<ul>
+<li>Marpa allows you to fabricate input, using its knowledge of what was expected when it errored</li>
+</ul>
 
-<p>Marpa doesn't like the '@' character in the third line. Let's add that.
-We add another line to <code>rule</code>. The reference is like a username.</p>
+<p>This is called <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html">Ruby Slippers parsing</a>.</p>
 
-<pre class="prettyprint linenums"><code>rule          ::= cmd_type username
-                | cmd_type '@' username
-                | user_list
-</code></pre>
+<ul>
+<li>Rules can have an <em>event</em> adverb</li>
+</ul>
 
-<p class='example-filename'><a href='examples/deny-allow2.pl'>examples/deny-allow2.pl</a></p>
+<p>Rules can share events via their (event) name.</p>
 
-<p>When we run this code, the parse succeeds, but the result is not completely right.</p>
+<p>Events can be activated and deactivated.</p>
 
-<pre class="prettyprint linenums"><code>[
-    'Allow',
-    '@',
-    'admins'
-]
-</code></pre>
+<p>The current status of each event can be interrogated by your code during a pause.</p>
 
-<p>The <code>@</code> and <code>admins</code> is parsed in two parts. We like the reference to be a
-single thing. Another problem with this version is that there can be spaces
-between the '@' and the name after it. This is not what we mean. The '@' and
-the name should always be part of the same lexeme. We change this by making a
-lexical rule for the <code>list_ref</code>.</p>
+<ul>
+<li><p>Marpa has built-in tracing facilities</p></li>
+<li><p>Marpa has a 'thin' interface, for direct access to libmarpa</p></li>
+<li><p>Marpa prunes all nulled subtrees back to their topmost nulled node</p></li>
+</ul>
 
-<p><strong>When two tokens should never be separated, make them part of the same lexical rule.</strong></p>
+<p>In Marpa parses, rules and symbols can be nulled. In other words they can derive the zero-length, or null, string.</p>
 
-<pre class="prettyprint linenums"><code>rule          ::= cmd_type username
-                | cmd_type list_ref
-                | user_list
+<ul>
+<li>Further, you can short-circuit evaluation during any <em>action</em> sub</li>
+</ul>
 
-list_ref        ~ '@' username
-</code></pre>
+<p>See 'Bailing out of parse evaluation' in the docs for the Marpa::R2::Semantics package.</p>
 
-<p class='example-filename'><a href='examples/deny-allow3.pl'>examples/deny-allow3.pl</a></p>
+<p>Recall from <a href="chapter1.html">Chapter 1</a>, Marpa has 3 phases: Grammar pre-processing; Recognition; and Evaluation.</p>
 
-<p>Now let's run <code>deny-allow3.pl</code>.</p>
+<ul>
+<li>Marpa changes the way we think about parsing</li>
+</ul>
 
-<pre class="prettyprint linenums"><code>Symbol &lt;username&gt; is a lexeme in G1, but not in G0.
-  This may be because &lt;username&gt; was used on a RHS in G0.
-  A lexeme cannot be used on the RHS of a G0 rule.
-Marpa::R2 exception at examples/deny-allow3.pl line 6.
-</code></pre>
+<p>This automatically leads us to greatly expand what problems now fit the definition of 'parseable'.</p>
 
-<p>This gives us a look into the inner workings of Marpa. This error message says
-that we can't use a lexeme in both the structural rules (G1) and lexical rules
-(G0). We need to create two lexical rules: one for <code>rule</code> and <code>user_list</code> and
-one for <code>list_ref</code>.</p>
-
-<pre class="prettyprint linenums"><code>rule          ::= cmd_type user
-                | cmd_type list_ref
-                | user_list
-
-user_list  ::= user '=' user user
-
-list_ref        ~ '@' username
-user            ~ username
-</code></pre>
-
-<p class='example-filename'><a href='examples/deny-allow4.pl'>examples/deny-allow4.pl</a></p>
-
-<p>With these changes we can parse the input without problems. The output shows
-what we expected.</p>
-
-<h3>Multiple users</h3>
-
-<p>Even though the code works, it could be that you saw a problem with this. Ask
-yourself what would happen if you specify more or less than two users on the
-right side of a <code>user_list</code>? Try it.</p>
-
-<p>The parser doesn't know what to do with the extra user in the list.
-Let's change <code>user_list</code> to allow multiple users.</p>
-
-<pre class="prettyprint linenums"><code>user_list  ::= user '=' users
-users      ::= user+
-</code></pre>
-
-<p class='example-filename'><a href='examples/deny-allow5.pl'>examples/deny-allow5.pl</a></p>
-
-<p>This change now allows us to specify multiple users in a user_list. The change
-that allows us to specify multiple users on an <code>Allow</code> or <code>Deny</code> line is
-featured in Exercise 1.1.</p>
-
-<p>With that change this language allows us to easily specify users that are
-allowed or denied access to a particular thing. The design of the language
-leaves out the specification of that particular thing to keep the design simple
-and general.</p>
-
-<h3>Exercise</h3>
-
-<ol>
-<li><p><strong>Multiple users</strong> &mdash; Change the grammar to allow multiple users on the
-<code>Allow</code> or <code>Deny</code> line. For example:</p>
-
-<pre class="prettyprint linenums"><code>Allow root admin
-Deny baduser cracker
-</code></pre></li>
-<li><p><strong>All users</strong> &mdash; Add a rule that allows you to specify <code>all</code> or
-'everybody' as a rule that denies or allows everyone.</p></li>
-<li><p><strong>Implementation</strong> &mdash; Implement a class <code>Authorization</code> with a method
-<code>CanAccess($username)</code> that return true if a user is allowed access and false
-if the user is denied access. The contructor of the class takes a source string
-in the language that we specified above. The rules that the parser creates
-should be checked in sequence.</p></li>
-</ol>
+<ul>
+<li>Marpa has many other advantages, but we have to stop somewhere</li>
+</ul>
 
 <p><a href="index.html">Index</a></p>
         </div>
