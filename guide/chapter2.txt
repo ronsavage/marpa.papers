@@ -1,281 +1,109 @@
-Chapter 2 - Parsing Numbers
-===========================
+Chapter 2 - Marpa's Advantages
+==============================
 
 !include "guide/menu.inc"
 
-Let's start with an example. What follows is the smallest code that parses a
-list of numbers.
+Of course, the heading means advantages over other methods of parsing.
 
-!include "examples/number.pl"
+* It is available as a linkable library
 
-In this example we parse a few numbers separated by spaces. Let's run the code first.
-You can run the code by calling it with `perl`.
+* It is written in C for speed
 
-    $ perl number.pl
-    Trying to parse:
-    1 3 5 8 13 21 34 55
+* Marpa parses in times considered theoretically optimal
 
-    Output:
-    $VAR1 = [
-        '1',
-        '3',
-        '5',
-        '8',
-        '13',
-        '21',
-        '34',
-        '55'
-    ];
+* Marpa parses all classes of grammar in practical use today in linear time, O(n)
 
-The example shows which text it tries to parse followed by the array that it
-found.
-
-In the next sections we'll just show the notation used by Marpa. The examples
-contain the full code.
-
-!include "examples/number2.pl"
+* Grammars can be ambiguous
 
-In the specification language that Marpa uses, the `:start` rule specifies
-which rule is the top most rule that should match. The declaration operator
-`::=` separates the name of the rule, on left side, from the specification, on the right side.
-
-The symbol on the left side of the declaration operator is the name of the
-rule. The symbols on the right side of the operator specify what it matches
-to.
-
-According to the `:start` declaration Marpa will start to parse from the
-`numbers` rule. The `numbers` rule contains `number` followed by a `+`
-operator. The `+` operator lets Marpa know that we expect one or more `number`
-lexemes.
-
-The next line specifies what a number looks like. The `~` operator separates the name of the token
-from the character class on the right. We specify `number` to be one or more digits. Marpa uses the
-same character classes as Perl does internally.
-
-Then we specify a `:discard` rule. With this we can specify what tokens Marpa
-can discard. The input language contains whitespace between the numbers. With
-the `ws` rule we say what this looks like.
-
-This grammar will parse input strings like the following.
-
-    123    9 45 83 1000 1001          39201
+* Marpa supports grammars having nullable symbols
 
-The input string with numbers could be much longer than this as long as each
-number is separated by one or more whitespace characters. This includes spaces,
-tabs and newlines.
-
-### Lexical rules
-
-The rules `ws` and `number` are examples of lexical rules. A lexical rule
-specifies which characters can be matched in the input string. A lexical rule
-can contain character classes and quoted strings.
-
-A character class specifies each character or group of characters that can be
-matched. These character classes are evaluated by Perl. This means that
-everything that would work in Perl itself, can be used in a Marpa character
-class. We already saw how to match a number. This is how you could match a
-variable name.
+* Rules can be recursive
 
-!include "examples/identifier.pl"
-
-The rule for matching an identifier (or name) is split into two rules. The first
-rule specifies the structure of the token. The first part of it matches the
-first character of an identifier. It can be an underscore, a lowercase
-character or an uppercase character. It can't be a number however.
-The second part `id_rest` references the second rule, which specifies the
-rest of the identifier. This can include numbers as well. The asterisk `*` at the
-end says that this character class can match zero of more times.
+Try that with a regexp!
 
-The asterisk is also the reason why we split the identifier rule into two
-parts. The asterisk can only be used on rules with a single item on the right
-hand side.
+* Grammars can be ambiguous
 
-A lexical rule can also use a quoted string. A quoted string is surrounded
-with single quotes `'`. The text between the quotes will match as literal text.
-You could use this for single characters or keywords.
+This means Marpa can tell you how many different ways there are of interpreting the token stream.
 
-    kw_for    ~ 'for'
-    kw_if     ~ 'if'
+* Your grammar can be described in an extended version of BNF
 
-### Keywords
+This means you provide the rules as text, not as code. Marpa provides the code to implement these rules.
+That is, Marpa generates a parser tailored to your BNF.
 
-Let's take a look at a small declarative part of a language with two keywords: 'Deny', 'Allow'.
+This is declarative parsing.
 
-    Deny baduser
-    Allow admin
+Rules have an optional _action_ adverb, indicating where Marpa is to trigger your callback to handle intermediate results.
 
-The semantics (or meaning) of the language could be anything. Parsing the
-language can be really easy with Marpa.
+This provides an exceptionally clean interface between the rules and any code you need to handle specific cases.
 
-!include "examples/deny-allow.pl"
+You action subs can communicate with each other via a 'per-parse argument', which is passed to each action sub as
+its first parameter. This per-parse argument defaults to an empty hashref. For Marpa, it is read-only:
+It is reserved for the exclusive use of your code.
 
-    Trying to parse:
-    Deny baduser
-    Allow admin
+This Marpa-specific BNF is called SLIF DSL (Scanless Interface Domain-Specific Language).
 
-    Output:
-    $VAR1 = [
-        [
-            'Deny',
-            'baduser'
-        ],
-        [
-            'Allow',
-            'admin'
-        ]
-    ];
+* Marpa lexes the token stream
 
-The output shows that Marpa parsed two rules. The first rule with the
-'Deny' keyword and the second with the 'Allow' keyword. It seems that the
-keywords could interfere with the usernames. The `cmd_type`s are a subset of
-the usernames.
+This means you do not have to provide a separate lexer.
 
-Let's see what happens when we change the first username from baduser to Allow.
-Can Marpa see the difference between keywords and usernames?
+In special cases you can of course take over the lexing yourself.
 
-    Output:
-    $VAR1 = [
-        [
-            'Deny',
-            'Allow'
-        ],
-        [
-            'Allow',
-            'admin'
-        ]
-    ];
+* Marpa is extensively documented
 
-It doesn't matter that the first username matches a `cmd_type`. Marpa knows
-that the word 'Allow' could also be a username.
+[Start here](https://metacpan.org/release/Marpa-R2).
 
-Now let's see what happens when we use an input that doesn't match by switching
-around the username and the keyword. A keyword could be a username, but it
-can't be the other way around.
+And, the author has a [Marpa-oriented blog](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/).
 
-I change the input to:
+* Marpa can pause parsing at any place in the token stream, hand control over to you, then resume parsing at any place in the input stream
 
-    baduser Deny
-    admin Allow
+This is procedural parsing.
 
-When we run the examples we get the following output:
+Consequently, you can freely switch back and forth between declarative and procedural parsing.
 
-    Error in SLIF G1 read: No lexemes accepted at position 0
-    * String before error: baduser
-    * The error  was at line 1, column 8, and at character 0x0020 (non-graphic character), ...
-    * here:  Deny\nadmin Allow\n
-    Marpa::R2 exception at examples/deny-allow.pl line 33.
+Rules have an optional _pause_ adverb, indicating where Marpa is to return to your calling code, until such time as you
+call resume(). This is not the same as the callback trigger mechanism mentioned above.
 
-Marpa tries to point to the error as best as it can. Marpa starts with the
-problem: `No lexemes accepted at position 0`. This is Marpa's way of telling us
-that Marpa couldn't find a way to match `baduser` to one of the expected
-lexemes, `Deny` or `Allow`.
+During the pause, a set of methods allows you to interrogate Marpa about the current state of the parse.
 
-### More syntax
+It also means you can parse the next part of the token stream yourself, and tell Marpa to skip what you've handled.
 
-Now let's add a way to specify groups of users. The syntax could look like this.
+* Error reporting can provide the precise location of an error
 
-    admins = admin root
-    Deny baduser
-    Allow @admins
+This means the string just preceeding and just following the error can be retrieved, as well as a list of the tokens
+Marpa was expecting to see at that point.
 
-The first line specifies a list of admin users. The second line stays the same
-and the third line contains a reference to the `admins` list of users. The `@`
-operators makes it a reference.
+Even better, Marpa can tell you which rule(s) it was evaluating.
 
-We start by changing the input in the file. We run the code and find that it
-doesn't parse. That's what we expected.
+* Marpa allows you to fabricate input, using its knowledge of what was expected when it errored
 
-Now we need to add a rule for parsing the `admins = ...` line. In this case
-`admins` is similar to a username so let's use that.
+This is called [Ruby Slippers parsing](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html).
 
-    user_list  ::= username '=' username username
+* Rules can have an _event_ adverb
 
-This line should work. We add it in the grammar. Let's add it to the
-`rule` rule as an alternative. We use the `|` (or) operator.
+Rules can share events via their (event) name.
 
-    rule    ::= cmd_type username
-              | user_list
+Events can be activated and deactivated.
 
-When we run this code we get the following:
+The current status of each event can be interrogated by your code during a pause.
 
-    Lexing failed at unacceptable character 0x0040 '@'
-    Marpa::R2 exception at examples/deny-allow2.pl line 37.
+* Marpa has built-in tracing facilities
 
-Marpa doesn't like the '@' character in the third line. Let's add that.
-We add another line to `rule`. The reference is like a username.
+* Marpa has a 'thin' interface, for direct access to libmarpa
 
-!include "examples/deny-allow2.pl"
+* Marpa prunes all nulled subtrees back to their topmost nulled node
 
-When we run this code, the parse succeeds, but the result is not completely right.
+In Marpa parses, rules and symbols can be nulled. In other words they can derive the zero-length, or null, string.
 
-    [
-        'Allow',
-        '@',
-        'admins'
-    ]
+* Further, you can short-circuit evaluation during any _action_ sub
 
-The `@` and `admins` is parsed in two parts. We like the reference to be a
-single thing. Another problem with this version is that there can be spaces
-between the '@' and the name after it. This is not what we mean. The '@' and
-the name should always be part of the same lexeme. We change this by making a
-lexical rule for the `list_ref`.
+See 'Bailing out of parse evaluation' in the docs for the Marpa::R2::Semantics package.
 
-**When two tokens should never be separated, make them part of the same lexical rule.**
+Recall from [Chapter 1](chapter1.html), Marpa has 3 phases: Grammar pre-processing; Recognition; and Evaluation.
 
-!include "examples/deny-allow3.pl"
+* Marpa changes the way we think about parsing
 
-Now let's run `deny-allow3.pl`.
+This automatically leads us to greatly expand what problems now fit the definition of 'parseable'.
 
-    Symbol <username> is a lexeme in G1, but not in G0.
-      This may be because <username> was used on a RHS in G0.
-      A lexeme cannot be used on the RHS of a G0 rule.
-    Marpa::R2 exception at examples/deny-allow3.pl line 6.
-
-This gives us a look into the inner workings of Marpa. This error message says
-that we can't use a lexeme in both the structural rules (G1) and lexical rules
-(G0). We need to create two lexical rules: one for `rule` and `user_list` and
-one for `list_ref`.
-
-!include "examples/deny-allow4.pl"
-
-With these changes we can parse the input without problems. The output shows
-what we expected.
-
-### Multiple users
-
-Even though the code works, it could be that you saw a problem with this. Ask
-yourself what would happen if you specify more or less than two users on the
-right side of a `user_list`? Try it.
-
-The parser doesn't know what to do with the extra user in the list.
-Let's change `user_list` to allow multiple users.
-
-!include "examples/deny-allow5.pl"
-
-This change now allows us to specify multiple users in a user_list. The change
-that allows us to specify multiple users on an `Allow` or `Deny` line is
-featured in Exercise 1.1.
-
-With that change this language allows us to easily specify users that are
-allowed or denied access to a particular thing. The design of the language
-leaves out the specification of that particular thing to keep the design simple
-and general.
-
-### Exercise
-
-1. **Multiple users** &mdash; Change the grammar to allow multiple users on the
-`Allow` or `Deny` line. For example:
-
-        Allow root admin
-        Deny baduser cracker
-
-2. **All users** &mdash; Add a rule that allows you to specify `all` or
-'everybody' as a rule that denies or allows everyone.
-
-3. **Implementation** &mdash; Implement a class `Authorization` with a method
-`CanAccess($username)` that return true if a user is allowed access and false
-if the user is denied access. The contructor of the class takes a source string
-in the language that we specified above. The rules that the parser creates
-should be checked in sequence.
+* Marpa has many other advantages, but we have to stop somewhere
 
 !include "guide/menu.inc"

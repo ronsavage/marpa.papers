@@ -10,7 +10,7 @@ Please follow the following procedure when contributing.
 1. Fork the [marpa-guide](https://github.com/marpa-guide/marpa-guide) on GitHub,
   with the Fork button
 2. Clone the repository to your computer
-3. Create a branch in which you make your patch 
+3. Create a branch in which you make your patch
     `git checkout -b <branchname>`
 4. Make your changes, commit and push the branch
     1. edit, edit, edit
@@ -28,5 +28,4 @@ When you submit text to which you hold the copyright, you agree to license it un
 * Creative Commons Attribution-ShareAlike 3.0 Unported License (“CC BY-SA”), and
 
 * GNU Free Documentation License (“GFDL”) (unversioned, with no invariant
-  sections, front-cover texts, or back-cover texts). 
-
+  sections, front-cover texts, or back-cover texts).

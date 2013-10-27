@@ -1,4 +1,4 @@
-Chapter 5 - Advanced Usage
+Chapter 4 - Advanced Usage
 ==========================
 
 !include "guide/menu.inc"
