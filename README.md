@@ -1,7 +1,9 @@
-marpa-guide
-===========
+Marpa Papers
+============
 
-Guide to Marpa. Visit the web version at [marpa-guide.github.io](http://marpa-guide.github.io)
+Various documents pertaining to Marpa (Introduction, FAQ, etc).
+
+Visit the web version at [the Marpa Papers](https://github.com/ronsavage/marpa.papers)
 
 What is Marpa
 -------------
@@ -16,7 +18,7 @@ Contributing
 We appreciate any contributions to this guide. See the [contribution guide][contrib] for
 more information.
 
-[contrib]: http://ronsavage/marpa.papers/contribution.html
+[contrib]: https://github.com/ronsavage/marpa.papers/contribution.html
 
 When you submit text to which you hold the copyright, you agree to license it under:
 

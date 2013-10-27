@@ -7,7 +7,7 @@ Your contributions to this Guide are greatly appreciated.
 
 Please follow the following procedure when contributing.
 
-1. Fork the [marpa-guide](https://github.com/marpa-guide/marpa-guide) on GitHub,
+1. Fork [the Marpa Papers](https://github.com/ronsavage/marpa.papers) on GitHub,
   with the Fork button
 2. Clone the repository to your computer
 3. Create a branch in which you make your patch
