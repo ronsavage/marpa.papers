@@ -1,6 +1,6 @@
 
-The Marpa Guide
-===============
+The Marpa Papers
+================
 
 Table of contents
 -----------------
