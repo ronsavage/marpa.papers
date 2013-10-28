@@ -202,10 +202,27 @@ definition to consist of a node statement followed by a graph definition, which 
 definitions to follow one another. And the last rule allows the input stream to separate them with commas as
 well as the usual spaces.</p>
 
+<h2>How do I find out where I am within the input stream?</h2>
+
+<p>In the docs for Marpa::R2::Scanless::R, see the line_column() method.</p>
+
+<h2>How do I find out which rule applies at some point in the input stream?</h2>
+
+<p>In the docs for Marpa::R2::Semantics, the section titled 'Action context' shows how to access internal variables in
+Marpa which do what you want.</p>
+
+<h2>Wat is the meaning of the line number in a Marpa error message?</h2>
+
+<p>It is the line number within the BNF of the rule being processed.</p>
+
+<p>Note: If your grammar uses \r, that will affect the line count.</p>
+
+<p>More specifically, in the docs for Marpa::R2::Scanless::R, under the line_column() method, a range of special characters
+are listed.</p>
+
 <h2>How do I associate an action class with my grammar?</h2>
 
-<p>The synopsis in <a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a> shows one way. See
-'bless_package'.</p>
+<p>The synopsis in Marpa::R2::Semantics shows one way. See 'bless_package'.</p>
 
 <p>Another way is to note that the Scanless interface recognizer accepts a 'semantics_package' argument.</p>
 
@@ -277,6 +294,11 @@ so it passes an unblessed hash into each action sub, as the per-parse (1st) para
 
 <p>Later, when I use $self -> action to access data with my instance, I get the data generated in the calls by Marpa
 to my action subs.</p>
+
+<h2>How do I implement disambiguation logic?</h2>
+
+<p>In the docs for Marpa::R2::Semantics, the section titled 'Bailing out of parse evaluation' discusses how to short-circuit
+semantic analysis.</p>
 
 <p><a href="index.html">Index</a></p>
         </div>

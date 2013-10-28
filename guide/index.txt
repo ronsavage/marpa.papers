@@ -1,15 +1,12 @@
-
 The Marpa Papers
 ================
 
 Table of contents
 -----------------
-
 !include "guide/toc.inc"
 
 Contributing
 ------------
-
 We appreciate any contributions to this guide. See the [contribution guide][contrib] for
 more information.
 
@@ -24,7 +21,6 @@ When you submit text to which you hold the copyright, you agree to license it un
 
 Copyright / License
 -------------------
-
 This guide is copyright (c) 2013 Ron Savage and Contributors.
 
 It is licensed under both

@@ -5,7 +5,6 @@ Chapter 1 - Getting Started
 
 What is Marpa?
 --------------
-
 Marpa is a library written in C, with a Perl wrapper. It is dedicated to [parsing](https://en.wikipedia.org/wiki/Parsing).
 That is, people who wish to write parsers incorporate Marpa into their programs.
 
@@ -54,7 +53,6 @@ Deciding that work on the grammar is finished is equivalent to saying:
 
 Constructing a mental picture of lexing and parsing
 ---------------------------------------------------
-
 With the advent of Marpa's SLIF, we need to feel comfortable with both Marpa's approach and the fact that, classically,
 lexing and parsing were often such visibly distinct phases, perhaps even requiring 2 programs.
 
@@ -85,7 +83,6 @@ your own lexing.
 
 Constructing a visual picture of lexing and parsing
 ---------------------------------------------------
-
 The previous section is more of a descriptive explanation of Marpa's internal process. It's reasonable to ask:
 Is there another way to view this?
 
@@ -183,7 +180,6 @@ This tree (for the whole grammar) is shipped as share/stringparser.cooked.tree i
 
 Where does a grammar come from?
 -------------------------------
-
 The simplest way is to copy a suitable grammar, but that's not possible, we must write it ourselves.
 
 And this leads to developing a set of test files, whose purpose is to test the grammar, rule by rule.
@@ -206,7 +202,6 @@ Marpa's docs for this SLIF-DSL [are here](https://metacpan.org/module/Marpa::R2:
 
 Some of Marpa's features
 ------------------------
-
 * Is written in C for speed.
 
 * Can precisely identify the location (within the input stream) of syntax errors.
@@ -264,9 +259,7 @@ fully-functional, but are excluded from this list simply because they use the NA
 
 Getting the code for Marpa
 --------------------------
-
-Marpa is a Perl library. We will use
-[Marpa::R2](http://metacpan.org/release/Marpa-R2) for the examples in this guide.
+Marpa is a Perl library. We will use [Marpa::R2](http://metacpan.org/release/Marpa-R2) for the examples in this guide.
 
 If you have Perl already installed you can install Marpa with `cpan` or `cpanm`.
 

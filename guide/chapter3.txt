@@ -5,7 +5,6 @@ Chapter 3 - FAQ
 
 What is the meaning of G0 and G1?
 ---------------------------------
-
 G0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
 syntax of the tokens, but not the syntax of how these tokens can be combined.
 
@@ -19,7 +18,6 @@ briefly, in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2-Semanti
 
 How do I parse numbers?
 -----------------------
-
 Chapter 2 discusses this issue at length. And if you fork the project on github, you'll find the directory
 examples/ contains about a dozen sample programs.
 
@@ -29,7 +27,6 @@ in the scripts/ directory. The last-named script includes grammars for binary, o
 
 How do I represent choice in the grammar?
 -----------------------------------------
-
 Briefly, use '|'. Sample code from the above named module (data/d.bnf):
 
 	coordinate  ::= float      action => float
@@ -42,7 +39,6 @@ See also the next item.
 
 Is there any other way of representing choice?
 ----------------------------------------------
-
 Sure. Consider these G0 rules (also from data/d.bnf):
 
 	sign_maybe  ~ [+-]
@@ -74,7 +70,6 @@ This is saying:
 
 What does it mean to hide (mask) tokens?
 -----------------------------------------
-
 It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
 for [Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2-Scanless-DSL).
 
@@ -113,7 +108,6 @@ Hence, from the end-user's viewpoint, the comma is defined - at least in this pa
 
 What's the difference between '|' and '||' in grammar definitions?
 ------------------------------------------------------------------
-
 '|' expresses a simple alternative, while '||' separates alternatives at different levels of precedence. For example:
 
 	E ::=    E '*' E
@@ -143,7 +137,6 @@ See the next item.
 
 Why does using '+' or '*' in a rule only work sometimes?
 --------------------------------------------------------
-
 I assume you're referring to cases like this:
 
 Case 1 (fails):
@@ -188,11 +181,27 @@ So we've managed to write the grammar using indirect recursion, thus allowing an
 definitions to follow one another. And the last rule allows the input stream to separate them with commas as
 well as the usual spaces.
 
+How do I find out where I am within the input stream?
+-----------------------------------------------------
+In the docs for Marpa::R2::Scanless::R, see the line_column() method.
+
+How do I find out which rule applies at some point in the input stream?
+-----------------------------------------------------------------------
+In the docs for Marpa::R2::Semantics, the section titled 'Action context' shows how to access internal variables in
+Marpa which do what you want.
+
+Wat is the meaning of the line number in a Marpa error message?
+---------------------------------------------------------------
+It is the line number within the BNF of the rule being processed.
+
+Note: If your grammar uses \r, that will affect the line count.
+
+More specifically, in the docs for Marpa::R2::Scanless::R, under the line_column() method, a range of special characters
+are listed.
+
 How do I associate an action class with my grammar?
 ---------------------------------------------------
-
-The synopsis in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2-Semantics) shows one way. See
-'bless_package'.
+The synopsis in Marpa::R2::Semantics shows one way. See 'bless_package'.
 
 Another way is to note that the Scanless interface recognizer accepts a 'semantics_package' argument.
 
@@ -252,5 +261,10 @@ along with the initialization of $self -> recce(...) above.
 
 Later, when I use $self -> action to access data with my instance, I get the data generated in the calls by Marpa
 to my action subs.
+
+How do I implement disambiguation logic?
+----------------------------------------
+In the docs for Marpa::R2::Semantics, the section titled 'Bailing out of parse evaluation' discusses how to short-circuit
+semantic analysis.
 
 !include "guide/menu.inc"
