@@ -236,25 +236,31 @@ Sample Code
 -----------
 A number of Perl modules use Marpa::R2, and can be freely downloaded for inspection. In alphabetical order:
 
-* Graph::Easy::Marpa.
+* [Graph::Easy::Marpa](https://metacpan.org/release/Graph-Easy-Marpa)
 
-* MarpaX::Demo::JSONParser.
+* [MarpaX::Demo::JSONParser](https://metacpan.org/release/MarpaX-Demo-JSONParser)
 
-* MarpaX::Demo::StringParser.
+* [MarpaX::Demo::StringParser](https://metacpan.org/release/MarpaX-Demo-StringParser)
 
-* MarpaX::Grammar::GraphViz2.
+* [MarpaX::Grammar::GraphViz2](https://metacpan.org/release/MarpaX-Grammar-GraphViz2)
 
-* MarpaX::Grammar::Parser.
+* [MarpaX::Grammar::Parser](https://metacpan.org/release/MarpaX-Grammar-Parser)
 
-* MarpaX::Languages::C::AST.
+* [MarpaX::Languages::C::AST](https://metacpan.org/release/MarpaX-Languages-C-AST)
 
-* MarpaX::Repa.
+* [MarpaX::Languages::ECMAScript::AST](https://metacpan.org/release/MarpaX-Languages-ECMAScript-AST)
 
-* MarpaX::xPathLike.
+* [MarpaX::Languages::SVG::Parser](https://metacpan.org/release/MarpaX-Languages-SVG-Parser)
+
+* [MarpaX::Repa](https://metacpan.org/release/MarpaX-Repa)
+
+* [MarpaX::xPathLike](https://metacpan.org/release/MarpaX-xPathLike)
 
 Search [MetaCPAN](https://metacpan.org) for more.
 
 Note: Ignore any modules using the obsolete (NAIF) interface. That interface was provided by the obsolete Marpa::XS.
+This includes [GraphViz2::Marpa](https://metacpan.org/release/GraphViz2-Marpa). Such modules are of course still
+fully-functional, but are excluded from this list simply because they use the NAIF.
 
 Getting the code for Marpa
 --------------------------
@@ -277,6 +283,8 @@ that end in '.pl' can be executed using `perl`.
 
 References
 ----------
+* [Peter Stuifzand's Marpa Guide](http://marpa-guide.github.io/)
+
 * [Marpa's homepage](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/)
 
 * [BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
