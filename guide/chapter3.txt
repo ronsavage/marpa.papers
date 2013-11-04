@@ -18,12 +18,13 @@ briefly, in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2). In bo
 
 How do I parse numbers?
 -----------------------
-Chapter 2 discusses this issue at length. And if you fork the project on github, you'll find the directory
-examples/ contains about a dozen sample programs.
+Chapter 2 of [Peter Stuifzand's document](http://marpa-guide.github.io/) discusses this issue at length
+And if you fork that project on github, you'll find the directory examples/ contains about a dozen sample programs.
 
 Alternately, download [MarpaX::Languages::SVG::Parser](https://metacpan.org/release/MarpaX-Languages-SVG-Parser),
-which contains similar logic (in data/*.bnf). Further, the distro includes sample code (float.pl and number.pl)
-in the scripts/ directory. The last-named script includes grammars for binary, octal and hex numbers.
+which contains similar logic (in data/*.bnf). Further, this latter distro includes sample code (float.pl and number.pl)
+in the scripts/ directory. The last-named script includes grammars for binary, octal and hex numbers which I did
+not need in the SVG parser.
 
 How do I represent choice in the grammar?
 -----------------------------------------
@@ -32,10 +33,9 @@ Briefly, use '|'. Sample code from the above named module (data/d.bnf):
 	coordinate  ::= float      action => float
 	                | integer  action => integer
 
-Also note that '||' is available to control the relative priorities of the alternatives. This issue is expanded
-in a later item in this FAQ.
+Also note that '||' is available to control the relative priorities of the alternatives.
 
-See also the next item.
+This issue is expanded upon in the next 2 items in this FAQ.
 
 Is there any other way of representing choice?
 ----------------------------------------------
@@ -67,6 +67,31 @@ This is saying:
 * The sign is optional before a digit (the first alternative for 'float')
 
 * And so on
+
+What's the difference between '|' and '||' in grammar definitions?
+------------------------------------------------------------------
+'|' expresses a simple alternative, while '||' separates alternatives at different levels of precedence. For example:
+
+	E ::=    E '*' E
+	      |  E '/' E
+	      || E '+' E
+	      |  E '-' E
+
+This describes syntax for a simple 4-operation calculator, where multiplication and division take precedence over
+addition and subtraction.
+
+This construct forces alternatives before the '||' to have higher precedence than the alternatives after that token.
+
+Each of the alternatives separated by '|' are at the same precedence.
+
+In Mark Dominus's 'Higher-Order Perl' book, he describes how he handles precedence in his recursive descent parsers
+for a similar calculator, beginning on p. 394. This is a good description of how the same situation would be handled
+with pre-Marpa techniques.
+
+If precedence is not an issue for you, just use single bar alternation ('|').
+
+Note also that Marpa supports a 'priority' adverb, discussed in the
+[Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2) docs mentioned above.
 
 What does it mean to hide (mask) tokens?
 -----------------------------------------
@@ -106,32 +131,7 @@ as valid:
 
 Hence, from the end-user's viewpoint, the comma is defined - at least in this particular grammar - to be optional.
 
-What's the difference between '|' and '||' in grammar definitions?
-------------------------------------------------------------------
-'|' expresses a simple alternative, while '||' separates alternatives at different levels of precedence. For example:
-
-	E ::=    E '*' E
-	      |  E '/' E
-	      || E '+' E
-	      |  E '-' E
-
-This describes syntax for a simple 4-operation calculator, where multiplication and division take precedence over
-addition and subtraction.
-
-This construct forces alternatives before the '||' to have higher precedence than the alternatives after that token.
-
-Each of the alternatives separated by '|' are at the same precedence.
-
-In Mark Dominus's 'Higher-Order Perl' book, he describes how he handles precedence in his recursive descent parsers
-for a similar calculator, beginning on p. 394. This is a good description of how the same situation would be handled
-with pre-Marpa techniques.
-
-If precedence is not an issue for you, just use single bar alternation ('|').
-
-Note also that Marpa supports a 'priority' adverb, discussed in the
-[Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2) docs mentioned above.
-
-How to I implement recursion in a grammar?
+How do I implement recursion in a grammar?
 ------------------------------------------
 See the next item.
 
@@ -173,7 +173,7 @@ So we must re-write rule 1:
 
 Now the rule 'node_definition ::= node_statement' allows a node definition to consist of a single node statement.
 
-And the alternative - via the '|' - 'node_definition ::= node_statement graph_definition' allows a node
+And the alternative (via the '|') 'node_definition ::= node_statement graph_definition' allows a node
 definition to consist of a node statement followed by a graph definition, which just happens to include the line
 'graph_definition ::= node_definition'!
 
@@ -183,10 +183,10 @@ well as the usual spaces.
 
 How do I find out where I am within the input stream?
 -----------------------------------------------------
-In the docs for Marpa::R2::Scanless::R, see the line_column() method.
+In the docs for [Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2), see the line_column() method.
 
-How do I find out which rule applies at some point in the input stream?
------------------------------------------------------------------------
+How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
+---------------------------------------------------------------------------------------------
 In the docs for Marpa::R2::Semantics, the section titled 'Action context' shows how to access internal variables in
 Marpa which do what you want.
 
@@ -196,8 +196,8 @@ It is the line number within the BNF of the rule being processed.
 
 Note: If your grammar uses \r, that will affect the line count.
 
-More specifically, in the docs for Marpa::R2::Scanless::R, under the line_column() method, a range of special characters
-are listed.
+More specifically, in the docs for [Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2), under the
+line_column() method, various special characters are listed, some of which may affect this line count.
 
 How do I implement disambiguation logic?
 ----------------------------------------
@@ -209,10 +209,10 @@ How do I associate an action class with my grammar?
 
 Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.
 
-The synopsis in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2) shows one way.
+The synopsis in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2) shows one way to use action classes.
 See 'bless_package'.
 
-Another way is to note that the Scanless interface recognizer accepts a 'semantics_package' argument. See
+Another way is to note that the Scanless recognizer's constructor accepts a 'semantics_package' argument. See
 [Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2).
 
 Here's how I declare a recognizer in one package:
@@ -231,15 +231,15 @@ Now actions referenced in the grammar, as in:
 	coordinate  ::= float      action => float
 	                | integer  action => integer
 
-must be declared as functions in the named semantics package, and that's where Marpa looks for them.
+must be declared as functions in the named semantics package, because that's where Marpa looks for them.
 
-From an OO point of view though, there is still a problem. After reading the 'The per-parse argument' and
+From an OO point of view though, there is still a problem. After reading 'The per-parse argument' and
 'The per-parse constructor' sections of the semantics document, you might think:
 
 	Marpa calls the constructor of the semantics package (given it has one).
 	That means Marpa has an instance of that package.
 	That should mean I can get access to that instance.
-	So, I can write code in the main-line to communicate between Marpa and this instance.
+	So, my program can communicate between the main-line code, Marpa and this instance.
 
 This immediately raises some questions:
 
@@ -258,7 +258,7 @@ next FAQ item: 'Declaring an Action Class'.
 The problem here is that with [Moo](https://metacpan.org/release/Moo), the new() constructor is generated automatically.
 My tests show such a instance is not initialized by Marpa. That is, Marpa cannot find new(), and passes an
 unblessed hash into each action sub, as the per-parse (1st) parameter. In short, Moo patches Perl's symbol table, and
-Marpa accesses it too, but they don't co-operate as you might hope.
+Marpa accesses the symbol table	 too, but they don't co-operate as you might hope.
 
 * If I create an instance of the action class, can I pass it to Marpa?
 
@@ -281,11 +281,13 @@ I don't know, but it 'just works' (with Moo at least). I used to use this code:
 
 along with the initialization of $self -> recce(...) above.
 
-Later, when I used $self -> action to access data within my instance, I'd get the data generated in the calls by Marpa
+Actually, it can work if both instances use global variables within the class. So...
+
+Later, when I used $self -> action to access data within my instance, I got the data generated in the calls by Marpa
 to my action subs. So, it works.
 
-However, it seems to work accidently, and I feel deeply uneasy about that. And, worse, it could simply stop working
-when any of Perl, Moo or Marpa change internally.
+However, it seems like it works accidently, and I feel deeply uneasy about that. And, worse, it could suddenly stop
+working when any of Perl, Moo or Marpa change internally.
 
 * Well, can I use global variables within the action class to gather data generated by action subs?
 
