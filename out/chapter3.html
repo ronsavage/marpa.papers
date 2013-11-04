@@ -220,6 +220,11 @@ Marpa which do what you want.</p>
 <p>More specifically, in the docs for Marpa::R2::Scanless::R, under the line_column() method, a range of special characters
 are listed.</p>
 
+<h2>How do I implement disambiguation logic?</h2>
+
+<p>In the docs for <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a>, the section titled
+'Bailing out of parse evaluation' discusses how to short-circuit semantic analysis.</p>
+
 <h2>How do I associate an action class with my grammar?</h2>
 
 <p>Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.</p>
@@ -331,14 +336,29 @@ next item in this FAQ.</p>
 <p>The previous item in this FAQ discussed at length various issues regarding how to cleanly generate data within action
 subs, and how to pass that data back to the main-line code which called Marpa.</p>
 
-<p>Here I explain the solution I've adopted. Briefly, each action sub returns a <em>hashref</em> to Marpa (since Marpa is the
-one calling the subs), and after a successful parse, the result of the parse (returned by the value() method of the
-recognizer class) is processed to recover those hashrefs.</p>
+<p>Here I explain the standard solution. Briefly:</p>
+
+<ul>
+<li>Each action sub returns a <em>hashref</em> to Marpa</li>
+</ul>
+
+<p>This is because Marpa is the one calling the subs and gathering the results. And the hashrefs of course suit my code,
+whereas you may prefer to use a different data structure.</p>
+
+<ul>
+<li>After a successful parse, the result of the parse is processed to recover those hashrefs</li>
+</ul>
+
+<p>This result is returned by the value() method of the recognizer class.
+See <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::R</a>.</p>
 
 <p>There is one basic problem to solve along the way: The data structure Marpa makes available as the result of the parse
 can be a deeply nested set of <em>arrayrefs</em>, depending on how deeply within the grammar the action sub is named.</p>
 
-<p>Conside this fragment of the SVG grammar from ():</p>
+<p>So, we have to unwrap the <em>arrayrefs</em> to recover the <em>hashrefs</em>.</p>
+
+<p>Conside this fragment of the SVG grammar from
+<a href="https://metacpan.org/release/MarpaX-Languages-SVG-Parser">MarpaX::Languages::SVG::Parser</a>:</p>
 
 <pre class="prettyprint linenums"><code>curve_to            ::= Cc curve_to_arguments  action =&gt; command
 
@@ -346,19 +366,163 @@ curve_to_arguments  ::= coordinate_triple
                         | coordinate_triple curve_to_arguments
 ...
 coordinate_triple   ::= coordinate coordinate coordinate
-
-coordinate_pair     ::= coordinate coordinate
-
-coordinate_list     ::= coordinate+
-
-coordinate          ::= float      action =&gt; float
-                        | integer  action =&gt; integer
+...
+coordinate          ::= float  action =&gt; float
+...
+Cc                  ~ [Cc]
 </code></pre>
 
-<h2>How do I implement disambiguation logic?</h2>
+<p>Thus, given a curve - say the string 'C 10,11 20,21 30,31' - Marpa will call both <em>float()</em> and <em>command()</em>.</p>
 
-<p>In the docs for Marpa::R2::Semantics, the section titled 'Bailing out of parse evaluation' discusses how to short-circuit
-semantic analysis.</p>
+<p>What happens in practice? Firstly, the code:</p>
+
+<pre class="prettyprint linenums"><code>sub command
+{
+    my($hashref, $t1, @t2) = @_;
+    $param_count = 0;
+
+    return
+    {
+        count =&gt; ++$item_count,
+        name  =&gt; $t1,
+        type  =&gt; 'command',
+        value =&gt; [@t2],
+    };
+
+} # End of command.
+
+# -----------------
+
+sub float
+{
+    my($hashref, $t1) = @_;
+
+    return
+    {
+        count =&gt; ++$item_count,
+        name  =&gt; ++$param_count,
+        type  =&gt; 'float',
+        value =&gt; $t1,
+    };
+
+} # End of float.
+</code></pre>
+
+<p>Things to note:</p>
+
+<ul>
+<li>A global variable counts output hashrefs</li>
+</ul>
+
+<p>Clearly this has a problem with the global variable issue just discussed, but I'm ignoring that here. And anyway,
+we can easily renumber the hashrefs later.</p>
+
+<ul>
+<li>A global variable counts parameters per command</li>
+</ul>
+
+<p>This has the same problem, but the docs for the module do say the value is just a convenience for the caller.
+Nevertheless, it's vital to keep such issues in mind.</p>
+
+<ul>
+<li><em>float()</em> is called for every number</li>
+</ul>
+
+<p>This includes the fact that the grammar says there are at least 3 floats per <em>curve</em> command.</p>
+
+<p>This is not a problem, just a fact. We handle it with a Perl array, as explained next.</p>
+
+<ul>
+<li><em>command()</em> is called at the end of the string</li>
+</ul>
+
+<p>Again, this is not a problem. On the contrary - it is an inescapable part of the solution!</p>
+
+<p>But it does mean that we need to be aware of what Marpa does with the results of calling <em>float()</em>, i.e. where
+are they, when Marpa calls <em>command()</em>.</p>
+
+<p>It is simple. The results of the 3+ (in this grammar) calls to <em>float()</em>, 3+ <em>hashrefs</em>, are passed as the trailing
+parameters in the call to   <em>command()</em>. That explains the @t2 parameter in the first line of <em>command()</em>.</p>
+
+<p>Likewise, we can say that since, in the grammar, nothing is subservient to <em>float</em>, then no action subs can possibly
+be called in the processing of a float. So, when <em>float()</em> is called, it <em>cannot have</em> any such trailing parameters.</p>
+
+<p>Where does this leave us? It means that the @t2 parameter to <em>command()</em> contains a set of 3+ floats packaged as
+<em>hahsrefs</em> inside an unknown number of <em>arrayrefs</em>.</p>
+
+<p>The same logic applies to the output of <em>command()</em> within the context of the output of parsing the whole input stream.</p>
+
+<p>Our final task then will be to recover the result of the parse and unravel and discard the <em>arrayrefs</em>. This will
+leave us with a set of <em>hashrefs</em>, which was the point of the exercise. I should repeat: This structure suits my
+purpose. Adapt as required.</p>
+
+<p>The remainder of the code:</p>
+
+<pre class="prettyprint linenums"><code>my($result) = $self -&gt; recce -&gt; value;
+
+die "Marpa's parse failed\n" if (! defined $result);
+
+# Unravel whatever Marpa gives us.
+
+for my $item (@{$self -&gt; decode_result($$result)})
+{
+    # If it's a command, unravel the 'value =&gt; [@t2]' component.
+
+    if ($$item{type} eq 'command')
+    {
+        $self -&gt; new_item($$item{type}, $$item{name}, '-');
+
+        for my $param (@{$self -&gt; decode_result($$item{value})})
+        {
+            $self -&gt; new_item($$param{type}, $$param{name}, $$param{value});
+        }
+    }
+    else
+    {
+        $self -&gt; new_item($$item{type}, $$item{name}, $$item{value});
+    }
+}
+</code></pre>
+
+<p>Lastly, the workhorse sub:</p>
+
+<pre class="prettyprint linenums"><code>sub decode_result
+{
+    my($self, $result) = @_;
+    my(@worklist) = $result;
+
+    my($obj);
+    my($ref_type);
+    my(@stack);
+
+    do
+    {
+        $obj      = shift @worklist;
+        $ref_type = ref $obj;
+
+        if ($ref_type eq 'ARRAY')
+        {
+            unshift @worklist, @$obj; # Unravel Marpa's handiwork.
+        }
+        elsif ($ref_type eq 'HASH')
+        {
+            push @stack, {%$obj}; # Build array of results.
+        }
+        else
+        {
+            die "Unsupported object type $ref_type\n" if ($ref_type);
+        }
+    } while (@worklist);
+
+    return [@stack]; # Go home.
+
+} # End of decode_result.
+</code></pre>
+
+<p>I must acknowledge the work done by the authors of <a href="https://metacpan.org/release/Data-Find">Data::Find</a>,
+<a href="https://metacpan.org/release/Data-Recursive-Encode">Data::Recursive::Encode</a> and
+<a href="https://metacpan.org/release/MarpaX-Languages-C-AST" title="In *::Util::Data::Find">MarpaX::Languages::C::AST</a>.
+They all use similar mechanisms for unravelling data structures.</p>
 
 <p><a href="index.html">Index</a></p>
         </div>
