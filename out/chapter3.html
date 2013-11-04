@@ -26,8 +26,8 @@ Legal statements are thus legal combinations of tokens.</p>
 
 <p>Also, G1 rules have a semantics, whereas G0 rules do not.</p>
 
-<p>G0 and G1 discussed in <a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a>, and, very
-briefly, in <a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a>. In both cases, search for 'G0'.</p>
+<p>G0 and G1 discussed in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a>, and, very
+briefly, in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a>. In both cases, search for 'G0'.</p>
 
 <h2>How do I parse numbers?</h2>
 
@@ -85,7 +85,7 @@ float       ~ sign_maybe digit_many E
 <h2>What does it mean to hide (mask) tokens?</h2>
 
 <p>It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
-for <a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a>.</p>
+for <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a>.</p>
 
 <p>Here is an example (from <a href="https://metacpan.org/release/Graph-Easy-Marpa-Parser">Graph::Easy::Marpa::Parser</a>):</p>
 
@@ -110,7 +110,7 @@ end_node         ~ ']'
 <p>It means the comma may appear in the input stream (in this context), but I am not interested in it. So, Marpa will not
 return this token to me when an action is called. It has become invisible to the semantics.</p>
 
-<p>Semantics are documented in <a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a>.</p>
+<p>Semantics are documented in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a>.</p>
 
 <p>Close study of the above grammar will show that another path is possible thru the grammar, in the case of
 2 nodes side-by-side (i.e. without a comma between them). Thus the grammar accepts both these input streams
@@ -146,7 +146,7 @@ with pre-Marpa techniques.</p>
 <p>If precedence is not an issue for you, just use single bar alternation ('|').</p>
 
 <p>Note also that Marpa supports a 'priority' adverb, discussed in the
-<a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a> docs mentioned above.</p>
+<a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a> docs mentioned above.</p>
 
 <h2>How to I implement recursion in a grammar?</h2>
 
@@ -175,7 +175,7 @@ with pre-Marpa techniques.</p>
 <p>Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
 alternative. Thus case 1 fails due to the combination of '+' and '|'.</p>
 
-<p>This is documented in <a href="https://metacpan.org/release/Marpa-R2-Scanless-DSL">Marpa::R2::Scanless::DSL</a>, under
+<p>This is documented in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a>, under
 'Quantified rules'.</p>
 
 <p>So we must re-write rule 1:</p>
@@ -211,7 +211,7 @@ well as the usual spaces.</p>
 <p>In the docs for Marpa::R2::Semantics, the section titled 'Action context' shows how to access internal variables in
 Marpa which do what you want.</p>
 
-<h2>Wat is the meaning of the line number in a Marpa error message?</h2>
+<h2>What is the meaning of the line number in a Marpa error message?</h2>
 
 <p>It is the line number within the BNF of the rule being processed.</p>
 
@@ -222,11 +222,15 @@ are listed.</p>
 
 <h2>How do I associate an action class with my grammar?</h2>
 
-<p>The synopsis in Marpa::R2::Semantics shows one way. See 'bless_package'.</p>
+<p>Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.</p>
 
-<p>Another way is to note that the Scanless interface recognizer accepts a 'semantics_package' argument.</p>
+<p>The synopsis in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a> shows one way.
+See 'bless_package'.</p>
 
-<p>Here's how I declare a recognizer:</p>
+<p>Another way is to note that the Scanless interface recognizer accepts a 'semantics_package' argument. See
+<a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::R</a>.</p>
+
+<p>Here's how I declare a recognizer in one package:</p>
 
 <pre class="prettyprint linenums"><code>$self -&gt; recce
 (
@@ -238,22 +242,21 @@ are listed.</p>
 );
 </code></pre>
 
-<p>So actions referenced in the grammar, as in:</p>
+<p>Now actions referenced in the grammar, as in:</p>
 
 <pre class="prettyprint linenums"><code>coordinate  ::= float      action =&gt; float
                 | integer  action =&gt; integer
 </code></pre>
 
-<p>are declared in the named package, and that's where Marpa looks for them.</p>
+<p>must be declared as functions in the named semantics package, and that's where Marpa looks for them.</p>
 
-<p>This is discussed both in <a href="https://metacpan.org/release/Marpa-R2-Scanless-R">Marpa::R2::Scanless::R</a>, and in
-<a href="https://metacpan.org/release/Marpa-R2-Semantics">Marpa::R2::Semantics</a>.</p>
-
-<p>From an OO point of view, there is still a problem. After reading the 'The per-parse argument' and
+<p>From an OO point of view though, there is still a problem. After reading the 'The per-parse argument' and
 'The per-parse constructor' sections of the semantics document, you might think:</p>
 
-<pre class="prettyprint linenums"><code>Marpa calls the constructor of the semantics package.
+<pre class="prettyprint linenums"><code>Marpa calls the constructor of the semantics package (given it has one).
 That means Marpa has an instance of that package.
+That should mean I can get access to that instance.
+So, I can write code in the main-line to communicate between Marpa and this instance.
 </code></pre>
 
 <p>This immediately raises some questions:</p>
@@ -262,27 +265,42 @@ That means Marpa has an instance of that package.
 <li>How do I access that instance?</li>
 </ul>
 
-<p>I don't know.</p>
+<p>Under Marpa::R2, you can't.</p>
 
 <ul>
-<li>If I use Moo to write this package, what happens?</li>
+<li>If I use Moo to write this action package, what happens?</li>
 </ul>
+
+<p>Presumably you want an instance of the action class to be passed by Marpa as the per-parse (1st) parameter to each
+action sub. That's certainly what I've always wanted to do. But...</p>
+
+<p>Don't do that. It works, but turns out to be inherently risky, so don't try it. Alternatives are discussed in the
+next FAQ item: 'Declaring an Action Class'.</p>
 
 <p>The problem here is that with <a href="https://metacpan.org/release/Moo">Moo</a>, the new() constructor is generated automatically.
-My tests show such a package is not initialized (by calling new() ) by Marpa. That is, Marpa cannot find new(), and
-so it passes an unblessed hash into each action sub, as the per-parse (1st) parameter.</p>
+My tests show such a instance is not initialized by Marpa. That is, Marpa cannot find new(), and passes an
+unblessed hash into each action sub, as the per-parse (1st) parameter. In short, Moo patches Perl's symbol table, and
+Marpa accesses it too, but they don't co-operate as you might hope.</p>
 
 <ul>
-<li>In the latter case, which instance is Marpa calling?</li>
+<li>If I create an instance of the action class, can I pass it to Marpa?</li>
 </ul>
 
-<p>I don't know.</p>
+<p>Under Marpa::R2, no, you can't.</p>
+
+<ul>
+<li>But which instance is Marpa using?</li>
+</ul>
+
+<p>It's own.</p>
 
 <ul>
 <li>If my action subs accumulate instance-level data, how can I retrieve such data?</li>
 </ul>
 
-<p>I don't know, but it 'just works'. I use this code:</p>
+<p>(This means, data generated when Marpa calls action subs within its own copy of this instance.)</p>
+
+<p>I don't know, but it 'just works' (with Moo at least). I used to use this code:</p>
 
 <pre class="prettyprint linenums"><code>$self -&gt; actions
 (
@@ -292,8 +310,50 @@ so it passes an unblessed hash into each action sub, as the per-parse (1st) para
 
 <p>along with the initialization of $self -> recce(...) above.</p>
 
-<p>Later, when I use $self -> action to access data with my instance, I get the data generated in the calls by Marpa
-to my action subs.</p>
+<p>Later, when I used $self -> action to access data within my instance, I'd get the data generated in the calls by Marpa
+to my action subs. So, it works.</p>
+
+<p>However, it seems to work accidently, and I feel deeply uneasy about that. And, worse, it could simply stop working
+when any of Perl, Moo or Marpa change internally.</p>
+
+<ul>
+<li>Well, can I use global variables within the action class to gather data generated by action subs?</li>
+</ul>
+
+<p>Yes, but if they are class-level variables, it means you can't run multiple scripts at the same which use that class.
+That's a classic problem with global data. The other problem of course is re-initializing the data before the second
+run of the same script, or before the first run of any other script. It's ok if you re-run Perl itself, via the
+command line say, when you run the next script. But in a persistent environment you won't be doing that. Hence, the
+next item in this FAQ.</p>
+
+<h2>Declaring an Action Class</h2>
+
+<p>The previous item in this FAQ discussed at length various issues regarding how to cleanly generate data within action
+subs, and how to pass that data back to the main-line code which called Marpa.</p>
+
+<p>Here I explain the solution I've adopted. Briefly, each action sub returns a <em>hashref</em> to Marpa (since Marpa is the
+one calling the subs), and after a successful parse, the result of the parse (returned by the value() method of the
+recognizer class) is processed to recover those hashrefs.</p>
+
+<p>There is one basic problem to solve along the way: The data structure Marpa makes available as the result of the parse
+can be a deeply nested set of <em>arrayrefs</em>, depending on how deeply within the grammar the action sub is named.</p>
+
+<p>Conside this fragment of the SVG grammar from ():</p>
+
+<pre class="prettyprint linenums"><code>curve_to            ::= Cc curve_to_arguments  action =&gt; command
+
+curve_to_arguments  ::= coordinate_triple
+                        | coordinate_triple curve_to_arguments
+...
+coordinate_triple   ::= coordinate coordinate coordinate
+
+coordinate_pair     ::= coordinate coordinate
+
+coordinate_list     ::= coordinate+
+
+coordinate          ::= float      action =&gt; float
+                        | integer  action =&gt; integer
+</code></pre>
 
 <h2>How do I implement disambiguation logic?</h2>
 
