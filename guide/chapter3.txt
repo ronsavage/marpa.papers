@@ -3,6 +3,8 @@ Chapter 3 - FAQ
 
 !include "guide/menu.inc"
 
+Note: The list of features in [Chapter 2 - Marpa's Advantages](chapter2.html) is also worth consulting.
+
 What is the meaning of G0 and G1?
 ---------------------------------
 G0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
@@ -18,7 +20,7 @@ briefly, in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2). In bo
 
 How do I parse numbers?
 -----------------------
-Chapter 2 of [Peter Stuifzand's document](http://marpa-guide.github.io/) discusses this issue at length
+Chapter 2 of [Peter Stuifzand's Marpa Guide](http://marpa-guide.github.io/) discusses this issue at length
 And if you fork that project on github, you'll find the directory examples/ contains about a dozen sample programs.
 
 Alternately, download [MarpaX::Languages::SVG::Parser](https://metacpan.org/release/MarpaX-Languages-SVG-Parser),
@@ -465,7 +467,7 @@ Lastly, the workhorse sub:
 			}
 		} while (@worklist);
 
-		return [@stack]; # Go home.
+		return [@stack]; # Return an arrayref of hashrefs.
 
 	} # End of decode_result.
 

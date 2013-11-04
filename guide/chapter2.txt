@@ -15,15 +15,13 @@ Of course, the heading means advantages over other methods of parsing.
 
 * Grammars can be ambiguous
 
+This means Marpa can tell you how many different ways there are of interpreting the token stream.
+
 * Marpa supports grammars having nullable symbols
 
 * Rules can be recursive
 
 Try that with a regexp!
-
-* Grammars can be ambiguous
-
-This means Marpa can tell you how many different ways there are of interpreting the token stream.
 
 * Your grammar can be described in an extended version of BNF
 

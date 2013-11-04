@@ -28,16 +28,17 @@ the given grammar.</p>
 Such a grammar specifies both what tokens are acceptable, and the order in which they may appear. Together,
 these determine the syntax of the language defined by the grammar.</p>
 
-<p>In practice, this means you express your grammar in a string, and Marpa treats that as a set of rules as to how
+<p>In practice, this means you store your grammar in a string, and Marpa treats that as a set of rules as to how
 you want Marpa to treat your input stream.</p>
 
 <p>Next, Marpa parses your input stream and tests each token it finds there against the grammar you provided.
-This includes determining if the token appears at an acceptable position within the grammr, and hence at an
-acceptable position within the input stream.</p>
+This includes determining both if the token matches any of the definitions of acceptable tokens as specified by the
+grammar, and whether or not the token appears at an acceptable position within the grammar, and hence at an acceptable
+position within the input stream.</p>
 
 <p>It is in fact doing exactly the same as you are doing reading this text.
 For us humans, the grammar (e.g. English) is pre-loaded in our minds, and the input stream is any text we are
-reading or hearing (for instance, text, music or noise).</p>
+reading or hearing (for instance: text, music or noise).</p>
 
 <p>We test the latter against the grammar, and declare that it either matches what we expect, or fails to match.</p>
 
@@ -64,6 +65,9 @@ until it Just Works. This tells us that the point of test data is to test the gr
 <li><p>Every grammatically correct input stream will result in Marpa returning some sort of valid result, and</p></li>
 <li><p>Every grammatically incorrect input stream will result in Marpa returning some sort of error result.</p></li>
 </ul>
+
+<p>Further, a grammar may be deliberately constructed such that some inputs match the grammar in more than one way.
+These grammars are called ambiguous. Marpa handles these cases easily.</p>
 
 <h2>Constructing a mental picture of lexing and parsing</h2>
 
@@ -296,7 +300,7 @@ that end in '.pl' can be executed using <code>perl</code>.</p>
     <div class="row footer">
         <div class="offset2 span8">
             <p>
-                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="float:left; margin-right:12px; border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Marpa Guide</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Peter Stuifzand and Contributors</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> and the <a rel="license" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3</a></p>
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="float:left; margin-right:12px; border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Marpa Papers</span> by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Ron Savage and Contributors</span> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a> and the <a rel="license" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.3</a></p>
         </div>
     </div>
 </div>

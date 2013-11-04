@@ -15,16 +15,17 @@ This means Marpa starts by parsing the grammar and storing it in RAM in some con
 Such a grammar specifies both what tokens are acceptable, and the order in which they may appear. Together,
 these determine the syntax of the language defined by the grammar.
 
-In practice, this means you express your grammar in a string, and Marpa treats that as a set of rules as to how
+In practice, this means you store your grammar in a string, and Marpa treats that as a set of rules as to how
 you want Marpa to treat your input stream.
 
 Next, Marpa parses your input stream and tests each token it finds there against the grammar you provided.
-This includes determining if the token appears at an acceptable position within the grammr, and hence at an
-acceptable position within the input stream.
+This includes determining both if the token matches any of the definitions of acceptable tokens as specified by the
+grammar, and whether or not the token appears at an acceptable position within the grammar, and hence at an acceptable
+position within the input stream.
 
 It is in fact doing exactly the same as you are doing reading this text.
 For us humans, the grammar (e.g. English) is pre-loaded in our minds, and the input stream is any text we are
-reading or hearing (for instance, text, music or noise).
+reading or hearing (for instance: text, music or noise).
 
 We test the latter against the grammar, and declare that it either matches what we expect, or fails to match.
 
@@ -50,6 +51,9 @@ Deciding that work on the grammar is finished is equivalent to saying:
 * Every grammatically correct input stream will result in Marpa returning some sort of valid result, and
 
 * Every grammatically incorrect input stream will result in Marpa returning some sort of error result.
+
+Further, a grammar may be deliberately constructed such that some inputs match the grammar in more than one way.
+These grammars are called ambiguous. Marpa handles these cases easily.
 
 Constructing a mental picture of lexing and parsing
 ---------------------------------------------------
