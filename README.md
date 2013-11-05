@@ -53,7 +53,7 @@ It is licensed under both
 The examples are copyright their respective authors and licensed under MIT/X11
 as follows:
 
-    Copyright (c) 2013 Ron Savage and Contributors
+    Copyright © 2013 Ron Savage and Contributors
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
