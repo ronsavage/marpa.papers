@@ -30,7 +30,7 @@ When you submit text to which you hold the copyright, you agree to license it un
 Copyright / License
 -------------------
 
-This guide is copyright (c) 2013 Ron Savage and Contributors.
+This guide is copyright © 2013 Ron Savage and Contributors.
 
 It is licensed under both
 
