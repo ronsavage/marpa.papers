@@ -16,8 +16,6 @@
 
 <p><a href="index.html">Index</a></p>
 
-<p>Note: The list of features in <a href="chapter2.html">Chapter 2 - Marpa's Advantages</a> is also worth consulting.</p>
-
 <h2>What is the meaning of G0 and G1?</h2>
 
 <p>G0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
@@ -28,8 +26,8 @@ Legal statements are thus legal combinations of tokens.</p>
 
 <p>Also, G1 rules have a semantics, whereas G0 rules do not.</p>
 
-<p>G0 and G1 discussed in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a>, and, very
-briefly, in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a>. In both cases, search for 'G0'.</p>
+<p>G0 and G1 discussed in <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>, and, very
+briefly, in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>. In both cases, search for 'G0'.</p>
 
 <h2>How do I parse numbers?</h2>
 
@@ -108,14 +106,14 @@ with pre-Marpa techniques.</p>
 <p>If precedence is not an issue for you, just use single bar alternation ('|').</p>
 
 <p>Note also that Marpa supports a 'priority' adverb, discussed in the
-<a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a> docs mentioned above.</p>
+<a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a> docs mentioned above.</p>
 
 <h2>What does it mean to hide (mask) tokens?</h2>
 
 <p>It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
-for <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a>.</p>
+for <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>.</p>
 
-<p>Here is an example (from <a href="https://metacpan.org/release/Graph-Easy-Marpa-Parser">Graph::Easy::Marpa::Parser</a>):</p>
+<p>Here is an example (from <a href="https://metacpan.org/module/Graph::Easy::Marpa::Parser">Graph::Easy::Marpa::Parser</a>):</p>
 
 <pre class="prettyprint linenums"><code>node_definition  ::= node_statement
                  | node_statement graph_definition
@@ -138,7 +136,7 @@ end_node         ~ ']'
 <p>It means the comma may appear in the input stream (in this context), but I am not interested in it. So, Marpa will not
 return this token to me when an action is called. It has become invisible to the semantics.</p>
 
-<p>Semantics are documented in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a>.</p>
+<p>Semantics are documented in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>.</p>
 
 <p>Close study of the above grammar will show that another path is possible thru the grammar, in the case of
 2 nodes side-by-side (i.e. without a comma between them). Thus the grammar accepts both these input streams
@@ -177,10 +175,10 @@ Stream 2: [node.a]  [node.b]
 <p>Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
 alternative. Thus case 1 fails due to the combination of '+' and '|'.</p>
 
-<p>This is documented in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::DSL</a>, under
+<p>This is documented in <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>, under
 'Quantified rules'.</p>
 
-<p>So we must re-write rule 1:</p>
+<p>So we must re-write rule 1 (with some context):</p>
 
 <pre class="prettyprint linenums"><code>graph_definition  ::= node_definition
                   | edge_definition
@@ -206,12 +204,13 @@ well as the usual spaces.</p>
 
 <h2>How do I find out where I am within the input stream?</h2>
 
-<p>In the docs for <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::R</a>, see the line_column() method.</p>
+<p>In the docs for <a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>, see the line_column()
+method.</p>
 
 <h2>How do I find out which rule applies at some point in the input stream (e.g. during a pause)?</h2>
 
-<p>In the docs for Marpa::R2::Semantics, the section titled 'Action context' shows how to access internal variables in
-Marpa which do what you want.</p>
+<p>In the docs for <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>, the section titled
+'Action context' shows how to access internal variables in Marpa which do what you want.</p>
 
 <h2>What is the meaning of the line number in a Marpa error message?</h2>
 
@@ -219,23 +218,23 @@ Marpa which do what you want.</p>
 
 <p>Note: If your grammar uses \r, that will affect the line count.</p>
 
-<p>More specifically, in the docs for <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::R</a>, under the
-line_column() method, various special characters are listed, some of which may affect this line count.</p>
+<p>Further, in the docs for <a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>,
+under the line_column() method, various special characters are listed, some of which may affect this line count.</p>
 
 <h2>How do I implement disambiguation logic?</h2>
 
-<p>In the docs for <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a>, the section titled
+<p>In the docs for <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>, the section titled
 'Bailing out of parse evaluation' discusses how to short-circuit semantic analysis.</p>
 
 <h2>How do I associate an action class with my grammar?</h2>
 
 <p>Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.</p>
 
-<p>The synopsis in <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Semantics</a> shows one way to use action classes.
-See 'bless_package'.</p>
+<p>The synopsis in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a> shows one way to use
+action classes. See 'bless_package'.</p>
 
 <p>Another way is to note that the Scanless recognizer's constructor accepts a 'semantics_package' argument. See
-<a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::R</a>.</p>
+<a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>.</p>
 
 <p>Here's how I declare a recognizer in one package:</p>
 
@@ -340,7 +339,8 @@ next item in this FAQ.</p>
 <p>The previous item in this FAQ discussed at length various issues regarding how to cleanly generate data within action
 subs, and how to pass that data back to the main-line code which called Marpa.</p>
 
-<p>Here I explain the standard solution. Briefly:</p>
+<p>Here I explain the standard solution as used in a module,
+<a href="https://metacpan.org/release/MarpaX-Languages-SVG-Parser">MarpaX::Languages::SVG::Parser</a>, on CPAN. Briefly:</p>
 
 <ul>
 <li>Each action sub returns a <em>hashref</em> to Marpa</li>
@@ -354,12 +354,12 @@ whereas you may prefer to use a different data structure.</p>
 </ul>
 
 <p>This result is returned by the value() method of the recognizer class.
-See <a href="https://metacpan.org/release/Marpa-R2">Marpa::R2::Scanless::R</a>.</p>
+See <a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>.</p>
 
 <p>There is one basic problem to solve along the way: The data structure Marpa makes available as the result of the parse
 can be a deeply nested set of <em>arrayrefs</em>, depending on how deeply within the grammar the action sub is named.</p>
 
-<p>So, we have to unwrap the <em>arrayrefs</em> to recover the <em>hashrefs</em>.</p>
+<p>So, we have to unravel the <em>arrayrefs</em> to recover the <em>hashrefs</em>.</p>
 
 <p>Conside this fragment of the SVG grammar from
 <a href="https://metacpan.org/release/MarpaX-Languages-SVG-Parser">MarpaX::Languages::SVG::Parser</a>:</p>
@@ -377,6 +377,8 @@ Cc                  ~ [Cc]
 </code></pre>
 
 <p>Thus, given a curve - say the string 'C 10,11 20,21 30,31' - Marpa will call both <em>float()</em> and <em>command()</em>.</p>
+
+<p>(Elsewhere the grammar says commas are to be discarded).</p>
 
 <p>What happens in practice? Firstly, the code:</p>
 
@@ -415,6 +417,12 @@ sub float
 <p>Things to note:</p>
 
 <ul>
+<li>We don't count the floats, to ensure there are 6, or 8, ...</li>
+</ul>
+
+<p>This is because the input stream is deemed to have been validatated as being SVG.</p>
+
+<ul>
 <li>A global variable counts output hashrefs</li>
 </ul>
 
@@ -432,7 +440,7 @@ Nevertheless, it's vital to keep such issues in mind.</p>
 <li><em>float()</em> is called for every number</li>
 </ul>
 
-<p>This includes the fact that the grammar says there are at least 3 floats per <em>curve</em> command.</p>
+<p>This includes the fact that the grammar says there are at least 3 coordinates (float pairs) per <em>curve</em> command.</p>
 
 <p>This is not a problem, just a fact. We handle it with a Perl array, as explained next.</p>
 
@@ -445,13 +453,13 @@ Nevertheless, it's vital to keep such issues in mind.</p>
 <p>But it does mean that we need to be aware of what Marpa does with the results of calling <em>float()</em>, i.e. where
 are they, when Marpa calls <em>command()</em>.</p>
 
-<p>It is simple. The results of the 3+ (in this grammar) calls to <em>float()</em>, 3+ <em>hashrefs</em>, are passed as the trailing
+<p>It is simple. The results of the 6+ (in this grammar) calls to <em>float()</em>, 6+ <em>hashrefs</em>, are passed as the trailing
 parameters in the call to   <em>command()</em>. That explains the @t2 parameter in the first line of <em>command()</em>.</p>
 
 <p>Likewise, we can say that since, in the grammar, nothing is subservient to <em>float</em>, then no action subs can possibly
 be called in the processing of a float. So, when <em>float()</em> is called, it <em>cannot have</em> any such trailing parameters.</p>
 
-<p>Where does this leave us? It means that the @t2 parameter to <em>command()</em> contains a set of 3+ floats packaged as
+<p>Where does this leave us? It means that the @t2 parameter to <em>command()</em> contains a set of 6+ floats packaged as
 <em>hahsrefs</em> inside an unknown number of <em>arrayrefs</em>.</p>
 
 <p>The same logic applies to the output of <em>command()</em> within the context of the output of parsing the whole input stream.</p>
@@ -527,6 +535,13 @@ for my $item (@{$self -&gt; decode_result($$result)})
 <a href="https://metacpan.org/release/Data-Recursive-Encode">Data::Recursive::Encode</a> and
 <a href="https://metacpan.org/release/MarpaX-Languages-C-AST" title="In *::Util::Data::Find">MarpaX::Languages::C::AST</a>.
 They all use similar mechanisms for unravelling data structures.</p>
+
+<h2>Other Resources</h2>
+
+<ul>
+<li><p>http://jeffreykegler.github.io/Ocean-of-Awareness-blog/metapages/annotated.html</p></li>
+<li><p>The list of features in <a href="chapter2.html">Chapter 2 - Marpa's Advantages</a></p></li>
+</ul>
 
 <p><a href="index.html">Index</a></p>
         </div>
