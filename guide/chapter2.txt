@@ -98,7 +98,7 @@ In Marpa parses, rules and symbols can be nulled. In other words they can derive
 * Further, you can short-circuit evaluation during any _action_ sub
 
 See 'Bailing out of parse evaluation' in the docs for
-[the Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics) package.
+[the Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation) package.
 
 (Recall from [Chapter 1](chapter1.html), Marpa has 3 phases: Grammar pre-processing; Recognition; and Evaluation.)
 

@@ -110,8 +110,8 @@ with pre-Marpa techniques.</p>
 
 <h2>What does it mean to hide (mask) tokens?</h2>
 
-<p>It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
-for <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>.</p>
+<p>It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed under
+<a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL#RHS-alternatives">RHS-alternatives in Marpa::R2::Scanless::DSL</a>.</p>
 
 <p>Here is an example (from <a href="https://metacpan.org/module/Graph::Easy::Marpa::Parser">Graph::Easy::Marpa::Parser</a>):</p>
 
@@ -175,8 +175,7 @@ Stream 2: [node.a]  [node.b]
 <p>Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
 alternative. Thus case 1 fails due to the combination of '+' and '|'.</p>
 
-<p>This is documented in <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>, under
-'Quantified rules'.</p>
+<p>This is documented under <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL#Quantified-rules">#Quantified-rules in Marpa::R2::Scanless::DSL</a>.</p>
 
 <p>So we must re-write rule 1 (with some context):</p>
 
@@ -204,13 +203,12 @@ well as the usual spaces.</p>
 
 <h2>How do I find out where I am within the input stream?</h2>
 
-<p>In the docs for <a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>, see the line_column()
-method.</p>
+<p>See <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()">the line_column() method in Marpa::R2::Scanless::R</a>.</p>
 
 <h2>How do I find out which rule applies at some point in the input stream (e.g. during a pause)?</h2>
 
-<p>In the docs for <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>, the section titled
-'Action context' shows how to access internal variables in Marpa which do what you want.</p>
+<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Action-context">Action-context in Marpa::R2::Semantics</a>,
+for access to internal variables in Marpa which do what you want.</p>
 
 <h2>What is the meaning of the line number in a Marpa error message?</h2>
 
@@ -218,13 +216,22 @@ method.</p>
 
 <p>Note: If your grammar uses \r, that will affect the line count.</p>
 
-<p>Further, in the docs for <a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>,
-under the line_column() method, various special characters are listed, some of which may affect this line count.</p>
+<p>Further, see <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()">the line_column() method in Marpa::R2::Scanless::R</a>
+for various special characters some of which may affect this line count.</p>
 
 <h2>How do I implement disambiguation logic?</h2>
 
 <p>In the docs for <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>, the section titled
 'Bailing out of parse evaluation' discusses how to short-circuit semantic analysis.</p>
+
+<p>See also <a href="https://gist.github.com/dginev/6419166">this gist</a>.</p>
+
+<h2>Where is Ruby Slippers parsing documented?</h2>
+
+<p>Start with <a href="https://metacpan.org/module/Marpa::R2::Recognizer#Ruby-Slippers-parsing">Marpa::R2::Semantics</a>.
+This document has several references to Ruby Slippers.</p>
+
+<p>See also <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html">Ruby Slippers parsing</a>.</p>
 
 <h2>How do I associate an action class with my grammar?</h2>
 

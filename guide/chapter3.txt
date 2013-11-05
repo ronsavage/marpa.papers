@@ -95,8 +95,8 @@ Note also that Marpa supports a 'priority' adverb, discussed in the
 
 What does it mean to hide (mask) tokens?
 -----------------------------------------
-It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
-for [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL).
+It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed under
+[RHS-alternatives in Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL#RHS-alternatives).
 
 Here is an example (from [Graph::Easy::Marpa::Parser](https://metacpan.org/module/Graph::Easy::Marpa::Parser)):
 
@@ -155,8 +155,7 @@ Case 3 (succeeds):
 Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
 alternative. Thus case 1 fails due to the combination of '+' and '|'.
 
-This is documented in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), under
-'Quantified rules'.
+This is documented under [#Quantified-rules in Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL#Quantified-rules).
 
 So we must re-write rule 1 (with some context):
 
@@ -183,13 +182,12 @@ well as the usual spaces.
 
 How do I find out where I am within the input stream?
 -----------------------------------------------------
-In the docs for [Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R), see the line_column()
-method.
+See [the line_column() method in Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()).
 
 How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
 ---------------------------------------------------------------------------------------------
-In the docs for [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics), the section titled
-'Action context' shows how to access internal variables in Marpa which do what you want.
+See under [Action-context in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Action-context),
+for access to internal variables in Marpa which do what you want.
 
 What is the meaning of the line number in a Marpa error message?
 ----------------------------------------------------------------
@@ -197,24 +195,34 @@ It is the line number within the BNF of the rule being processed.
 
 Note: If your grammar uses \r, that will affect the line count.
 
-Further, in the docs for [Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R),
-under the line_column() method, various special characters are listed, some of which may affect this line count.
+Further, see [the line_column() method in Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R#line_column())
+for various special characters some of which may affect this line count.
 
 How do I implement disambiguation logic?
 ----------------------------------------
-In the docs for [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics), the section titled
-'Bailing out of parse evaluation' discusses how to short-circuit semantic analysis.
+See under [Bailing-out-of-parse-evaluation in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation),
+for how to short-circuit semantic analysis.
+
+See also [this gist](https://gist.github.com/dginev/6419166).
+
+Where is Ruby Slippers parsing documented?
+------------------------------------------
+Start with [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Recognizer#Ruby-Slippers-parsing).
+This document has several references to Ruby Slippers.
+
+See also [Ruby Slippers parsing](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html).
 
 How do I associate an action class with my grammar?
 ---------------------------------------------------
 
 Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.
 
-The synopsis in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics) shows one way to use
-action classes. See 'bless_package'.
+See under [Synopsis in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Synopsis)
+for one way to use action classes. Look for 'bless_package'. Details are under
+[Blessings in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Blessings).
 
-Another way is to note that the Scanless recognizer's constructor accepts a 'semantics_package' argument. See
-[Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R).
+Another way is to note that the Scanless recognizer's new() accepts a 'semantics_package' argument. See
+[Constructor in Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R#Constructor).
 
 Here's how I declare a recognizer in one package:
 
@@ -314,7 +322,7 @@ whereas you may prefer to use a different data structure.
 * After a successful parse, the result of the parse is processed to recover those hashrefs
 
 This result is returned by the value() method of the recognizer class.
-See [Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R).
+See [value() in Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R#value()).
 
 There is one basic problem to solve along the way: The data structure Marpa makes available as the result of the parse
 can be a deeply nested set of _arrayrefs_, depending on how deeply within the grammar the action sub is named.
