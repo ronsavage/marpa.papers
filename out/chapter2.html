@@ -18,6 +18,8 @@
 
 <p>Of course, the heading means advantages over other methods of parsing.</p>
 
+<p>So - the advantages:</p>
+
 <ul>
 <li><p>It is available as a linkable library</p></li>
 <li><p>It is written in C for speed</p></li>
@@ -26,7 +28,7 @@
 <li><p>Grammars can be ambiguous</p></li>
 </ul>
 
-<p>This means Marpa can tell you how many different ways there are of interpreting the token stream.</p>
+<p>This means Marpa can tell you how many different ways there are of interpreting the input stream.</p>
 
 <ul>
 <li><p>Marpa supports grammars having nullable symbols</p></li>
@@ -52,10 +54,10 @@ That is, Marpa generates a parser tailored to your BNF.</p>
 its first parameter. This per-parse argument defaults to an empty hashref. For Marpa, it is read-only:
 It is reserved for the exclusive use of your code.</p>
 
-<p>This Marpa-specific BNF is called SLIF DSL (Scanless Interface Domain-Specific Language).</p>
+<p>This Marpa-specific BNF is called SLIF-DSL (Scanless Interface Domain-Specific Language).</p>
 
 <ul>
-<li>Marpa lexes the token stream</li>
+<li>Marpa lexes the input stream</li>
 </ul>
 
 <p>This means you do not have to provide a separate lexer.</p>
@@ -66,12 +68,13 @@ It is reserved for the exclusive use of your code.</p>
 <li>Marpa is extensively documented</li>
 </ul>
 
-<p><a href="https://metacpan.org/release/Marpa-R2">Start here</a>.</p>
+<p>For that, <a href="https://metacpan.org/release/Marpa-R2">start here</a>.</p>
 
 <p>And, the author has a <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/">Marpa-oriented blog</a>.</p>
 
 <ul>
-<li>Marpa can pause parsing at any place in the token stream, hand control over to you, then resume parsing at any place in the input stream</li>
+<li>Marpa can pause parsing at any place in the input stream, hand control over to you, then resume parsing at any
+place in the input stream</li>
 </ul>
 
 <p>This is procedural parsing.</p>
@@ -83,7 +86,7 @@ call resume(). This is not the same as the callback trigger mechanism mentioned 
 
 <p>During the pause, a set of methods allows you to interrogate Marpa about the current state of the parse.</p>
 
-<p>It also means you can parse the next part of the token stream yourself, and tell Marpa to skip what you've handled.</p>
+<p>It also means you can parse the next part of the input stream yourself, and tell Marpa to skip what you've handled.</p>
 
 <ul>
 <li>Error reporting can provide the precise location of an error</li>
@@ -122,9 +125,10 @@ Marpa was expecting to see at that point.</p>
 <li>Further, you can short-circuit evaluation during any <em>action</em> sub</li>
 </ul>
 
-<p>See 'Bailing out of parse evaluation' in the docs for the Marpa::R2::Semantics package.</p>
+<p>See 'Bailing out of parse evaluation' in the docs for
+<a href="https://metacpan.org/module/Marpa::R2::Semantics">the Marpa::R2::Semantics</a> package.</p>
 
-<p>Recall from <a href="chapter1.html">Chapter 1</a>, Marpa has 3 phases: Grammar pre-processing; Recognition; and Evaluation.</p>
+<p>(Recall from <a href="chapter1.html">Chapter 1</a>, Marpa has 3 phases: Grammar pre-processing; Recognition; and Evaluation.)</p>
 
 <ul>
 <li>Marpa changes the way we think about parsing</li>

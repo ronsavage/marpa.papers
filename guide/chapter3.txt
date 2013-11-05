@@ -15,8 +15,8 @@ Legal statements are thus legal combinations of tokens.
 
 Also, G1 rules have a semantics, whereas G0 rules do not.
 
-G0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2), and, very
-briefly, in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2). In both cases, search for 'G0'.
+G0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), and, very
+briefly, in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics). In both cases, search for 'G0'.
 
 How do I parse numbers?
 -----------------------
@@ -93,14 +93,14 @@ with pre-Marpa techniques.
 If precedence is not an issue for you, just use single bar alternation ('|').
 
 Note also that Marpa supports a 'priority' adverb, discussed in the
-[Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2) docs mentioned above.
+[Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL) docs mentioned above.
 
 What does it mean to hide (mask) tokens?
 -----------------------------------------
 It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed in the docs
-for [Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2).
+for [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL).
 
-Here is an example (from [Graph::Easy::Marpa::Parser](https://metacpan.org/release/Graph-Easy-Marpa-Parser)):
+Here is an example (from [Graph::Easy::Marpa::Parser](https://metacpan.org/module/Graph::Easy::Marpa::Parser)):
 
 	node_definition  ::= node_statement
 	                 | node_statement graph_definition
@@ -122,7 +122,7 @@ The comma is hidden. But what does this mean, exactly?
 It means the comma may appear in the input stream (in this context), but I am not interested in it. So, Marpa will not
 return this token to me when an action is called. It has become invisible to the semantics.
 
-Semantics are documented in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2).
+Semantics are documented in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics).
 
 Close study of the above grammar will show that another path is possible thru the grammar, in the case of
 2 nodes side-by-side (i.e. without a comma between them). Thus the grammar accepts both these input streams
@@ -157,7 +157,7 @@ Case 3 (succeeds):
 Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
 alternative. Thus case 1 fails due to the combination of '+' and '|'.
 
-This is documented in [Marpa::R2::Scanless::DSL](https://metacpan.org/release/Marpa-R2), under
+This is documented in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), under
 'Quantified rules'.
 
 So we must re-write rule 1:
@@ -185,7 +185,8 @@ well as the usual spaces.
 
 How do I find out where I am within the input stream?
 -----------------------------------------------------
-In the docs for [Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2), see the line_column() method.
+In the docs for [Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R), see the line_column()
+method.
 
 How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
 ---------------------------------------------------------------------------------------------
@@ -198,12 +199,12 @@ It is the line number within the BNF of the rule being processed.
 
 Note: If your grammar uses \r, that will affect the line count.
 
-More specifically, in the docs for [Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2), under the
-line_column() method, various special characters are listed, some of which may affect this line count.
+More specifically, in the docs for [Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R),
+under the line_column() method, various special characters are listed, some of which may affect this line count.
 
 How do I implement disambiguation logic?
 ----------------------------------------
-In the docs for [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2), the section titled
+In the docs for [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics), the section titled
 'Bailing out of parse evaluation' discusses how to short-circuit semantic analysis.
 
 How do I associate an action class with my grammar?
@@ -211,11 +212,11 @@ How do I associate an action class with my grammar?
 
 Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.
 
-The synopsis in [Marpa::R2::Semantics](https://metacpan.org/release/Marpa-R2) shows one way to use action classes.
-See 'bless_package'.
+The synopsis in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics) shows one way to use
+action classes. See 'bless_package'.
 
 Another way is to note that the Scanless recognizer's constructor accepts a 'semantics_package' argument. See
-[Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2).
+[Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R).
 
 Here's how I declare a recognizer in one package:
 
@@ -314,7 +315,7 @@ whereas you may prefer to use a different data structure.
 * After a successful parse, the result of the parse is processed to recover those hashrefs
 
 This result is returned by the value() method of the recognizer class.
-See [Marpa::R2::Scanless::R](https://metacpan.org/release/Marpa-R2).
+See [Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R).
 
 There is one basic problem to solve along the way: The data structure Marpa makes available as the result of the parse
 can be a deeply nested set of _arrayrefs_, depending on how deeply within the grammar the action sub is named.
@@ -473,7 +474,7 @@ Lastly, the workhorse sub:
 
 I must acknowledge the work done by the authors of [Data::Find](https://metacpan.org/release/Data-Find),
 [Data::Recursive::Encode](https://metacpan.org/release/Data-Recursive-Encode) and
-[MarpaX::Languages::C::AST](https://metacpan.org/release/MarpaX-Languages-C-AST "In *::Util::Data::Find").
+[MarpaX::Languages::C::AST](https://metacpan.org/release/MarpaX-Languages-C-AST 'In *::Util::Data::Find').
 They all use similar mechanisms for unravelling data structures.
 
 !include "guide/menu.inc"

@@ -518,7 +518,7 @@ for my $item (@{$self -&gt; decode_result($$result)})
         }
     } while (@worklist);
 
-    return [@stack]; # Go home.
+    return [@stack]; # Return an arrayref of hashrefs.
 
 } # End of decode_result.
 </code></pre>

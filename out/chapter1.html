@@ -52,7 +52,8 @@ often noticably distorted or even absent.</p>
 
 <p>Likewise, Marpa attempts to verify whether or not the input stream does in fact match the given grammar.</p>
 
-<p>This is described as: The input was 'recognized' (or not) by Marpa. Hence the (Perl) variable $recce in the docs.</p>
+<p>This is described as: The input was 'recognized' (or not) by Marpa. Hence the (Perl) variable $recce in the docs.
+There is more on recognition in the next section.</p>
 
 <p>We can express this as: The input stream conforms, or doesn't conform, to the given grammar.</p>
 
@@ -71,15 +72,28 @@ These grammars are called ambiguous. Marpa handles these cases easily.</p>
 
 <h2>Constructing a mental picture of lexing and parsing</h2>
 
-<p>With the advent of Marpa's SLIF, we need to feel comfortable with both Marpa's approach and the fact that, classically,
-lexing and parsing were often such visibly distinct phases, perhaps even requiring 2 programs.</p>
+<p>Marpa's grammars are written in what we call an SLIF-DSL. Here, SLIF stands for Scanless Interface, and DSL is
+<a href="https://en.wikipedia.org/wiki/Domain-specific_language">Domain-specific Language</a>.</p>
+
+<p>Many programmers will have heard of <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BNF</a>. Well, Marpa's
+SLIF-DSL is an extended BNF. That is, it includes special tokens which only make sense within the context of a Marpa
+grammar. Hence the 'Domain Specific' part of the name.</p>
+
+<p>An example (later) includes such extensions - the pseudo-rule ':start'.</p>
+
+<p>Marpa's docs for this SLIF-DSL <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">are here</a>.</p>
+
+<p>BNF can be thought of as a generator for DSLs.</p>
+
+<p>With the advent of Marpa's SLIF, we need to feel comfortable with both Marpa's approach and the fact that,
+classically, lexing and parsing were often such visibly distinct phases, perhaps even requiring 2 programs.</p>
 
 <p>Marpa's SLIF follows the classical separation of lexing and parsing, but it introduces a notation which is
 friendly to those programmers more accustomed to regular expressions and recursive descent.</p>
 
 <p>So instead of two completely separate modules, lexer and parser, each with its own interface, you have a single
-DSL source  file, and the lexing and parsing statements look similar, with only the  different operators
-("::=" versus "~") to tell them apart.</p>
+DSL source  file, and the lexing and parsing statements look similar, with only the different operators ('::='
+versus '~') to tell them apart.</p>
 
 <p>Underneath however, in the implementation, the distinction is still there, as sharp as ever.</p>
 
@@ -91,8 +105,9 @@ DSL source  file, and the lexing and parsing statements look similar, with only 
 <li><p>Turns that table into a tree, and evaluates it.</p></li>
 </ul>
 
-<p>Events occur during the recognition phase. Actions are executed during the evaluation phase.
-In other words, by the time the first action is executed, the last event is ancient history.</p>
+<p><em>Events</em> occur during the recognition phase. <em>Actions</em> are executed during the evaluation phase.
+In other words, by the time the first action is executed, the last event is ancient history.
+<em>Events</em> and <em>Actions</em> are part of Marpa's SLIF-DSL.</p>
 
 <p>And all this takes place in a single pass of the input stream, i.e. very efficiently indeed.</p>
 
@@ -116,7 +131,7 @@ expressed as a tree.</p>
 
 <p>Briefly, the parsing process converted a grammar as a tree, plus input, into another structure, representable as a
 tree, which is evaluated (analyzed) as per instructions embedded in the grammar. A example of such an instruction is
-given above as 'action => graph', whose exact effect will be discussed later.</p>
+given below as 'action => graph', whose exact effect will be discussed later.</p>
 
 <p>But why not use regular expressions?</p>
 
@@ -199,43 +214,32 @@ statements
 
 <h2>Where does a grammar come from?</h2>
 
-<p>The simplest way is to copy a suitable grammar, but that's not possible, we must write it ourselves.</p>
+<p>The simplest way is to copy a suitable grammar, but if that's not possible, we must write it ourselves.</p>
 
 <p>And this leads to developing a set of test files, whose purpose is to test the grammar, rule by rule.
 This includes tests that are deliberately faulty. That is, some tests must cause Marpa to report a syntax error
 in the input stream. Whether or not the grammar or the input stream is the real culprit is of course dependent
 on the user's expertise.</p>
 
-<p>Marpa's grammars are written in what we call a SLIF-DSL. Here, SLIF stands for Scanless Interface, and DSL is
-<a href="https://en.wikipedia.org/wiki/Domain-specific_language">Domain-specific Language</a>.</p>
-
-<p>Many programmers will have heard of <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BNF</a>. Well, Marpa's
-SLIF-DSL is an extended BNF. That is, it includes special tokens which only make sense within the context of a Marpa
-grammar. Hence the 'Domain Specific' part of the name.</p>
-
-<p>BNF can be thought of as a generator for DSLs.</p>
-
-<p>The example above includes such extensions - the pseudo-rule ':start'.</p>
-
-<p>Marpa's docs for this SLIF-DSL <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">are here</a>.</p>
-
 <h2>Some of Marpa's features</h2>
 
 <ul>
-<li><p>Is written in C for speed.</p></li>
-<li><p>Can precisely identify the location (within the input stream) of syntax errors.</p></li>
-<li><p>Has extensive documentation. <a href="https://metacpan.org/release/Marpa-R2">Start here</a> if you wish to delve into the docs.</p></li>
-<li><p>Extends the BNF concept in various ways.</p></li>
-<li><p>Has an exceptionally straight-forward interface via Perl.</p></li>
-<li><p>Has a low-level ('thin') interface as well.</p></li>
-<li><p>Has convenient tracing and reporting features.</p></li>
-<li><p>Ships as a stand-alone library module, for inclusion into end-user code.</p></li>
-<li><p>Ships with a broad test suite.</p></li>
+<li><p>It is written in C for speed.</p></li>
+<li><p>It can precisely identify the location (within the input stream) of syntax errors.</p></li>
+<li><p>It has extensive documentation. <a href="https://metacpan.org/release/Marpa-R2">Start here</a> if you wish to delve into the docs.</p></li>
+<li><p>It extends the BNF concept in various ways.</p></li>
+<li><p>It has an exceptionally straight-forward interface via Perl.</p></li>
+<li><p>It has a low-level ('thin') interface as well.</p></li>
+<li><p>It has convenient tracing and reporting features.</p></li>
+<li><p>It ships as a stand-alone library module, for inclusion into end-user code.</p></li>
+<li><p>It ships with a broad test suite.</p></li>
+<li><p>It has a <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/">homepage</a>, maintained by library's author.</p></li>
+<li><p>It has a <a href="https://groups.google.com/forum/#!forum/marpa-parser">Google Group</a> and email list (marpa-parser@googlegroups.com).</p></li>
 <li><p>Intriguingly, Marpa's own grammar (for its DSL) ships in a file (metag.bnf) which has the same format as end-user
 grammars.</p></li>
-<li><p>Has a <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/">homepage</a>, maintained by library's author.</p></li>
-<li><p>Has a <a href="https://groups.google.com/forum/#!forum/marpa-parser">Google Group</a> and email list (marpa-parser@googlegroups.com).</p></li>
 </ul>
+
+<p>See <a href="chapter1.html">Chapter 1</a> for a detailed list of Marpa's advantages over old-style lexers and parsers.</p>
 
 <h2>Sample Code</h2>
 
@@ -256,7 +260,7 @@ grammars.</p></li>
 
 <p>Search <a href="https://metacpan.org">MetaCPAN</a> for more.</p>
 
-<p>Note: Ignore any modules using the obsolete (NAIF) interface. That interface was provided by the obsolete Marpa::XS.
+<p>Note: Ignore any modules using the deprecated (NAIF) interface. That interface was provided by the obsolete Marpa::XS.
 This includes <a href="https://metacpan.org/release/GraphViz2-Marpa">GraphViz2::Marpa</a>. Such modules are of course still
 fully-functional, but are excluded from this list simply because they use the NAIF.</p>
 
