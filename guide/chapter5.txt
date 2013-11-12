@@ -1,0 +1,154 @@
+Chapter 5 - Parser Projects
+===========================
+
+!include "guide/menu.inc"
+
+Projects are in alphabetical order.
+
+An autoconf Parser
+------------------
+Outline: TBA.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
+
+A C Parser
+----------
+Outline: Parse C to show precisely where syntax errors are, to compensate for current C parser technology.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/CXcLmksuQhw/KurF_p01HE0J).
+
+A CSV Parser
+------------
+Acronym: CSV => Comma-Separated Variables.
+
+Outline: This could combine and replace the Perl modules Text::CSV, Text::CSV_XS and Text::CSV::Encoded.
+
+[Text::CSV link](https://metacpan.org/release/Text-CSV).
+
+[Text::CSV_XS link](https://metacpan.org/release/Text-CSV_XS).
+
+[Text::CSV::Encoded link](https://metacpan.org/release/Text-CSV-Encoded).
+
+[Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
+
+An Cweb Parser
+--------------
+Outline: TBA.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
+
+[Wikipedia Cweb link](https://en.wikipedia.org/wiki/Cweb).
+
+A LaTeXML Parser
+----------------
+Acronym: LaTeXML => A document preparation system and document markup language.
+
+Outline: Rewrite the TeX LaTeXML parser.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
+
+[Wikipedia LaTeX link](https://en.wikipedia.org/wiki/LaTeX).
+
+[Wikipedia TeX link](https://en.wikipedia.org/wiki/TeX).
+
+[PDF link](http://dlmf.nist.gov/LaTeXML/manual.pdf).
+
+[HTML link](http://dlmf.nist.gov/LaTeXML/manual/index.xhtml).
+
+An LBNF Parser
+--------------
+Acronym: LBNF => The Labelled BNF Grammar Formalism.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/T5dWT9-R75Q/6-n29dNI2U0J).
+
+[PDF link](http://bnfc.digitalgrammars.com/LBNF-report.pdf).
+
+An LDIF Parser
+--------------
+Acronym: LDIF => LDAP Data Interchange Format.
+
+Acronym: LDAP => Lightweight Directory Access Protocol.
+
+[Perl link](https://metacpan.org/release/perl-ldap).
+
+A Make Parser
+-------------
+Outline: Make's text file instructions to build a program could be replaced by a modernized file format.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
+
+[A Marpa-based gist](https://gist.github.com/pstuifzand/4448957).
+
+A Markdown Parser
+-----------------
+Outline: Convert Markdown to some intermediate form, and from there to anything.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
+
+A Module::Build Parser
+----------------------
+Outline: Module::Build's Perl code to build a distro could be replaced by a text file, a la Make.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
+
+A Regexp Parser
+---------------
+Outline: A compiler from some nice BNF-ish format, to Perl regular expressions.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
+
+An SQL Parser
+-------------
+Acronym: SQL => Structured Query Language.
+
+Outline: Convert SQL select statements into CouchDB maps.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/6nxE-lMwf50/Q-GjJn6UD9cJ)
+
+A TAP Parser
+------------
+Acronym: TAP => Test Anything Protocol.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/BbQQ_ekLvVU/Wm3AIFwzMBcJ).
+
+[TAP link](https://metacpan.org/release/TAP-Spec-Parser).
+
+A TeX Parser
+------------
+See LaTeXML above.
+
+A Textmate/Sublime Text 2 Parser
+--------------------------------
+Outline: Target the '.tmLanguage'.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/R5LuMSboE8E/I4B2fsbT6zcJ).
+
+A Valgrind Parser
+-----------------
+Outline: Parse Valgrind output, as an adjunct to Valgrind tools, e.g. for a grind2ast tool.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/qWAIF2S5w0c/SFjpSJLsDb8J).
+
+[PDF link](http://www.network-theory.co.uk/docs/valgrind/valgrind_141.html).
+
+[Wikipedia AST link](https://en.wikipedia.org/wiki/Abstract_syntax_tree).
+
+A vCard parser
+--------------
+Outline: Convert vCards into some intermediate form, and from there to anything.
+
+Microformat includes hCal, hCard, vCard, etc.
+
+[Perl link](https://metacpan.org/release/Text-vCard).
+
+[Wikipedia vCard link](https://en.wikipedia.org/wiki/Vcard).
+
+[Microformat link](http://microformats.org/).
+
+A Whois Parser
+--------------
+Outline: Parse the various output formats provided as results of a whois lookup.
+
+[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/BbQQ_ekLvVU/Wm3AIFwzMBcJ).
+
+!include "guide/menu.inc"

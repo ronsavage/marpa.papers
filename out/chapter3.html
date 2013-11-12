@@ -221,8 +221,8 @@ for various special characters some of which may affect this line count.</p>
 
 <h2>How do I implement disambiguation logic?</h2>
 
-<p>In the docs for <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>, the section titled
-'Bailing out of parse evaluation' discusses how to short-circuit semantic analysis.</p>
+<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation">Bailing-out-of-parse-evaluation in Marpa::R2::Semantics</a>,
+for how to short-circuit semantic analysis.</p>
 
 <p>See also <a href="https://gist.github.com/dginev/6419166">this gist</a>.</p>
 
@@ -237,11 +237,12 @@ This document has several references to Ruby Slippers.</p>
 
 <p>Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.</p>
 
-<p>The synopsis in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a> shows one way to use
-action classes. See 'bless_package'.</p>
+<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Synopsis">Synopsis in Marpa::R2::Semantics</a>
+for one way to use action classes. Look for 'bless_package'. Details are under
+<a href="https://metacpan.org/module/Marpa::R2::Semantics#Blessings">Blessings in Marpa::R2::Semantics</a>.</p>
 
-<p>Another way is to note that the Scanless recognizer's constructor accepts a 'semantics_package' argument. See
-<a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>.</p>
+<p>Another way is to note that the Scanless recognizer's new() accepts a 'semantics_package' argument. See
+<a href="https://metacpan.org/module/Marpa::R2::Scanless::R#Constructor">Constructor in Marpa::R2::Scanless::R</a>.</p>
 
 <p>Here's how I declare a recognizer in one package:</p>
 
@@ -361,7 +362,7 @@ whereas you may prefer to use a different data structure.</p>
 </ul>
 
 <p>This result is returned by the value() method of the recognizer class.
-See <a href="https://metacpan.org/module/Marpa::R2::Scanless::R">Marpa::R2::Scanless::R</a>.</p>
+See <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#value()">value() in Marpa::R2::Scanless::R</a>.</p>
 
 <p>There is one basic problem to solve along the way: The data structure Marpa makes available as the result of the parse
 can be a deeply nested set of <em>arrayrefs</em>, depending on how deeply within the grammar the action sub is named.</p>
