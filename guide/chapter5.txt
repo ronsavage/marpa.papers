@@ -32,8 +32,6 @@ Text::CSV::Slurp.
 
 [Text::CSV::Slurp link](https://metacpan.org/release/Text-CSV-Slurp).
 
-[Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
-
 An Cweb Parser
 --------------
 Outline: TBA.
