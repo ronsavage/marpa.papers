@@ -21,7 +21,8 @@ A CSV Parser
 ------------
 Acronym: CSV => Comma-Separated Variables.
 
-Outline: This could combine and replace the Perl modules Text::CSV, Text::CSV_XS and Text::CSV::Encoded.
+Outline: This could combine and replace the Perl modules Text::CSV, Text::CSV_XS, Text::CSV::Encoded and
+Text::CSV::Slurp.
 
 [Text::CSV link](https://metacpan.org/release/Text-CSV).
 
@@ -38,22 +39,6 @@ Outline: TBA.
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
 
 [Wikipedia Cweb link](https://en.wikipedia.org/wiki/Cweb).
-
-A LaTeXML Parser
-----------------
-Acronym: LaTeXML => A document preparation system and document markup language.
-
-Outline: Rewrite the TeX LaTeXML parser.
-
-[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
-
-[Wikipedia LaTeX link](https://en.wikipedia.org/wiki/LaTeX).
-
-[Wikipedia TeX link](https://en.wikipedia.org/wiki/TeX).
-
-[PDF link](http://dlmf.nist.gov/LaTeXML/manual.pdf).
-
-[HTML link](http://dlmf.nist.gov/LaTeXML/manual/index.xhtml).
 
 An LBNF Parser
 --------------
@@ -85,12 +70,6 @@ Outline: Convert Markdown to some intermediate form, and from there to anything.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
 
-A Module::Build Parser
-----------------------
-Outline: Module::Build's Perl code to build a distro could be replaced by a text file, a la Make.
-
-[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
-
 A Regexp Parser
 ---------------
 Outline: A compiler from some nice BNF-ish format, to Perl regular expressions.
@@ -113,9 +92,28 @@ Acronym: TAP => Test Anything Protocol.
 
 [TAP link](https://metacpan.org/release/TAP-Spec-Parser).
 
-A TeX Parser
-------------
-See LaTeXML above.
+A TeX Frontend
+--------------
+Acronym: TeX => A typsetting system.
+
+Acronym: LaTeX => A document preparation system and document markup language.
+
+Outline: Rewrite LaTeX to be what it could have been if they'd had Marpa available originally, and not been
+limited by using TeX's native parsing.
+
+[Marpa Google Group link 1](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
+
+[Marpa Google Group link 2](https://groups.google.com/forum/#!topic/marpa-parser/sep7K7i-Ld8).
+
+[Wikipedia LaTeX link](https://en.wikipedia.org/wiki/LaTeX).
+
+[Wikipedia TeX link](https://en.wikipedia.org/wiki/TeX).
+
+Related material:
+
+[PDF link for LaTeXML](http://dlmf.nist.gov/LaTeXML/manual.pdf).
+
+[HTML link for LaTeXML](http://dlmf.nist.gov/LaTeXML/manual/index.xhtml).
 
 A Textmate/Sublime Text 2 Parser
 --------------------------------
