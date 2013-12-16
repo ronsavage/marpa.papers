@@ -5,6 +5,8 @@ perl scripts/guide.pl
 DIR=Perl-modules/html/marpa.papers
 export DIR
 
+# $DR is doc root: /dev/shm/html
+
 mkdir -p $DR/$DIR
 cp out/* $DR/$DIR
 
