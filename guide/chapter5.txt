@@ -18,8 +18,8 @@ re-implementation of autoconf.
 
 * Do not try to be compatible with files in the old autoconf syntax, certainly not at first.
 That is, consider writing the replacement as a front end, translating from your friendlier
-syntax into the autotools files. That will have two advantages: First you won't have to
-re-implement the semantics, which are very difficult; and second, potential users will
+syntax into the autotools files. That will have two advantages: firstly, you won't have to
+re-implement the semantics, which would be very difficult; and secondly, potential users will
 be more comfortable if they have the option of simply returning to traditional autotools,
 taking their work with them.
 
