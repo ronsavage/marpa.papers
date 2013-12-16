@@ -6,17 +6,18 @@ Chapter 5 - Parser Projects
 Projects are in alphabetical order.
 
 An autotools replacement
-------------------
-Outline: A replacement providing autoconf's functionality, or a subset, but
-with a friendlier Marpa-powered syntax.
+------------------------
+Outline: The replacement could provide autoconf's functionality, or a subset thereof, but
+with a friendlier, Marpa-powered, syntax.
 
-Jeffrey's thoughts: 
+Jeffrey's thoughts:
 
 * Do not try to be compatible with files in the old autoconf syntax,
 certainly not at first.
 
-* Look at 
-Alberto Simões's Config::AutoConf, an excellent partial re-implementation of autoconf.
+* Look at
+Alberto Simões's [Config::AutoConf](https://metacpan.org/release/Config-AutoConf), an excellent albeit partial
+re-implementation of autoconf.
 
 * Consider the writing the replacement as a front end, translating from your friendlier
 syntax into the autotools files.  That will have two advantages: first you won't have to
@@ -27,13 +28,13 @@ taking their work with them.
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
 
 A Diagnostic C Parser
-----------
-Outline: Marpa knows C syntax far better then recursive descent or LALR ever possibly could.
+---------------------
+Outline: Marpa knows C syntax far better than recursive descent- or LALR-style parsers ever possibly could.
 Leverage this knowledge to pinpoint syntax errors.
 
 Jeffrey's thoughts:
 
-* Starting point would be Jean-Damien Durands's excellent MarpaX::Languages::C::AST, a very careful,
+* Starting point would be Jean-Damien Durands's excellent MarpaX::Languages::C::AST, a very carefully written,
 standards-aware, parser.
 
 * This would be a highly useful tool.  Even one project, if it was large enough,
@@ -56,8 +57,8 @@ Text::CSV::Slurp.
 
 [Text::CSV::Slurp link](https://metacpan.org/release/Text-CSV-Slurp).
 
-An Cweb Alternative
---------------
+A Cweb Alternative
+------------------
 Outline: TBA.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
@@ -81,7 +82,7 @@ Acronym: LDAP => Lightweight Directory Access Protocol.
 [Perl link](https://metacpan.org/release/perl-ldap).
 
 A Make Alternative
--------------
+------------------
 Outline: Make's text file instructions to build a program could be replaced by a modernized file format.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
