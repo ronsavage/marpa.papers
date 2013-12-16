@@ -32,7 +32,7 @@ Text::CSV::Slurp.
 
 [Text::CSV::Slurp link](https://metacpan.org/release/Text-CSV-Slurp).
 
-An Cweb Parser
+An Cweb Alternative
 --------------
 Outline: TBA.
 
@@ -56,7 +56,7 @@ Acronym: LDAP => Lightweight Directory Access Protocol.
 
 [Perl link](https://metacpan.org/release/perl-ldap).
 
-A Make Parser
+A Make Alternative
 -------------
 Outline: Make's text file instructions to build a program could be replaced by a modernized file format.
 
