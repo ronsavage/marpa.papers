@@ -5,9 +5,24 @@ Chapter 5 - Parser Projects
 
 Projects are in alphabetical order.
 
-An autoconf Parser
+An autotools replacement
 ------------------
-Outline: TBA.
+Outline: A replacement providing autoconf's functionality, or a subset, but
+with a friendlier Marpa-powered syntax.
+
+Jeffrey's thoughts: 
+
+* Do not try to be compatible with files in the old autoconf syntax,
+certainly not at first.
+
+* Look at 
+Alberto Simões's Config::AutoConf, an excellent partial re-implementation of autoconf.
+
+* Consider the writing the replacement as a front end, translating from your friendlier
+syntax into the autotools files.  That will have two advantages: first you won't have to
+re-implement the semantics, which are very difficult.  And second, potential users will
+be more comfortable if they have the option of simply returning to traditional autotools,
+taking their work with them.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
 
