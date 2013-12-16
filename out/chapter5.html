@@ -18,15 +18,40 @@
 
 <p>Projects are in alphabetical order.</p>
 
-<h2>An autoconf Parser</h2>
+<h2>An autotools replacement</h2>
 
-<p>Outline: TBA.</p>
+<p>Outline: The replacement could provide autoconf's functionality, or a subset thereof, but
+with a friendlier, Marpa-powered, syntax.</p>
+
+<p>Jeffrey's thoughts:</p>
+
+<ul>
+<li><p>Look at
+Alberto Simões's <a href="https://metacpan.org/release/Config-AutoConf">Config::AutoConf</a>, an excellent albeit partial
+re-implementation of autoconf.</p></li>
+<li><p>Do not try to be compatible with files in the old autoconf syntax, certainly not at first.
+That is, consider writing the replacement as a front end, translating from your friendlier
+syntax into the autotools files.  That will have two advantages: first you won't have to
+re-implement the semantics, which are very difficult.  And second, potential users will
+be more comfortable if they have the option of simply returning to traditional autotools,
+taking their work with them.</p></li>
+</ul>
 
 <p><a href="https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J">Marpa Google Group link</a>.</p>
 
-<h2>A C Parser</h2>
+<h2>A Diagnostic C Parser</h2>
 
-<p>Outline: Parse C to show precisely where syntax errors are, to compensate for current C parser technology.</p>
+<p>Outline: Marpa knows C syntax far better than recursive descent- or LALR-style parsers ever possibly could.
+Leverage this knowledge to pinpoint syntax errors.</p>
+
+<p>Jeffrey's thoughts:</p>
+
+<ul>
+<li><p>Starting point would be Jean-Damien Durands's excellent MarpaX::Languages::C::AST, a very carefully written,
+standards-aware, parser.</p></li>
+<li><p>This would be a highly useful tool.  Even one project, if it was large enough,
+could justify the effort to create it.</p></li>
+</ul>
 
 <p><a href="https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/CXcLmksuQhw/KurF_p01HE0J">Marpa Google Group link</a>.</p>
 
@@ -45,7 +70,7 @@ Text::CSV::Slurp.</p>
 
 <p><a href="https://metacpan.org/release/Text-CSV-Slurp">Text::CSV::Slurp link</a>.</p>
 
-<h2>An Cweb Parser</h2>
+<h2>A Cweb Alternative</h2>
 
 <p>Outline: TBA.</p>
 
@@ -69,7 +94,7 @@ Text::CSV::Slurp.</p>
 
 <p><a href="https://metacpan.org/release/perl-ldap">Perl link</a>.</p>
 
-<h2>A Make Parser</h2>
+<h2>A Make Alternative</h2>
 
 <p>Outline: Make's text file instructions to build a program could be replaced by a modernized file format.</p>
 
