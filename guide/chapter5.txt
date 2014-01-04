@@ -107,14 +107,6 @@ Outline: Convert SQL select statements into CouchDB maps.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/6nxE-lMwf50/Q-GjJn6UD9cJ)
 
-A TAP Parser
-------------
-Acronym: TAP => Test Anything Protocol.
-
-[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/BbQQ_ekLvVU/Wm3AIFwzMBcJ).
-
-[TAP link](https://metacpan.org/release/TAP-Spec-Parser).
-
 A TeX Frontend
 --------------
 Acronym: TeX => A typsetting system.
