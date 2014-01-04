@@ -305,3 +305,4 @@ References
 * [amon's article on translating C syntax to BNF syntax](http://longanswers.blogspot.de/2013/06/transforming-syntax.html)
 
 !include "guide/menu.inc"
+
