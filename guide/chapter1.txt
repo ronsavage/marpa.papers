@@ -245,6 +245,8 @@ A number of Perl modules use Marpa::R2, and can be freely downloaded for inspect
 
 * [MarpaX::Demo::StringParser](https://metacpan.org/release/MarpaX-Demo-StringParser)
 
+* [MarpaX::Import](https://github.com/jddurand/MarpaX--Import)
+
 * [MarpaX::Grammar::GraphViz2](https://metacpan.org/release/MarpaX-Grammar-GraphViz2)
 
 * [MarpaX::Grammar::Parser](https://metacpan.org/release/MarpaX-Grammar-Parser)
@@ -254,6 +256,8 @@ A number of Perl modules use Marpa::R2, and can be freely downloaded for inspect
 * [MarpaX::Languages::ECMAScript::AST](https://metacpan.org/release/MarpaX-Languages-ECMAScript-AST)
 
 * [MarpaX::Languages::SVG::Parser](https://metacpan.org/release/MarpaX-Languages-SVG-Parser)
+
+* [MarpaX::Parse](https://github.com/rns/MarpaX-Parse)
 
 * [MarpaX::Repa](https://metacpan.org/release/MarpaX-Repa)
 
