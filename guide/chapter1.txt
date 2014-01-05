@@ -239,6 +239,8 @@ Sample Code
 -----------
 A number of Perl modules use Marpa::R2, and can be freely downloaded for inspection. In alphabetical order:
 
+* [Grammar::Marpa](https://metacpan.org/release/Grammar-Marpa)
+
 * [Graph::Easy::Marpa](https://metacpan.org/release/Graph-Easy-Marpa)
 
 * [MarpaX::Demo::JSONParser](https://metacpan.org/release/MarpaX-Demo-JSONParser)
