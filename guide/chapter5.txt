@@ -93,6 +93,16 @@ Outline: Convert Markdown to some intermediate form, and from there to anything.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
 
+A DSL for Moo and Moops
+-----------------------
+And perhaps for mop.
+
+[Moo](https://metacpan.org/release/Moo)
+
+[Moops](https://metacpan.org/release/Moops)
+
+[mop](https://github.com/stevan/p5-mop-redux)
+
 A Regexp Parser
 ---------------
 Outline: A compiler from some nice BNF-ish format, to Perl regular expressions.
