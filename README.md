@@ -18,7 +18,7 @@ Contributing
 We appreciate any contributions to this guide. See the [contribution guide][contrib] for
 more information.
 
-[contrib]: https://github.com/ronsavage/marpa.papers/contribution.html
+[contrib]: http://savage.net.au/Perl-modules/html/marpa.papers/contribution.html
 
 When you submit text to which you hold the copyright, you agree to license it under:
 
