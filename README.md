@@ -3,7 +3,7 @@ Marpa Papers
 
 Various documents pertaining to Marpa (Introduction, FAQ, etc).
 
-Visit the web version at [the Marpa Papers](https://github.com/ronsavage/marpa.papers)
+Visit the web version at [the Marpa Papers](http://savage.net.au/Perl-modules/html/marpa.papers/index.html).
 
 What is Marpa
 -------------
