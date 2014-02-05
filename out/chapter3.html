@@ -201,6 +201,22 @@ definition to consist of a node statement followed by a graph definition, which 
 definitions to follow one another. And the last rule allows the input stream to separate them with commas as
 well as the usual spaces.</p>
 
+<h2>Can a lexeme have length == 0?</h2>
+
+<p>No.</p>
+
+<p>Marpa allows L0 rules that might be zero-length (for example, "baZ ~ [Z]*") on the idea that it might be convenient
+to write them that way. But no zero-length lexeme will ever be accepted as a result of such rules.</p>
+
+<p>If you think out the conceptual issues, you might see nulled lexemes are "fraught" with them. At any given point,
+which null lexemes should you recognize? And how many of them? A parser could guess what you really mean here, but
+to my (Jeffrey's) mind it is just as well to force you to be explicit on this issue.</p>
+
+<p>Note: I (Ron) think Jeffrey uses pseudo in the name 'nulled pseudo-lexeme' because, being effectively of 0 length, they
+can't actually be lexemes.</p>
+
+<p>For sample code which shows a way of handling such an issue, <a href="http://scsys.co.uk:8002/300030">see</a>.</p>
+
 <h2>How do I find out where I am within the input stream?</h2>
 
 <p>See <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()">the line_column() method in Marpa::R2::Scanless::R</a>.</p>
