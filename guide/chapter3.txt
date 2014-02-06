@@ -3,18 +3,18 @@ Chapter 3 - FAQ
 
 !include "guide/menu.inc"
 
-What is the meaning of G0 and G1?
+What is the meaning of L0 and G1?
 ---------------------------------
-G0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
+L0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
 syntax of the tokens, but not the syntax of how these tokens can be combined.
 
 G1 defines the structure of the language. These rules define legal statements within the given language.
 Legal statements are thus legal combinations of tokens.
 
-Also, G1 rules have a semantics, whereas G0 rules do not.
+Also, G1 rules have a semantics, whereas L0 rules do not.
 
-G0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), and, very
-briefly, in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics). In both cases, search for 'G0'.
+L0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), and, very
+briefly, in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics). In both cases, search for 'L0'.
 
 How do I parse numbers?
 -----------------------
@@ -39,7 +39,7 @@ This issue is expanded upon in the next 2 items in this FAQ.
 
 Is there any other way of representing choice?
 ----------------------------------------------
-Sure. Consider these G0 rules (also from data/d.bnf):
+Sure. Consider these L0 rules (also from data/d.bnf):
 
 	sign_maybe  ~ [+-]
 	sign_maybe  ~
