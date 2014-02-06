@@ -16,18 +16,18 @@
 
 <p><a href="index.html">Index</a></p>
 
-<h2>What is the meaning of G0 and G1?</h2>
+<h2>What is the meaning of L0 and G1?</h2>
 
-<p>G0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
+<p>L0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
 syntax of the tokens, but not the syntax of how these tokens can be combined.</p>
 
 <p>G1 defines the structure of the language. These rules define legal statements within the given language.
 Legal statements are thus legal combinations of tokens.</p>
 
-<p>Also, G1 rules have a semantics, whereas G0 rules do not.</p>
+<p>Also, G1 rules have a semantics, whereas L0 rules do not.</p>
 
-<p>G0 and G1 discussed in <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>, and, very
-briefly, in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>. In both cases, search for 'G0'.</p>
+<p>L0 and G1 discussed in <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>, and, very
+briefly, in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>. In both cases, search for 'L0'.</p>
 
 <h2>How do I parse numbers?</h2>
 
@@ -53,7 +53,7 @@ not need in the SVG parser.</p>
 
 <h2>Is there any other way of representing choice?</h2>
 
-<p>Sure. Consider these G0 rules (also from data/d.bnf):</p>
+<p>Sure. Consider these L0 rules (also from data/d.bnf):</p>
 
 <pre class="prettyprint linenums"><code>sign_maybe  ~ [+-]
 sign_maybe  ~

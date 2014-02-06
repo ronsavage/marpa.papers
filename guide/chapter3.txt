@@ -11,6 +11,8 @@ syntax of the tokens, but not the syntax of how these tokens can be combined.
 G1 defines the structure of the language. These rules define legal statements within the given language.
 Legal statements are thus legal combinations of tokens.
 
+The idea is that G1 is structural, and grammars in the Ln series are lexers.  ("L" for lexer.)
+
 Also, G1 rules have a semantics, whereas L0 rules do not.
 
 L0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), and, very
