@@ -19,6 +19,15 @@ So - the advantages:
 
 This means Marpa can tell you how many different ways there are of interpreting the input stream.
 
+Or, in other words...
+
+* Marpa is non-deterministic, unlike traditional parsers
+
+Marpa tries everything, all at once. That's why it can parse such a wide class of grammars.
+And, that's why some parses generate multiple parse trees.
+
+See [Chapter 3, the FAQ](chapter3.html) for more on this intriguing topic.
+
 * Marpa supports grammars having nullable symbols
 
 * Rules can be recursive
