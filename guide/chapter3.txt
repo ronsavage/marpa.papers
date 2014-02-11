@@ -12,21 +12,6 @@ This may take some getting used to, in the sense that probably what you're used 
 If two alternatives (in a prioritized rule say, separated by '|' or '||') happen to match some source,
 Marpa produces 2 parse trees.
 
-You'll probably need to adopt the 'forgiving' adverb (see
-[Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL) ) to handle such cases.
-
-In reference to the latter doc, LTM => 'Longest Token Match', and LATM => 'Longest Acceptable Token Match'.
-
-Now, "undo's" are related to "forgiving lexemes": with undos, the lexer can be started, but then immediately
-"undo" the predictions of any lexemes which will not be acceptable to G1. These lexemes won't even be looked for,
-which is more efficient.
-
-Potential applications for undos are vast, and include include zero-width assertions.
-Note: Undo's are on a rule by rule basis, i.e. not token by token, whereas "forgiving" is declared at the lexeme level.
-
-See [this post](https://groups.google.com/forum/#!msg/marpa-parser/nmXMqSpaGaA/ktaRlmeVwbcJ), from January 2014,
-on the Marpa mailing list for more on undos.
-
 What is the meaning of L0 and G1?
 ---------------------------------
 L0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
