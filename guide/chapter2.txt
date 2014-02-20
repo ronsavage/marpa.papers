@@ -96,6 +96,16 @@ Events can be activated and deactivated.
 
 The current status of each event can be interrogated by your code during a pause.
 
+* As of V 2.080, Marpa::R2 supports both LTM and LATM
+
+LTM is Longest Token Matching. LTM is the tradition and the current standard practice in parsing, and the default
+in Marpa.
+
+LATM is Longest Acceptable Token Matching. It is activated by using the new _forgiving_ adverb in your grammar.
+
+See [the announcement](https://groups.google.com/forum/#!topic/marpa-parser/QvjczFVz7kw) for V 2.080, and
+[the docs for forgiving](https://metacpan.org/pod/release/JKEGL/Marpa-R2-2.080000/pod/Scanless/DSL.pod#forgiving).
+
 * Marpa has built-in tracing facilities
 
 * Marpa has a 'thin' interface, for direct access to libmarpa

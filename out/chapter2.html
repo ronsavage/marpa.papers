@@ -125,6 +125,18 @@ Marpa was expecting to see at that point.</p>
 <p>The current status of each event can be interrogated by your code during a pause.</p>
 
 <ul>
+<li>As of V 2.080, Marpa::R2 supports both LTM and LATM</li>
+</ul>
+
+<p>LTM is Longest Token Matching. LTM is the tradition and the current standard practice in parsing, and the default
+in Marpa.</p>
+
+<p>LATM is Longest Acceptable Token Matching. It is activated by using the new <em>forgiving</em> adverb in your grammar.</p>
+
+<p>See <a href="https://groups.google.com/forum/#!topic/marpa-parser/QvjczFVz7kw">the announcement</a> for V 2.080, and
+<a href="https://metacpan.org/pod/release/JKEGL/Marpa-R2-2.080000/pod/Scanless/DSL.pod#forgiving">the docs for forgiving</a>.</p>
+
+<ul>
 <li><p>Marpa has built-in tracing facilities</p></li>
 <li><p>Marpa has a 'thin' interface, for direct access to libmarpa</p></li>
 <li><p>Marpa prunes all nulled subtrees back to their topmost nulled node</p></li>

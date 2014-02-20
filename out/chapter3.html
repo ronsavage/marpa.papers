@@ -25,22 +25,15 @@
 <p>If two alternatives (in a prioritized rule say, separated by '|' or '||') happen to match some source,
 Marpa produces 2 parse trees.</p>
 
-<p>You'll probably need to adopt the 'forgiving' adverb (see
-<a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a> ) to handle such cases.</p>
+<p>The parser, then, catches all ambiguities, but the SLIF lexer does <em>not</em>, whether it is LTM or LATM.
+LTM is Longest Token Match, and LATM is Longest Acceptable Token Match.</p>
 
-<p>In reference to the latter doc, LTM => 'Longest Token Match', and LATM => 'Longest Acceptable Token Match'.</p>
+<p>The SLIF lexer does a longest tokens (plural) match. So it does recognize ambiguous tokens if they are longest tokens.</p>
 
-<p>Now, here's how "undo's" relate to "forgiving lexemes": Right now if a lexeme is not acceptable to G1,
-but is "forgiven", the lexer backs up and looks for an acceptable lexeme.</p>
+<p>Ambiguous tokens which are shorter than the match one (whether the discipline is "forgiving" or not) are ignored
+by the lexer.</p>
 
-<p>With undos, I can start the lexer, but then immediately "undo" the predictions of any lexemes which will not be
-acceptable to G1. These lexemes won't even be looked for, which is more efficient.</p>
-
-<p>Potential applications for undos are vast, and include include zero-width assertions.
-Note: Undo's are on a rule by rule basis, i.e. not token by token, whereas forgiving is declared at the lexeme level.</p>
-
-<p>See <a href="https://groups.google.com/forum/#!msg/marpa-parser/nmXMqSpaGaA/ktaRlmeVwbcJ">this post</a>, from January 2014,
-on the Marpa mailing list for more on undos.</p>
+<p>Consequently, this means the ambiguous matched tokens must be all the same length.</p>
 
 <h2>What is the meaning of L0 and G1?</h2>
 
@@ -50,7 +43,7 @@ syntax of the tokens, but not the syntax of how these tokens can be combined.</p
 <p>G1 defines the structure of the language. These rules define legal statements within the given language.
 Legal statements are thus legal combinations of tokens.</p>
 
-<p>The idea is that G1 is structural, and grammars in the Ln series are lexers.  ("L" for lexer.)</p>
+<p>The idea is that G1 is structural, and grammars in the Ln series are lexers. ("L" for lexer.)</p>
 
 <p>Also, G1 rules have a semantics, whereas L0 rules do not.</p>
 
