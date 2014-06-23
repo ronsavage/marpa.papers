@@ -3,6 +3,15 @@ Chapter 3 - FAQ
 
 !include "guide/menu.inc"
 
+What is Libmarpa?
+-----------------
+Libmarpa is the core Marpa library, written in C, which implements the Marpa parse engine - the Marpa algorithm itself.
+It is low-level, but it is documented and can be installed and used separately.
+
+[Home page](https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html).
+
+[Formal docs](https://jeffreykegler.github.io/Marpa-web-site/libmarpa_api/cpan_indexed/index.html).
+
 Is Marpa deterministic?
 -----------------------
 No. Marpa is non-deterministic, unlike traditional parsers. Marpa tries everything, all at once.

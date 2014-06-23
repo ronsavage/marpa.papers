@@ -244,9 +244,19 @@ Sample Code
 -----------
 A number of Perl modules use Marpa::R2, and can be freely downloaded for inspection. In alphabetical order:
 
+* [App::Datecalc](https://metacpan.org/release/App-datecalc)
+
+* [Catmandu](https://metacpan.org/release/Catmandu)
+
 * [Grammar::Marpa](https://metacpan.org/release/Grammar-Marpa)
 
 * [Graph::Easy::Marpa](https://metacpan.org/release/Graph-Easy-Marpa)
+
+* [GraphViz2::Marpa](https://metacpan.org/release/GraphViz2-Marpa)
+
+* [GraphViz2::Marpa::PathUtils](https://metacpan.org/release/GraphViz2-Marpa-PathUtils)
+
+* [MarpaX::Database::Terminfo](https://metacpan.org/release/MarpaX-Database-Terminfo}
 
 * [MarpaX::Demo::JSONParser](https://metacpan.org/release/MarpaX-Demo-JSONParser)
 
@@ -268,7 +278,15 @@ A number of Perl modules use Marpa::R2, and can be freely downloaded for inspect
 
 * [MarpaX::Repa](https://metacpan.org/release/MarpaX-Repa)
 
+* [MarpaX::Simple](https://metacpan.org/release/MarpaX-Simple)
+
 * [MarpaX::xPathLike](https://metacpan.org/release/MarpaX-xPathLike)
+
+* [Protocol::Star::Linemode](https://metacpan.org/release/Protocol-Star-Linemode)
+
+* [TAP::Spec::Parser](https://metacpan.org/release/TAP-Spec-Parser)
+
+* [Task::LiveDVD::FrankfurtPM](https://metacpan.org/release/Task-LiveDVD-FrankfurtPM)
 
 Search [MetaCPAN](https://metacpan.org) for more.
 
