@@ -317,6 +317,8 @@ References
 
 * [Marpa's homepage](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/)
 
+* [Libmarpa](https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html)
+
 * [BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
 
 * [Parsing](https://en.wikipedia.org/wiki/Parsing)
