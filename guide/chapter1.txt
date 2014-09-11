@@ -263,7 +263,7 @@ References
 
 * [Marpa - Technical Material](https://jeffreykegler.github.io/Marpa-web-site/)
 
-* [Marpa's homepage (which contains many links)](http://savage.net.au/Marpa.html/)
+* [Marpa's homepage (which contains many links)](http://savage.net.au/Marpa.html)
 
 * [Peter Stuifzand's Marpa Guide](http://marpa-guide.github.io/)
 
