@@ -240,60 +240,6 @@ grammars.
 
 See [Chapter 1](chapter1.html) for a detailed list of Marpa's advantages over old-style lexers and parsers.
 
-Sample Code
------------
-A number of Perl modules use Marpa::R2, and can be freely downloaded for inspection. In alphabetical order:
-
-* [App::Datecalc](https://metacpan.org/release/App-datecalc)
-
-* [Catmandu](https://metacpan.org/release/Catmandu)
-
-* [Grammar::Marpa](https://metacpan.org/release/Grammar-Marpa)
-
-* [Graph::Easy::Marpa](https://metacpan.org/release/Graph-Easy-Marpa)
-
-* [GraphViz2::Marpa](https://metacpan.org/release/GraphViz2-Marpa)
-
-* [GraphViz2::Marpa::PathUtils](https://metacpan.org/release/GraphViz2-Marpa-PathUtils)
-
-* [MarpaX::Database::Terminfo](https://metacpan.org/release/MarpaX-Database-Terminfo}
-
-* [MarpaX::Demo::JSONParser](https://metacpan.org/release/MarpaX-Demo-JSONParser)
-
-* [MarpaX::Demo::StringParser](https://metacpan.org/release/MarpaX-Demo-StringParser)
-
-* [MarpaX::Import](https://github.com/jddurand/MarpaX--Import)
-
-* [MarpaX::Grammar::GraphViz2](https://metacpan.org/release/MarpaX-Grammar-GraphViz2)
-
-* [MarpaX::Grammar::Parser](https://metacpan.org/release/MarpaX-Grammar-Parser)
-
-* [MarpaX::Languages::C::AST](https://metacpan.org/release/MarpaX-Languages-C-AST)
-
-* [MarpaX::Languages::ECMAScript::AST](https://metacpan.org/release/MarpaX-Languages-ECMAScript-AST)
-
-* [MarpaX::Languages::SVG::Parser](https://metacpan.org/release/MarpaX-Languages-SVG-Parser)
-
-* [MarpaX::Parse](https://github.com/rns/MarpaX-Parse)
-
-* [MarpaX::Repa](https://metacpan.org/release/MarpaX-Repa)
-
-* [MarpaX::Simple](https://metacpan.org/release/MarpaX-Simple)
-
-* [MarpaX::xPathLike](https://metacpan.org/release/MarpaX-xPathLike)
-
-* [Protocol::Star::Linemode](https://metacpan.org/release/Protocol-Star-Linemode)
-
-* [TAP::Spec::Parser](https://metacpan.org/release/TAP-Spec-Parser)
-
-* [Task::LiveDVD::FrankfurtPM](https://metacpan.org/release/Task-LiveDVD-FrankfurtPM)
-
-Search [MetaCPAN](https://metacpan.org) for more.
-
-Note: Ignore any modules using the deprecated (NAIF) interface. That interface was provided by the obsolete Marpa::XS.
-This includes [GraphViz2::Marpa](https://metacpan.org/release/GraphViz2-Marpa). Such modules are of course still
-fully-functional, but are excluded from this list simply because they use the NAIF.
-
 Getting the code for Marpa
 --------------------------
 Marpa is a Perl library. We will use [Marpa::R2](http://metacpan.org/release/Marpa-R2) for the examples in this guide.
@@ -313,27 +259,13 @@ that end in '.pl' can be executed using `perl`.
 
 References
 ----------
+* [Jeffrey's blog](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/)
+
+* [Marpa - Technical Material](https://jeffreykegler.github.io/Marpa-web-site/)
+
+* [Marpa's homepage (which contains many links)](http://savage.net.au/Marpa.html/)
+
 * [Peter Stuifzand's Marpa Guide](http://marpa-guide.github.io/)
-
-* [Marpa's homepage](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/)
-
-* [Libmarpa](https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html)
-
-* [BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form)
-
-* [Parsing](https://en.wikipedia.org/wiki/Parsing)
-
-* [Abstract Syntax Trees](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
-
-* [LL and LR Parsing](http://blog.reverberate.org/2013/07/ll-and-lr-parsing-demystified.html)
-
-* [Domain-specific Language](https://en.wikipedia.org/wiki/Domain-specific_language)
-
-* [Marpa::R2](https://metacpan.org/release/Marpa-R2)
-
-* [Marpa's Google Group](https://groups.google.com/forum/#!forum/marpa-parser)
-
-* [amon's article on translating C syntax to BNF syntax](http://longanswers.blogspot.de/2013/06/transforming-syntax.html)
 
 !include "guide/menu.inc"
 
