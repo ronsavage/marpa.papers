@@ -31,6 +31,16 @@ by the lexer.
 
 Consequently, this means the ambiguous matched tokens must be all the same length.
 
+See also the next question.
+
+Why doesn't my ambiguous grammar return more than 1 parse tree?
+---------------------------------------------------------------
+Probably because your grammar includes
+
+	lexeme default = latm => 1 # Active the Longest Acceptable Token Match option.
+
+Try commenting that line out after, perhaps, re-reading the previous question's answer.
+
 What is the meaning of L0 and G1?
 ---------------------------------
 L0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
@@ -221,11 +231,12 @@ If you think out the conceptual issues, you might see nulled lexemes are "fraugh
 which null lexemes should you recognize? And how many of them? A parser could guess what you really mean here, but
 to my (Jeffrey's) mind it is just as well to force you to be explicit on this issue.
 
-Note: I (Ron) think Jeffrey uses pseudo in the name 'nulled pseudo-lexeme' because, being effectively of 0 length, they
-can't actually be lexemes.
+Note: I (Ron) think Jeffrey uses pseudo in the name 'nulled pseudo-lexeme' because, being effectively of 0 length,
+they can't actually be lexemes.
 
 For sample code which shows a way of handling such an issue see
-[null.lexeme.demo.pl](http://savage.net.au/Perl-modules/html/marpa.papers/null.lexeme.demo.pl).
+[null.lexeme.demo.pl](http://savage.net.au/Perl-modules/html/marpa.papers/null.lexeme.demo.pl) and
+[null.lexeme.demo.1.pl](http://savage.net.au/Perl-modules/html/marpa.papers/null.lexeme.demo.1.pl).
 
 How do I find out where I am within the input stream?
 -----------------------------------------------------
