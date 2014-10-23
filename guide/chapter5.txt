@@ -91,6 +91,8 @@ A Markdown Parser
 -----------------
 Outline: Convert Markdown to some intermediate form, and from there to anything.
 
+[A specification for Markdown](https://jgm.github.io/stmd/spec.html)
+
 [Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
 
 A DSL for Moo and Moops
