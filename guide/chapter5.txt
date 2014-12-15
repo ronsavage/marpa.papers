@@ -111,14 +111,6 @@ Outline: A compiler from some nice BNF-ish format, to Perl regular expressions.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
 
-An SQL Parser
--------------
-Acronym: SQL => Structured Query Language.
-
-Outline: Convert SQL select statements into CouchDB maps.
-
-[Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/6nxE-lMwf50/Q-GjJn6UD9cJ)
-
 A TeX Frontend
 --------------
 Acronym: TeX => A typsetting system.
