@@ -238,7 +238,7 @@ Some of Marpa's features
 * Intriguingly, Marpa's own grammar (for its DSL) ships in a file (metag.bnf) which has the same format as end-user
 grammars.
 
-See [Chapter 1](chapter1.html) for a detailed list of Marpa's advantages over old-style lexers and parsers.
+See [Chapter 2](chapter2.html) for a detailed list of Marpa's advantages over old-style lexers and parsers.
 
 Getting the code for Marpa
 --------------------------
