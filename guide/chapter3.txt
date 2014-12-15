@@ -3,12 +3,47 @@ Chapter 3 - FAQ
 
 !include "guide/menu.inc"
 
+Table of Contents
+-----------------
+* Where do I go for help?
+* What is Libmarpa?
+* Is Marpa deterministic?
+* Why doesn't my ambiguous grammar return more than 1 parse tree?
+* What is the meaning of L0 and G1?
+* How do I parse comments?
+* How do I parse numbers?
+* How do I represent choice in the grammar?
+* Is there any other way of representing choice?
+* What's the difference between '|' and '||' in grammar definitions?
+* What does it mean to hide (mask) tokens?
+* How do I implement recursion in a grammar?
+* Why does using '+' or '*' in a rule only work sometimes?
+* Can a lexeme have length == 0?
+* How do I find out where I am within the input stream?
+* How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
+* What is the meaning of the line number in a Marpa error message?
+* Can I switch grammars during a parse?
+* How do I implement disambiguation logic?
+* Where is Ruby Slippers parsing documented?
+* Where can I find code using Ruby Slippers?
+* How do I associate an action class with my grammar?
+* Declaring an Action Class
+* Other Resources
+
+Where do I go for help?
+-----------------------
+The IRC channel may get the quickest response: irc.freenode.net#marpa.
+
+The Google Group (has message threading): https://groups.google.com/forum/#!forum/marpa-parser.
+
+Marpa's homepage is: http://savage.net.au/Marpa.html.
+
 What is Libmarpa?
 -----------------
 Libmarpa is the core Marpa library, written in C, which implements the Marpa parse engine - the Marpa algorithm itself.
 It is low-level, but it is documented and can be installed and used separately.
 
-[Home page](https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html).
+[Homepage](https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html).
 
 [Formal docs](https://jeffreykegler.github.io/Marpa-web-site/libmarpa_api/cpan_indexed/index.html).
 
@@ -49,12 +84,19 @@ syntax of the tokens, but not the syntax of how these tokens can be combined.
 G1 defines the structure of the language. These rules define legal statements within the given language.
 Legal statements are thus legal combinations of tokens.
 
-The idea is that G1 is structural, and grammars in the Ln series are lexers. ("L" for lexer.)
+The idea is that G1 is structural, and grammars are in the Ln series are lexers. ("L" for lexer.)
 
 Also, G1 rules have a semantics, whereas L0 rules do not.
 
 L0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), and, very
 briefly, in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics). In both cases, search for 'L0'.
+
+How do I parse comments?
+------------------------
+
+[GraphViz2::Marpa](https://metacpan.org/module/GraphViz2::Marpa) implements comment skipping for C
+and C++ comments, and for #-prefix style comments. Search the source of Marpa.pm for for
+'C style comment', 'Cplusplus style comment' and 'hash style comment'.
 
 How do I parse numbers?
 -----------------------
@@ -256,6 +298,65 @@ Note: If your grammar uses \r, that will affect the line count.
 Further, see [the line_column() method in Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R#line_column())
 for various special characters some of which may affect this line count.
 
+Can I switch grammars during a parse?
+-------------------------------------
+
+No - You can't just change Marpa's grammar object during a parse (by calling
+Marpa::R2::Scanless::G -> new() with a new BNF), and expect everything else to keep working.
+
+Nevertheless, there are techniques which can probably do what you want.
+
+* 1: Combine the grammars
+
+* 2: Use 'parse before' and switch grammars twice
+
+* 3: Use an action, change the grammar, and re-parse
+
+In a bit more detail:
+
+1: 'Combine the grammars': Perhaps you are convinced this can't be done, but you are urged to try
+it. Focus on the problem of defining the lexemes.
+
+You may find your solution involves switching lexers rather than switching grammars.
+
+2: 'Use parse before and switch grammars twice': This technique is used in
+[GraphViz2::Marpa](https://metacpan.org/module/GraphViz2::Marpa).
+
+The idea is to pause at the start of a substring you want to parse using a different grammar. Then,
+parse just that substring using a different grammar object and a different recognizer object.
+
+At the end of the substring, tell the first grammar to resume at the first character after the end
+of the substring.
+
+This works in my (Ron's) code because the second grammar ends with a known, matching, delimiter.
+When Marpa encounters the next character, it generates the infamous error: "Parsing complete
+but lexemes remain". Luckily for me, this just means there is (and there must be) tokens in the
+input stream after the end of the substring which needed to be parsed using the second grammar. So
+it's just a matter of asking Marpa if that particular error arose, processing the output from using
+the second grammar, and returning to the parse which is using first grammar.
+
+In the code referenced, search for '$self -> grammar' and '$self -> grammar4html'.
+
+Your problem will obviously be: What happens at the end of the substring? I.e. How do you know it's
+time to switch back to the previous grammar?
+
+Also, this approach creates the problem of having the semantics defined in 2 different places. So
+combining them may add complexity to your code.
+
+3: 'Use an action, change the grammar, and re-parse': This technique is used in
+[MarpaX::Languages::SQL2003::AST](https://github.com/jddurand/MarpaX-Languages-SQL2003-AST/blob/master/lib/MarpaX/Languages/SQL2003/AST/Actions.pm).
+
+See [this IRC backlog entry](http://irclog.perlgeek.de/marpa/2014-12-12#i_9797844) for a discussion
+by the author, Jean-Damien Durand, for why he does things this way.
+
+Briefly, the parse of a substring (call it 'a') requires knowledge of what follows that substring
+(call the second substring 'b'). So, parse it all ('a + b'), and when the action is triggered for
+'b', use the information found to change the grammar used to parse 'a', and re-parse 'a'.
+
+The effect (in Jean-Damien's case at least) is to use the result of a sub-grammar as a token value.
+
+You may safely assume this latter method is a very advanced technique!
+
 How do I implement disambiguation logic?
 ----------------------------------------
 See under [Bailing-out-of-parse-evaluation in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation),
@@ -269,6 +370,13 @@ Start with [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Recogni
 This document has several references to Ruby Slippers.
 
 See also [Ruby Slippers parsing](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html).
+
+See also the series beginning with [parsing HTML part 1](https://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/how-to-parse-html.html).
+
+Where can I find code using Ruby Slippers?
+------------------------------------------
+See the script scripts/match.parentheses.02.pl, which ships with the module
+[MarpaX::Demo::SampleScripts](https://metacpan.org/module/MarpaX::Demo::SampleScripts).
 
 How do I associate an action class with my grammar?
 ---------------------------------------------------

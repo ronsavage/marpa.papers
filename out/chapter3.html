@@ -16,12 +16,49 @@
 
 <p><a href="index.html">Index</a></p>
 
+<h2>Table of Contents</h2>
+
+<ul>
+<li>Where do I go for help?</li>
+<li>What is Libmarpa?</li>
+<li>Is Marpa deterministic?</li>
+<li>Why doesn't my ambiguous grammar return more than 1 parse tree?</li>
+<li>What is the meaning of L0 and G1?</li>
+<li>How do I parse comments?</li>
+<li>How do I parse numbers?</li>
+<li>How do I represent choice in the grammar?</li>
+<li>Is there any other way of representing choice?</li>
+<li>What's the difference between '|' and '||' in grammar definitions?</li>
+<li>What does it mean to hide (mask) tokens?</li>
+<li>How do I implement recursion in a grammar?</li>
+<li>Why does using '+' or '*' in a rule only work sometimes?</li>
+<li>Can a lexeme have length == 0?</li>
+<li>How do I find out where I am within the input stream?</li>
+<li>How do I find out which rule applies at some point in the input stream (e.g. during a pause)?</li>
+<li>What is the meaning of the line number in a Marpa error message?</li>
+<li>Can I switch grammars during a parse?</li>
+<li>How do I implement disambiguation logic?</li>
+<li>Where is Ruby Slippers parsing documented?</li>
+<li>Where can I find code using Ruby Slippers?</li>
+<li>How do I associate an action class with my grammar?</li>
+<li>Declaring an Action Class</li>
+<li>Other Resources</li>
+</ul>
+
+<h2>Where do I go for help?</h2>
+
+<p>The IRC channel may get the quickest response: irc.freenode.net#marpa.</p>
+
+<p>The Google Group (has message threading): https://groups.google.com/forum/#!forum/marpa-parser.</p>
+
+<p>Marpa's homepage is: http://savage.net.au/Marpa.html.</p>
+
 <h2>What is Libmarpa?</h2>
 
 <p>Libmarpa is the core Marpa library, written in C, which implements the Marpa parse engine - the Marpa algorithm itself.
 It is low-level, but it is documented and can be installed and used separately.</p>
 
-<p><a href="https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html">Home page</a>.</p>
+<p><a href="https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html">Homepage</a>.</p>
 
 <p><a href="https://jeffreykegler.github.io/Marpa-web-site/libmarpa_api/cpan_indexed/index.html">Formal docs</a>.</p>
 
@@ -63,12 +100,18 @@ syntax of the tokens, but not the syntax of how these tokens can be combined.</p
 <p>G1 defines the structure of the language. These rules define legal statements within the given language.
 Legal statements are thus legal combinations of tokens.</p>
 
-<p>The idea is that G1 is structural, and grammars in the Ln series are lexers. ("L" for lexer.)</p>
+<p>The idea is that G1 is structural, and grammars are in the Ln series are lexers. ("L" for lexer.)</p>
 
 <p>Also, G1 rules have a semantics, whereas L0 rules do not.</p>
 
 <p>L0 and G1 discussed in <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>, and, very
 briefly, in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>. In both cases, search for 'L0'.</p>
+
+<h2>How do I parse comments?</h2>
+
+<p><a href="https://metacpan.org/module/GraphViz2::Marpa">GraphViz2::Marpa</a> implements comment skipping for C
+and C++ comments, and for #-prefix style comments. Search the source of Marpa.pm for for
+'C style comment', 'Cplusplus style comment' and 'hash style comment'.</p>
 
 <h2>How do I parse numbers?</h2>
 
@@ -278,6 +321,64 @@ for access to internal variables in Marpa which do what you want.</p>
 <p>Further, see <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()">the line_column() method in Marpa::R2::Scanless::R</a>
 for various special characters some of which may affect this line count.</p>
 
+<h2>Can I switch grammars during a parse?</h2>
+
+<p>No - You can't just change Marpa's grammar object during a parse (by calling
+Marpa::R2::Scanless::G -> new() with a new BNF), and expect everything else to keep working.</p>
+
+<p>Nevertheless, there are techniques which can probably do what you want.</p>
+
+<ul>
+<li><p>1: Combine the grammars</p></li>
+<li><p>2: Use 'parse before' and switch grammars twice</p></li>
+<li><p>3: Use an action, change the grammar, and re-parse</p></li>
+</ul>
+
+<p>In a bit more detail:</p>
+
+<p>1: 'Combine the grammars': Perhaps you are convinced this can't be done, but you are urged to try
+it. Focus on the problem of defining the lexemes.</p>
+
+<p>You may find your solution involves switching lexers rather than switching grammars.</p>
+
+<p>2: 'Use parse before and switch grammars twice': This technique is used in
+<a href="https://metacpan.org/module/GraphViz2::Marpa">GraphViz2::Marpa</a>.</p>
+
+<p>The idea is to pause at the start of a substring you want to parse using a different grammar. Then,
+parse just that substring using a different grammar object and a different recognizer object.</p>
+
+<p>At the end of the substring, tell the first grammar to resume at the first character after the end
+of the substring.</p>
+
+<p>This works in my (Ron's) code because the second grammar ends with a known, matching, delimiter.
+When Marpa encounters the next character, it generates the infamous error: "Parsing complete
+but lexemes remain". Luckily for me, this just means there is (and there must be) tokens in the
+input stream after the end of the substring which needed to be parsed using the second grammar. So
+it's just a matter of asking Marpa if that particular error arose, processing the output from using
+the second grammar, and returning to the parse which is using first grammar.</p>
+
+<p>In the code referenced, search for '$self -> grammar' and '$self -> grammar4html'.</p>
+
+<p>Your problem will obviously be: What happens at the end of the substring? I.e. How do you know it's
+time to switch back to the previous grammar?</p>
+
+<p>Also, this approach creates the problem of having the semantics defined in 2 different places. So
+combining them may add complexity to your code.</p>
+
+<p>3: 'Use an action, change the grammar, and re-parse': This technique is used in
+<a href="https://github.com/jddurand/MarpaX-Languages-SQL2003-AST/blob/master/lib/MarpaX/Languages/SQL2003/AST/Actions.pm">MarpaX::Languages::SQL2003::AST</a>.</p>
+
+<p>See <a href="http://irclog.perlgeek.de/marpa/2014-12-12#i_9797844">this IRC backlog entry</a> for a discussion
+by the author, Jean-Damien Durand, for why he does things this way.</p>
+
+<p>Briefly, the parse of a substring (call it 'a') requires knowledge of what follows that substring
+(call the second substring 'b'). So, parse it all ('a + b'), and when the action is triggered for
+'b', use the information found to change the grammar used to parse 'a', and re-parse 'a'.</p>
+
+<p>The effect (in Jean-Damien's case at least) is to use the result of a sub-grammar as a token value.</p>
+
+<p>You may safely assume this latter method is a very advanced technique!</p>
+
 <h2>How do I implement disambiguation logic?</h2>
 
 <p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation">Bailing-out-of-parse-evaluation in Marpa::R2::Semantics</a>,
@@ -291,6 +392,13 @@ for how to short-circuit semantic analysis.</p>
 This document has several references to Ruby Slippers.</p>
 
 <p>See also <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html">Ruby Slippers parsing</a>.</p>
+
+<p>See also the series beginning with <a href="https://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/how-to-parse-html.html">parsing HTML part 1</a>.</p>
+
+<h2>Where can I find code using Ruby Slippers?</h2>
+
+<p>See the script scripts/match.parentheses.02.pl, which ships with the module
+<a href="https://metacpan.org/module/MarpaX::Demo::SampleScripts">MarpaX::Demo::SampleScripts</a>.</p>
 
 <h2>How do I associate an action class with my grammar?</h2>
 
