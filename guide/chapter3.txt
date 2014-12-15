@@ -34,9 +34,10 @@ Where do I go for help?
 -----------------------
 The IRC channel may get the quickest response: irc.freenode.net#marpa.
 
-The Google Group (has message threading): https://groups.google.com/forum/#!forum/marpa-parser.
+[The Google Group](https://groups.google.com/forum/#!forum/marpa-parser) has message threading,
+and so is good for complex or extended discussions.
 
-Marpa's homepage is: http://savage.net.au/Marpa.html.
+[Marpa's homepage](http://savage.net.au/Marpa.html).
 
 What is Libmarpa?
 -----------------
@@ -369,9 +370,8 @@ Where is Ruby Slippers parsing documented?
 Start with [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Recognizer#Ruby-Slippers-parsing).
 This document has several references to Ruby Slippers.
 
-See also [Ruby Slippers parsing](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html).
-
-See also the series beginning with [parsing HTML part 1](https://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/how-to-parse-html.html).
+See also Jeffrey's articles: [Ruby Slippers parsing](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html),
+and the series beginning with [parsing HTML part 1](https://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/how-to-parse-html.html).
 
 Where can I find code using Ruby Slippers?
 ------------------------------------------
