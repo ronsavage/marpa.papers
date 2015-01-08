@@ -5,34 +5,37 @@ Chapter 3 - FAQ
 
 Table of Contents
 -----------------
-* Where do I go for help?
-* What is Libmarpa?
-* Is Marpa deterministic?
-* Why doesn't my ambiguous grammar return more than 1 parse tree?
-* How do I implement disambiguation logic?
-* Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"
-* What is the meaning of L0 and G1?
-* How do I parse comments?
-* How do I parse numbers?
-* How do I represent choice in the grammar?
-* Is there any other way of representing choice?
-* What's the difference between '|' and '||' in grammar definitions?
-* What does it mean to hide (mask) tokens?
-* How do I implement recursion in a grammar?
-* Why does using '+' or '*' in a rule only work sometimes?
-* Can a lexeme have length == 0?
-* How do I find out where I am within the input stream?
-* How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
-* What is the meaning of the line number in a Marpa error message?
-* Can I switch grammars during a parse?
-* Where is Ruby Slippers parsing documented?
-* Where can I find code using Ruby Slippers?
-* How do I associate an action class with my grammar?
-* Declaring an Action Class
-* Other Resources
+* [1 Where do I go for help?](#q1)
+* [2 What is Libmarpa?](#q2)
+* [3 Is Marpa deterministic?](#q3)
+* [4 Why doesn't my ambiguous grammar return more than 1 parse tree?](#q4)
+* [5 How do I implement disambiguation logic?](#q5)
+* [6 Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"](#q6)
+* [7 What is the meaning of L0 and G1?](#q7)
+* [8 How do I parse comments?](#q8)
+* [9 How do I parse numbers?](#q9)
+* [10 How do I represent choice in the grammar?](#q10)
+* [11 Is there any other way of representing choice?](#q11)
+* [12 What's the difference between '|' and '||' in grammar definitions?](#q12)
+* [13 What does it mean to hide (mask) tokens?](#q13)
+* [14 How do I implement recursion in a grammar?](#q14)
+* [15 Why does using '+' or '*' in a rule only work sometimes?](#q15)
+* [16 Can a lexeme have length == 0?](#q16)
+* [17 How do I find out where I am within the input stream?](#q17)
+* [18 How do I find out which rule applies at some point in the input stream (e.g. during a pause)?](#q18)
+* [19 What is the meaning of the line number in a Marpa error message?](#q19)
+* [20 Can I switch grammars during a parse?](#q20)
+* [21 Where is Ruby Slippers parsing documented?](#q21)
+* [22 Where can I find code using Ruby Slippers?](#q22)
+* [23 How do I associate an action class with my grammar?](#q23)
+* [24 Declaring an Action Class](#q24)
+* [25 Where can I find code using events?](#q25)
+* [26 Where can I find code which builds its grammar on-the-fly?](#q26)
+* [27 Other Resources](#q27)
 
-Where do I go for help?
------------------------
+<a name="q1"></a>
+1 Where do I go for help?
+-------------------------
 The IRC channel may get the quickest response: irc.freenode.net#marpa.
 
 [The Google Group](https://groups.google.com/forum/#!forum/marpa-parser) has message threading,
@@ -40,8 +43,9 @@ and so is good for complex or extended discussions.
 
 [Marpa's homepage](http://savage.net.au/Marpa.html).
 
-What is Libmarpa?
------------------
+<a name="q2"></a>
+2 What is Libmarpa?
+-------------------
 Libmarpa is the core Marpa library, written in C, which implements the Marpa parse engine - the Marpa algorithm itself.
 It is low-level, but it is documented and can be installed and used separately.
 
@@ -49,8 +53,9 @@ It is low-level, but it is documented and can be installed and used separately.
 
 [Formal docs](https://jeffreykegler.github.io/Marpa-web-site/libmarpa_api/cpan_indexed/index.html).
 
-Is Marpa deterministic?
------------------------
+<a name="q3"></a>
+3 Is Marpa deterministic?
+-------------------------
 No. Marpa is non-deterministic, unlike traditional parsers. Marpa tries everything, all at once.
 
 This may take some getting used to, in the sense that probably what you're used to is a deterministic parse.
@@ -70,8 +75,9 @@ Consequently, this means the ambiguous matched tokens must be all the same lengt
 
 See also the next question.
 
-Why doesn't my ambiguous grammar return more than 1 parse tree?
----------------------------------------------------------------
+<a name="q4"></a>
+4 Why doesn't my ambiguous grammar return more than 1 parse tree?
+-----------------------------------------------------------------
 Probably because your grammar includes
 
 	lexeme default = latm => 1 # Active the Longest Acceptable Token Match option.
@@ -80,8 +86,9 @@ Try commenting that line out after, perhaps, re-reading the previous question's 
 
 See also the next 2 questions.
 
-How do I implement disambiguation logic?
-----------------------------------------
+<a name="q5"></a>
+5 How do I implement disambiguation logic?
+------------------------------------------
 See under [Bailing-out-of-parse-evaluation in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation),
 for how to short-circuit semantic analysis.
 
@@ -89,8 +96,9 @@ See also [this gist](https://gist.github.com/dginev/6419166).
 
 See also the previous and next questions.
 
-Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"
--------------------------------------------------------------------------------------------------------------
+<a name="q6"></a>
+6 Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"
+---------------------------------------------------------------------------------------------------------------
 The parse is ambiguous. Instead of getting a tree, you got multiple trees. Hence 'forest'.
 
 See [this discussion of 'rank'](https://metacpan.org/pod/distribution/Marpa-R2/pod/Scanless/DSL.pod#rank).
@@ -100,8 +108,9 @@ Also see the long comment on rank at the start of sub BUILD in MarpaX::Languages
 
 See also the previous 2 questions.
 
-What is the meaning of L0 and G1?
----------------------------------
+<a name="q7"></a>
+7 What is the meaning of L0 and G1?
+-----------------------------------
 L0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
 syntax of the tokens, but not the syntax of how these tokens can be combined.
 
@@ -115,15 +124,17 @@ Also, G1 rules have a semantics, whereas L0 rules do not.
 L0 and G1 discussed in [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL), and, very
 briefly, in [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics). In both cases, search for 'L0'.
 
-How do I parse comments?
-------------------------
+<a name="q8"></a>
+8 How do I parse comments?
+--------------------------
 
 [GraphViz2::Marpa](https://metacpan.org/module/GraphViz2::Marpa) implements comment skipping for C
-and C++ comments, and for #-prefix style comments. Search the source of Marpa.pm for for
+and C++ comments, and for #-prefix style comments. Search the source of Marpa.pm for
 'C style comment', 'Cplusplus style comment' and 'hash style comment'.
 
-How do I parse numbers?
------------------------
+<a name="q9"></a>
+9 How do I parse numbers?
+-------------------------
 Chapter 2 of [Peter Stuifzand's Marpa Guide](http://marpa-guide.github.io/) discusses this issue at length
 And if you fork that project on github, you'll find the directory examples/ contains about a dozen sample programs.
 
@@ -132,8 +143,9 @@ which contains similar logic (in data/*.bnf). Further, this latter distro includ
 in the scripts/ directory. The last-named script includes grammars for binary, octal and hex numbers which I did
 not need in the SVG parser.
 
-How do I represent choice in the grammar?
------------------------------------------
+<a name="q10"></a>
+10 How do I represent choice in the grammar?
+--------------------------------------------
 Briefly, use '|'. Sample code from the above named module (data/d.bnf):
 
 	coordinate  ::= float      action => float
@@ -143,8 +155,9 @@ Also note that '||' is available to control the relative priorities of the alter
 
 This issue is expanded upon in the next 2 items in this FAQ.
 
-Is there any other way of representing choice?
-----------------------------------------------
+<a name="q11"></a>
+11 Is there any other way of representing choice?
+-------------------------------------------------
 Sure. Consider these L0 rules (also from data/d.bnf):
 
 	sign_maybe  ~ [+-]
@@ -174,8 +187,9 @@ This is saying:
 
 * And so on
 
-What's the difference between '|' and '||' in grammar definitions?
-------------------------------------------------------------------
+<a name="q12"></a>
+12 What's the difference between '|' and '||' in grammar definitions?
+---------------------------------------------------------------------
 '|' expresses a simple alternative, while '||' separates alternatives at different levels of precedence. For example:
 
 	E ::=    E '*' E
@@ -199,8 +213,9 @@ If precedence is not an issue for you, just use single bar alternation ('|').
 Note also that Marpa supports a 'priority' adverb, discussed in the
 [Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL) docs mentioned above.
 
-What does it mean to hide (mask) tokens?
------------------------------------------
+<a name="q13"></a>
+13 What does it mean to hide (mask) tokens?
+--------------------------------------------
 It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed under
 [RHS-alternatives in Marpa::R2::Scanless::DSL](https://metacpan.org/module/Marpa::R2::Scanless::DSL#RHS-alternatives).
 
@@ -237,12 +252,14 @@ as valid:
 
 Hence, from the end-user's viewpoint, the comma is defined - at least in this particular grammar - to be optional.
 
-How do I implement recursion in a grammar?
-------------------------------------------
+<a name="q14"></a>
+14 How do I implement recursion in a grammar?
+---------------------------------------------
 See the next item.
 
-Why does using '+' or '*' in a rule only work sometimes?
---------------------------------------------------------
+<a name="q15"></a>
+15 Why does using '+' or '*' in a rule only work sometimes?
+-----------------------------------------------------------
 I assume you're referring to cases like this:
 
 Case 1 (fails):
@@ -286,8 +303,9 @@ So we've managed to write the grammar using indirect recursion, thus allowing an
 definitions to follow one another. And the last rule allows the input stream to separate them with commas as
 well as the usual spaces.
 
-Can a lexeme have length == 0?
-------------------------------
+<a name="q16"></a>
+16 Can a lexeme have length == 0?
+---------------------------------
 No.
 
 Marpa allows L0 rules that might be zero-length (for example, "baZ ~ [Z]*") on the idea that it might be convenient
@@ -304,17 +322,20 @@ For sample code which shows a way of handling such an issue see
 [null.lexeme.demo.pl](http://savage.net.au/Perl-modules/html/marpa.papers/null.lexeme.demo.pl) and
 [null.lexeme.demo.1.pl](http://savage.net.au/Perl-modules/html/marpa.papers/null.lexeme.demo.1.pl).
 
-How do I find out where I am within the input stream?
------------------------------------------------------
+<a name="q17"></a>
+17 How do I find out where I am within the input stream?
+--------------------------------------------------------
 See [the line_column() method in Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()).
 
-How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
----------------------------------------------------------------------------------------------
+<a name="q18"></a>
+18 How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
+------------------------------------------------------------------------------------------------
 See under [Action-context in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Action-context),
 for access to internal variables in Marpa which do what you want.
 
-What is the meaning of the line number in a Marpa error message?
-----------------------------------------------------------------
+<a name="q19"></a>
+19 What is the meaning of the line number in a Marpa error message?
+-------------------------------------------------------------------
 It is the line number within the BNF of the rule being processed.
 
 Note: If your grammar uses \r, that will affect the line count.
@@ -322,8 +343,9 @@ Note: If your grammar uses \r, that will affect the line count.
 Further, see [the line_column() method in Marpa::R2::Scanless::R](https://metacpan.org/module/Marpa::R2::Scanless::R#line_column())
 for various special characters some of which may affect this line count.
 
-Can I switch grammars during a parse?
--------------------------------------
+<a name="q20"></a>
+20 Can I switch grammars during a parse?
+----------------------------------------
 
 No - You can't just change Marpa's grammar object during a parse (by calling
 Marpa::R2::Scanless::G -> new() with a new BNF), and expect everything else to keep working.
@@ -381,21 +403,24 @@ The effect (in Jean-Damien's case at least) is to use the result of a sub-gramma
 
 You may safely assume this latter method is a very advanced technique!
 
-Where is Ruby Slippers parsing documented?
-------------------------------------------
+<a name="q21"></a>
+21 Where is Ruby Slippers parsing documented?
+---------------------------------------------
 Start with [Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Recognizer#Ruby-Slippers-parsing).
 This document has several references to Ruby Slippers.
 
 See also Jeffrey's articles: [Ruby Slippers parsing](http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html),
 and the series beginning with [parsing HTML part 1](https://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/how-to-parse-html.html).
 
-Where can I find code using Ruby Slippers?
-------------------------------------------
+<a name="q22"></a>
+22 Where can I find code using Ruby Slippers?
+---------------------------------------------
 See the script scripts/match.parentheses.02.pl, which ships with the module
 [MarpaX::Demo::SampleScripts](https://metacpan.org/module/MarpaX::Demo::SampleScripts).
 
-How do I associate an action class with my grammar?
----------------------------------------------------
+<a name="q23"></a>
+23 How do I associate an action class with my grammar?
+------------------------------------------------------
 
 Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.
 
@@ -488,8 +513,9 @@ run of the same script, or before the first run of any other script. It's ok if 
 command line say, when you run the next script. But in a persistent environment you won't be doing that. Hence, the
 next item in this FAQ.
 
-Declaring an Action Class
--------------------------
+<a name="q24"></a>
+24 Declaring an Action Class
+----------------------------
 The previous item in this FAQ discussed at length various issues regarding how to cleanly generate data within action
 subs, and how to pass that data back to the main-line code which called Marpa.
 
@@ -672,8 +698,24 @@ I must acknowledge the work done by the authors of [Data::Find](https://metacpan
 [MarpaX::Languages::C::AST](https://metacpan.org/release/MarpaX-Languages-C-AST 'In *::Util::Data::Find').
 They all use similar mechanisms for unravelling data structures.
 
-Other Resources
----------------
+<a name="q25"></a>
+25 Where can I find code using events?
+--------------------------------------
+The are many Perl modules which use events.
+
+Try [MarpaX::Languages::Perl::PackUnpack](https://metacpan.org/release/MarpaX-Languages-Perl-PackUnpack)
+or [GraphViz2::Marpa](https://metacpan.org/release/MarpaX-Languages-Perl-PackUnpack).
+
+<a name="q26"></a>
+26 Where can I find code which builds its grammar on-the-fly?
+-------------------------------------------------------------
+A simple case: [Text::Balanced::Marpa](https://metacpan.org/release/Text-Balanced-Marpa).
+
+A complex case: [MarpaX::Languages::SQL2003::AST](https://metacpan.org/release/MarpaX-Languages-SQL2003-AST).
+
+<a name="q27"></a>
+27 Other Resources
+------------------
 * http://jeffreykegler.github.io/Ocean-of-Awareness-blog/metapages/annotated.html
 
 * The list of features in [Chapter 2 - Marpa's Advantages](chapter2.html)
