@@ -23,6 +23,8 @@
 <li>What is Libmarpa?</li>
 <li>Is Marpa deterministic?</li>
 <li>Why doesn't my ambiguous grammar return more than 1 parse tree?</li>
+<li>How do I implement disambiguation logic?</li>
+<li>Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"</li>
 <li>What is the meaning of L0 and G1?</li>
 <li>How do I parse comments?</li>
 <li>How do I parse numbers?</li>
@@ -37,7 +39,6 @@
 <li>How do I find out which rule applies at some point in the input stream (e.g. during a pause)?</li>
 <li>What is the meaning of the line number in a Marpa error message?</li>
 <li>Can I switch grammars during a parse?</li>
-<li>How do I implement disambiguation logic?</li>
 <li>Where is Ruby Slippers parsing documented?</li>
 <li>Where can I find code using Ruby Slippers?</li>
 <li>How do I associate an action class with my grammar?</li>
@@ -92,6 +93,28 @@ by the lexer.</p>
 </code></pre>
 
 <p>Try commenting that line out after, perhaps, re-reading the previous question's answer.</p>
+
+<p>See also the next 2 questions.</p>
+
+<h2>How do I implement disambiguation logic?</h2>
+
+<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation">Bailing-out-of-parse-evaluation in Marpa::R2::Semantics</a>,
+for how to short-circuit semantic analysis.</p>
+
+<p>See also <a href="https://gist.github.com/dginev/6419166">this gist</a>.</p>
+
+<p>See also the previous and next questions.</p>
+
+<h2>Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"</h2>
+
+<p>The parse is ambiguous. Instead of getting a tree, you got multiple trees. Hence 'forest'.</p>
+
+<p>See <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Scanless/DSL.pod#rank">this discussion of 'rank'</a>.</p>
+
+<p>Also see the long comment on rank at the start of sub BUILD in MarpaX::Languages::Perl::PackUnpack
+<a href="https://metacpan.org/source/RSAVAGE/MarpaX-Languages-Perl-PackUnpack-1.00/lib/MarpaX/Languages/Perl/PackUnpack.pm#L139">here</a>.</p>
+
+<p>See also the previous 2 questions.</p>
 
 <h2>What is the meaning of L0 and G1?</h2>
 
@@ -379,13 +402,6 @@ by the author, Jean-Damien Durand, for why he does things this way.</p>
 <p>The effect (in Jean-Damien's case at least) is to use the result of a sub-grammar as a token value.</p>
 
 <p>You may safely assume this latter method is a very advanced technique!</p>
-
-<h2>How do I implement disambiguation logic?</h2>
-
-<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation">Bailing-out-of-parse-evaluation in Marpa::R2::Semantics</a>,
-for how to short-circuit semantic analysis.</p>
-
-<p>See also <a href="https://gist.github.com/dginev/6419166">this gist</a>.</p>
 
 <h2>Where is Ruby Slippers parsing documented?</h2>
 
