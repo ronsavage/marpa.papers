@@ -9,6 +9,8 @@ Table of Contents
 * What is Libmarpa?
 * Is Marpa deterministic?
 * Why doesn't my ambiguous grammar return more than 1 parse tree?
+* How do I implement disambiguation logic?
+* Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"
 * What is the meaning of L0 and G1?
 * How do I parse comments?
 * How do I parse numbers?
@@ -23,7 +25,6 @@ Table of Contents
 * How do I find out which rule applies at some point in the input stream (e.g. during a pause)?
 * What is the meaning of the line number in a Marpa error message?
 * Can I switch grammars during a parse?
-* How do I implement disambiguation logic?
 * Where is Ruby Slippers parsing documented?
 * Where can I find code using Ruby Slippers?
 * How do I associate an action class with my grammar?
@@ -76,6 +77,28 @@ Probably because your grammar includes
 	lexeme default = latm => 1 # Active the Longest Acceptable Token Match option.
 
 Try commenting that line out after, perhaps, re-reading the previous question's answer.
+
+See also the next 2 questions.
+
+How do I implement disambiguation logic?
+----------------------------------------
+See under [Bailing-out-of-parse-evaluation in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation),
+for how to short-circuit semantic analysis.
+
+See also [this gist](https://gist.github.com/dginev/6419166).
+
+See also the previous and next questions.
+
+Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"
+-------------------------------------------------------------------------------------------------------------
+The parse is ambiguous. Instead of getting a tree, you got multiple trees. Hence 'forest'.
+
+See [this discussion of 'rank'](https://metacpan.org/pod/distribution/Marpa-R2/pod/Scanless/DSL.pod#rank).
+
+Also see the long comment on rank at the start of sub BUILD in MarpaX::Languages::Perl::PackUnpack
+[here](https://metacpan.org/source/RSAVAGE/MarpaX-Languages-Perl-PackUnpack-1.00/lib/MarpaX/Languages/Perl/PackUnpack.pm#L139).
+
+See also the previous 2 questions.
 
 What is the meaning of L0 and G1?
 ---------------------------------
@@ -357,13 +380,6 @@ Briefly, the parse of a substring (call it 'a') requires knowledge of what follo
 The effect (in Jean-Damien's case at least) is to use the result of a sub-grammar as a token value.
 
 You may safely assume this latter method is a very advanced technique!
-
-How do I implement disambiguation logic?
-----------------------------------------
-See under [Bailing-out-of-parse-evaluation in Marpa::R2::Semantics](https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation),
-for how to short-circuit semantic analysis.
-
-See also [this gist](https://gist.github.com/dginev/6419166).
 
 Where is Ruby Slippers parsing documented?
 ------------------------------------------

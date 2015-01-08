@@ -87,14 +87,6 @@ Outline: Make's text file instructions to build a program could be replaced by a
 
 [A Marpa-based gist](https://gist.github.com/pstuifzand/4448957).
 
-A Markdown Parser
------------------
-Outline: Convert Markdown to some intermediate form, and from there to anything.
-
-[A specification for Markdown](https://jgm.github.io/stmd/spec.html)
-
-[Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
-
 A DSL for Moo and Moops
 -----------------------
 And perhaps for mop.
