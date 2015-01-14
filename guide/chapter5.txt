@@ -5,8 +5,27 @@ Chapter 5 - Parser Projects
 
 Projects are in alphabetical order.
 
-An autotools replacement
-------------------------
+Table of Contents
+-----------------
+* [1 An autotools replacement](#p1)
+* [2 A Diagnostic C Parser](#p2)
+* [3 A CSV Parser](#p3)
+* [4 A Cweb Alternative](#p4)
+* [5 An LBNF Parser](#p5)
+* [6 An LDIF Parser](#p6)
+* [7 A Make Alternative](#p7)
+* [8 A DSL for Moo and Moops](#p8)
+* [9 A Perl Undumper](#p9)
+* [10 A Regexp Parser](#p10)
+* [11 A TeX Frontend](#p11)
+* [12 A Textmate/Sublime Text 2 Parser](#p12)
+* [13 A Valgrind Parser](#p13)
+* [14 A vCard parser](#p14)
+* [15 A Whois Parser](#p15)
+
+<a name="p1"></a>
+1 An autotools replacement
+--------------------------
 Outline: The replacement could provide autoconf's functionality, or a subset thereof, but
 with a friendlier, Marpa-powered, syntax.
 
@@ -25,8 +44,9 @@ taking their work with them.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
 
-A Diagnostic C Parser
----------------------
+<a name="p2"></a>
+2 A Diagnostic C Parser
+-----------------------
 Outline: Marpa knows C syntax far better than recursive descent- or LALR-style parsers ever possibly could.
 Leverage this knowledge to pinpoint syntax errors.
 
@@ -40,8 +60,9 @@ could justify the effort to create it.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/CXcLmksuQhw/KurF_p01HE0J).
 
-A CSV Parser
-------------
+<a name="p3"></a>
+3 A CSV Parser
+--------------
 Acronym: CSV => Comma-Separated Variables.
 
 Outline: This could combine and replace the Perl modules Text::CSV, Text::CSV_XS, Text::CSV::Encoded and
@@ -55,40 +76,45 @@ Text::CSV::Slurp.
 
 [Text::CSV::Slurp link](https://metacpan.org/release/Text-CSV-Slurp).
 
-A Cweb Alternative
-------------------
+<a name="p4"></a>
+4 A Cweb Alternative
+--------------------
 Outline: TBA.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
 
 [Wikipedia Cweb link](https://en.wikipedia.org/wiki/Cweb).
 
-An LBNF Parser
---------------
+<a name="p5"></a>
+5 An LBNF Parser
+----------------
 Acronym: LBNF => The Labelled BNF Grammar Formalism.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/T5dWT9-R75Q/6-n29dNI2U0J).
 
 [PDF link](http://bnfc.digitalgrammars.com/LBNF-report.pdf).
 
-An LDIF Parser
---------------
+<a name="p6"></a>
+6 An LDIF Parser
+----------------
 Acronym: LDIF => LDAP Data Interchange Format.
 
 Acronym: LDAP => Lightweight Directory Access Protocol.
 
 [Perl link](https://metacpan.org/release/perl-ldap).
 
-A Make Alternative
-------------------
+<a name="p7"></a>
+7 A Make Alternative
+--------------------
 Outline: Make's text file instructions to build a program could be replaced by a modernized file format.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J).
 
 [A Marpa-based gist](https://gist.github.com/pstuifzand/4448957).
 
-A DSL for Moo and Moops
------------------------
+<a name="p8"></a>
+8 A DSL for Moo and Moops
+-------------------------
 And perhaps for mop.
 
 [Moo](https://metacpan.org/release/Moo)
@@ -97,14 +123,27 @@ And perhaps for mop.
 
 [mop](https://github.com/stevan/p5-mop-redux)
 
-A Regexp Parser
----------------
+<a name="p9"></a>
+9 A Perl Undumper
+-----------------
+Outline: Parse the output of Data::Dumper.
+
+This has to be done safely, that is, without using 'eval'.
+
+[Marpa Google Group link](http://irclog.perlgeek.de/marpa/2015-01-14#i_9941885).
+
+That discussion in turn links to [Randal's column](http://www.linux-mag.com/id/886/).
+
+<a name="p10"></a>
+10 A Regexp Parser
+------------------
 Outline: A compiler from some nice BNF-ish format, to Perl regular expressions.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk).
 
-A TeX Frontend
---------------
+<a name="p11"></a>
+11 A TeX Frontend
+-----------------
 Acronym: TeX => A typsetting system.
 
 Acronym: LaTeX => A document preparation system and document markup language.
@@ -126,14 +165,16 @@ Related material:
 
 [HTML link for LaTeXML](http://dlmf.nist.gov/LaTeXML/manual/index.xhtml).
 
-A Textmate/Sublime Text 2 Parser
---------------------------------
+<a name="p12"></a>
+12 A Textmate/Sublime Text 2 Parser
+-----------------------------------
 Outline: Target the '.tmLanguage'.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/R5LuMSboE8E/I4B2fsbT6zcJ).
 
-A Valgrind Parser
------------------
+<a name="p13"></a>
+13 A Valgrind Parser
+--------------------
 Outline: Parse Valgrind output, as an adjunct to Valgrind tools, e.g. for a grind2ast tool.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/qWAIF2S5w0c/SFjpSJLsDb8J).
@@ -142,8 +183,9 @@ Outline: Parse Valgrind output, as an adjunct to Valgrind tools, e.g. for a grin
 
 [Wikipedia AST link](https://en.wikipedia.org/wiki/Abstract_syntax_tree).
 
-A vCard parser
---------------
+<a name="p14"></a>
+14 A vCard parser
+-----------------
 Outline: Convert vCards into some intermediate form, and from there to anything.
 
 Microformat includes hCal, hCard, vCard, etc.
@@ -154,8 +196,9 @@ Microformat includes hCal, hCard, vCard, etc.
 
 [Microformat link](http://microformats.org/).
 
-A Whois Parser
---------------
+<a name="p15"></a>
+15 A Whois Parser
+-----------------
 Outline: Parse the various output formats provided as results of a whois lookup.
 
 [Marpa Google Group link](https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/BbQQ_ekLvVU/Wm3AIFwzMBcJ).

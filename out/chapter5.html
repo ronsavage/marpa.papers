@@ -18,7 +18,29 @@
 
 <p>Projects are in alphabetical order.</p>
 
-<h2>An autotools replacement</h2>
+<h2>Table of Contents</h2>
+
+<ul>
+<li><a href="#p1">1 An autotools replacement</a></li>
+<li><a href="#p2">2 A Diagnostic C Parser</a></li>
+<li><a href="#p3">3 A CSV Parser</a></li>
+<li><a href="#p4">4 A Cweb Alternative</a></li>
+<li><a href="#p5">5 An LBNF Parser</a></li>
+<li><a href="#p6">6 An LDIF Parser</a></li>
+<li><a href="#p7">7 A Make Alternative</a></li>
+<li><a href="#p8">8 A DSL for Moo and Moops</a></li>
+<li><a href="#p9">9 A Perl Undumper</a></li>
+<li><a href="#p10">10 A Regexp Parser</a></li>
+<li><a href="#p11">11 A TeX Frontend</a></li>
+<li><a href="#p12">12 A Textmate/Sublime Text 2 Parser</a></li>
+<li><a href="#p13">13 A Valgrind Parser</a></li>
+<li><a href="#p14">14 A vCard parser</a></li>
+<li><a href="#p15">15 A Whois Parser</a></li>
+</ul>
+
+<p><a name="p1"></a></p>
+
+<h2>1 An autotools replacement</h2>
 
 <p>Outline: The replacement could provide autoconf's functionality, or a subset thereof, but
 with a friendlier, Marpa-powered, syntax.</p>
@@ -39,7 +61,9 @@ taking their work with them.</p></li>
 
 <p><a href="https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/lh9Jpji-_pk/7ofQBevdV38J">Marpa Google Group link</a>.</p>
 
-<h2>A Diagnostic C Parser</h2>
+<p><a name="p2"></a></p>
+
+<h2>2 A Diagnostic C Parser</h2>
 
 <p>Outline: Marpa knows C syntax far better than recursive descent- or LALR-style parsers ever possibly could.
 Leverage this knowledge to pinpoint syntax errors.</p>
@@ -55,7 +79,9 @@ could justify the effort to create it.</p></li>
 
 <p><a href="https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/CXcLmksuQhw/KurF_p01HE0J">Marpa Google Group link</a>.</p>
 
-<h2>A CSV Parser</h2>
+<p><a name="p3"></a></p>
+
+<h2>3 A CSV Parser</h2>
 
 <p>Acronym: CSV => Comma-Separated Variables.</p>
 
@@ -70,7 +96,9 @@ Text::CSV::Slurp.</p>
 
 <p><a href="https://metacpan.org/release/Text-CSV-Slurp">Text::CSV::Slurp link</a>.</p>
 
-<h2>A Cweb Alternative</h2>
+<p><a name="p4"></a></p>
+
+<h2>4 A Cweb Alternative</h2>
 
 <p>Outline: TBA.</p>
 
@@ -78,7 +106,9 @@ Text::CSV::Slurp.</p>
 
 <p><a href="https://en.wikipedia.org/wiki/Cweb">Wikipedia Cweb link</a>.</p>
 
-<h2>An LBNF Parser</h2>
+<p><a name="p5"></a></p>
+
+<h2>5 An LBNF Parser</h2>
 
 <p>Acronym: LBNF => The Labelled BNF Grammar Formalism.</p>
 
@@ -86,7 +116,9 @@ Text::CSV::Slurp.</p>
 
 <p><a href="http://bnfc.digitalgrammars.com/LBNF-report.pdf">PDF link</a>.</p>
 
-<h2>An LDIF Parser</h2>
+<p><a name="p6"></a></p>
+
+<h2>6 An LDIF Parser</h2>
 
 <p>Acronym: LDIF => LDAP Data Interchange Format.</p>
 
@@ -94,7 +126,9 @@ Text::CSV::Slurp.</p>
 
 <p><a href="https://metacpan.org/release/perl-ldap">Perl link</a>.</p>
 
-<h2>A Make Alternative</h2>
+<p><a name="p7"></a></p>
+
+<h2>7 A Make Alternative</h2>
 
 <p>Outline: Make's text file instructions to build a program could be replaced by a modernized file format.</p>
 
@@ -102,7 +136,9 @@ Text::CSV::Slurp.</p>
 
 <p><a href="https://gist.github.com/pstuifzand/4448957">A Marpa-based gist</a>.</p>
 
-<h2>A DSL for Moo and Moops</h2>
+<p><a name="p8"></a></p>
+
+<h2>8 A DSL for Moo and Moops</h2>
 
 <p>And perhaps for mop.</p>
 
@@ -112,13 +148,29 @@ Text::CSV::Slurp.</p>
 
 <p><a href="https://github.com/stevan/p5-mop-redux">mop</a></p>
 
-<h2>A Regexp Parser</h2>
+<p><a name="p9"></a></p>
+
+<h2>9 A Perl Undumper</h2>
+
+<p>Outline: Parse the output of Data::Dumper.</p>
+
+<p>This has to be done safely, that is, without using 'eval'.</p>
+
+<p><a href="http://irclog.perlgeek.de/marpa/2015-01-14#i_9941885">Marpa Google Group link</a>.</p>
+
+<p>That discussion in turn links to <a href="http://www.linux-mag.com/id/886/">Randal's column</a>.</p>
+
+<p><a name="p10"></a></p>
+
+<h2>10 A Regexp Parser</h2>
 
 <p>Outline: A compiler from some nice BNF-ish format, to Perl regular expressions.</p>
 
 <p><a href="https://groups.google.com/forum/#!topic/marpa-parser/2TZn5nolyzk">Marpa Google Group link</a>.</p>
 
-<h2>A TeX Frontend</h2>
+<p><a name="p11"></a></p>
+
+<h2>11 A TeX Frontend</h2>
 
 <p>Acronym: TeX => A typsetting system.</p>
 
@@ -141,13 +193,17 @@ limited by using TeX's native parsing.</p>
 
 <p><a href="http://dlmf.nist.gov/LaTeXML/manual/index.xhtml">HTML link for LaTeXML</a>.</p>
 
-<h2>A Textmate/Sublime Text 2 Parser</h2>
+<p><a name="p12"></a></p>
+
+<h2>12 A Textmate/Sublime Text 2 Parser</h2>
 
 <p>Outline: Target the '.tmLanguage'.</p>
 
 <p><a href="https://groups.google.com/forum/#!searchin/marpa-parser/fruit/marpa-parser/R5LuMSboE8E/I4B2fsbT6zcJ">Marpa Google Group link</a>.</p>
 
-<h2>A Valgrind Parser</h2>
+<p><a name="p13"></a></p>
+
+<h2>13 A Valgrind Parser</h2>
 
 <p>Outline: Parse Valgrind output, as an adjunct to Valgrind tools, e.g. for a grind2ast tool.</p>
 
@@ -157,7 +213,9 @@ limited by using TeX's native parsing.</p>
 
 <p><a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Wikipedia AST link</a>.</p>
 
-<h2>A vCard parser</h2>
+<p><a name="p14"></a></p>
+
+<h2>14 A vCard parser</h2>
 
 <p>Outline: Convert vCards into some intermediate form, and from there to anything.</p>
 
@@ -169,7 +227,9 @@ limited by using TeX's native parsing.</p>
 
 <p><a href="http://microformats.org/">Microformat link</a>.</p>
 
-<h2>A Whois Parser</h2>
+<p><a name="p15"></a></p>
+
+<h2>15 A Whois Parser</h2>
 
 <p>Outline: Parse the various output formats provided as results of a whois lookup.</p>
 
