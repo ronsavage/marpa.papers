@@ -341,6 +341,22 @@ definition to consist of a node statement followed by a graph definition, which 
 definitions to follow one another. And the last rule allows the input stream to separate them with commas as
 well as the usual spaces.</p>
 
+<p>In other words: Why does the SLIF require quantifiers to be separate statements?</p>
+
+<p>It's different from regular expressions, which everyone is accustomed to, and seems awkward.</p>
+
+<p>The reason is that, with a parser, you expect to attach a semantics to all the rules -
+with regular expressions where is no such expectation.</p>
+
+<p>So if Marpa allowed " A ::= B+ (C | D) exp*", how would you specify how the arguments are
+passed to the semantics?</p>
+
+<p>If just as a list, they have to be re-parsed all over again.</p>
+
+<p>This problem can be solved, but the easiest way around it is to write it out as separate
+statements, with the quantifiers by themselves, and the semantics can then be attached to
+the statements.</p>
+
 <p><a name="q16"></a></p>
 
 <h2>16 Can a lexeme have length == 0?</h2>
@@ -466,14 +482,18 @@ and the series beginning with <a href="https://jeffreykegler.github.io/Ocean-of-
 
 <h2>23 How do I associate an action class with my grammar?</h2>
 
-<p>Note: The next FAQ item, 'Declaring an Action Class', details a solution to the problems discussed here.</p>
+<p>This discussion assumes you're using Marpa::R2 V 3.0 or later. Prior to that, there was complications
+using the per-parse parameter to value(), and elsewhere.</p>
 
-<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Synopsis">Synopsis in Marpa::R2::Semantics</a>
-for one way to use action classes. Look for 'bless_package'. Details are under
-<a href="https://metacpan.org/module/Marpa::R2::Semantics#Blessings">Blessings in Marpa::R2::Semantics</a>.</p>
+<p>See also: The next FAQ item, 'Declaring an Action Class'.</p>
 
-<p>Another way is to note that the Scanless recognizer's new() accepts a 'semantics_package' argument. See
-<a href="https://metacpan.org/module/Marpa::R2::Scanless::R#Constructor">Constructor in Marpa::R2::Scanless::R</a>.</p>
+<p>References:</p>
+
+<p>1: <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Semantics.pod#The-per-parse-argument">The per-parse argument to value()</a></p>
+
+<p>2: <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Semantics.pod#The-per-parse-constructor">The per-parse constructor</a></p>
+
+<p>3: <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Scanless/R.pod#value">Calling value(...)</a></p>
 
 <p>Here's how I declare a recognizer in one package:</p>
 
@@ -494,84 +514,6 @@ for one way to use action classes. Look for 'bless_package'. Details are under
 </code></pre>
 
 <p>must be declared as functions in the named semantics package, because that's where Marpa looks for them.</p>
-
-<p>From an OO point of view though, there is still a problem. After reading 'The per-parse argument' and
-'The per-parse constructor' sections of the semantics document, you might think:</p>
-
-<pre class="prettyprint linenums"><code>Marpa calls the constructor of the semantics package (given it has one).
-That means Marpa has an instance of that package.
-That should mean I can get access to that instance.
-So, my program can communicate between the main-line code, Marpa and this instance.
-</code></pre>
-
-<p>This immediately raises some questions:</p>
-
-<ul>
-<li>How do I access that instance?</li>
-</ul>
-
-<p>Under Marpa::R2, you can't.</p>
-
-<ul>
-<li>If I use Moo to write this action package, what happens?</li>
-</ul>
-
-<p>Presumably you want an instance of the action class to be passed by Marpa as the per-parse (1st) parameter to each
-action sub. That's certainly what I've always wanted to do. But...</p>
-
-<p>Don't do that. It works, but turns out to be inherently risky, so don't try it. Alternatives are discussed in the
-next FAQ item: 'Declaring an Action Class'.</p>
-
-<p>The problem here is that with <a href="https://metacpan.org/release/Moo">Moo</a>, the new() constructor is generated automatically.
-My tests show such a instance is not initialized by Marpa. That is, Marpa cannot find new(), and passes an
-unblessed hash into each action sub, as the per-parse (1st) parameter. In short, Moo patches Perl's symbol table, and
-Marpa accesses the symbol table  too, but they don't co-operate as you might hope.</p>
-
-<ul>
-<li>If I create an instance of the action class, can I pass it to Marpa?</li>
-</ul>
-
-<p>Under Marpa::R2, no, you can't.</p>
-
-<ul>
-<li>But which instance is Marpa using?</li>
-</ul>
-
-<p>It's own.</p>
-
-<ul>
-<li>If my action subs accumulate instance-level data, how can I retrieve such data?</li>
-</ul>
-
-<p>(This means, data generated when Marpa calls action subs within its own copy of this instance.)</p>
-
-<p>I don't know, but it 'just works' (with Moo at least). I used to use this code:</p>
-
-<pre class="prettyprint linenums"><code>$self -&gt; actions
-(
-    MarpaX::Languages::SVG::Parser::Actions -&gt; new(logger =&gt; $self -&gt; logger)
-);
-</code></pre>
-
-<p>along with the initialization of $self -> recce(...) above.</p>
-
-<p>Actually, it can work if both instances use global variables within the class. So...</p>
-
-<p>Later, when I used $self -> action to access data within my instance, I got the data generated in the calls by Marpa
-to my action subs. So, it works.</p>
-
-<p>However, it seems like it works accidently, and I feel deeply uneasy about that. And, worse, it could suddenly stop
-working when any of Perl, Moo or Marpa change internally.</p>
-
-<ul>
-<li>Well, can I use global variables within the action class to gather data generated by action subs?</li>
-</ul>
-
-<p>Yes, but if they are class-level variables, it means you can't run multiple scripts at the same which use that class.
-That's a classic problem with global data. The other problem of course is re-initializing the data before the second
-run of the same script, or before the first run of any other script. It's ok if you re-run Perl itself, via the
-command line say, when you run the next script. But in a persistent environment you won't be doing that. Hence, the
-next item in this FAQ.</p>
 
 <p><a name="q24"></a></p>
 
@@ -664,21 +606,9 @@ sub float
 <p>This is because the input stream is deemed to have been validatated as being SVG.</p>
 
 <ul>
-<li>A global variable counts output hashrefs</li>
-</ul>
-
-<p>Clearly this has a problem with the global variable issue just discussed, but I'm ignoring that here. And anyway,
-we can easily renumber the hashrefs later.</p>
-
-<ul>
-<li>A global variable counts parameters per command</li>
-</ul>
-
-<p>This has the same problem, but the docs for the module do say the value is just a convenience for the caller.
-Nevertheless, it's vital to keep such issues in mind.</p>
-
-<ul>
-<li><em>float()</em> is called for every number</li>
+<li><p>A global variable counts output hashrefs</p></li>
+<li><p>A global variable counts parameters per command</p></li>
+<li><p><em>float()</em> is called for every number</p></li>
 </ul>
 
 <p>This includes the fact that the grammar says there are at least 3 coordinates (float pairs) per <em>curve</em> command.</p>
