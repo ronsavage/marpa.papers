@@ -32,6 +32,7 @@ Table of Contents
 * [25 Where can I find code using events?](#q25)
 * [26 Where can I find code which builds its grammar on-the-fly?](#q26)
 * [27 Other Resources](#q27)
+* [28 Papers on Parsing Theory](#q28)
 
 <a name="q1"></a>
 1 Where do I go for help?
@@ -669,6 +670,12 @@ A complex case: [MarpaX::Languages::SQL2003::AST](https://metacpan.org/release/M
 * http://jeffreykegler.github.io/Ocean-of-Awareness-blog/metapages/annotated.html
 
 * The list of features in [Chapter 2 - Marpa's Advantages](chapter2.html)
+
+<a name="q28"></a>
+28 Papers on Parsing Theory
+---------------------------
+
+[Aria's list](http://dinhe.net/~aredridel/.notmine/PDFs/Parsing/).
 
 !include "guide/menu.inc"
 
