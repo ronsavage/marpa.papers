@@ -69,7 +69,7 @@ LTM is Longest Token Match, and LATM is Longest Acceptable Token Match.
 
 The SLIF lexer does a longest tokens (plural) match. So it does recognize ambiguous tokens if they are longest tokens.
 
-Ambiguous tokens which are shorter than the match one (whether the discipline is "forgiving" or not) are ignored
+Ambiguous tokens which are shorter than the match one (whether the discipline is LATM or LTM) are ignored
 by the lexer.
 
 Consequently, this means the ambiguous matched tokens must be all the same length.
