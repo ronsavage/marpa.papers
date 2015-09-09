@@ -57,7 +57,7 @@ sub process_txt_file {
 
     $md =~ s/^Chapter\s(\d+)\s+-\s+([^\n]+)\n/Chapter $1\n\n$2\n/ms;
 
-    $md =~ s/^!include\s"([^"]+)"$/do_include($1)/gems;
+    $md =~ s/^!include\s"([^"]+)\"$/do_include($1)/gems;
 
     my $html = markdown($md);
 

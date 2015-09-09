@@ -33,6 +33,7 @@ Table of Contents
 * [26 Where can I find code which builds its grammar on-the-fly?](#q26)
 * [27 Other Resources](#q27)
 * [28 Papers on Parsing Theory](#q28)
+* [29 Are there C/Lua/Python/etc bindings for libmarpa?](#q29)
 
 <a name="q1"></a>
 1 Where do I go for help?
@@ -676,6 +677,12 @@ A complex case: [MarpaX::Languages::SQL2003::AST](https://metacpan.org/release/M
 ---------------------------
 
 [Aria's list](http://dinhe.net/~aredridel/.notmine/PDFs/Parsing/).
+
+<a name="q29"></a>
+29 Are there C/Lua/Python/etc bindings for libmarpa?
+----------------------------------------------------
+
+[Various language bindings for libmarpa](https://github.com/rns/libmarpa-bindings)
 
 !include "guide/menu.inc"
 
