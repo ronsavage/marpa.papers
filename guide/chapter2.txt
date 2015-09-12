@@ -26,7 +26,7 @@ Or, in other words...
 Marpa tries everything, all at once. That's why it can parse such a wide class of grammars.
 And, that's why some parses generate multiple parse trees.
 
-See [Chapter 3, the FAQ](chapter3.html) for more on this intriguing topic.
+See [the FAQ](http://savage.net.au/Perl-modules/html/marpa.faq/faq.html) for more on this intriguing topic.
 
 * Marpa supports grammars having nullable symbols
 

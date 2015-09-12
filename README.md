@@ -1,7 +1,7 @@
 Marpa Papers
 ============
 
-Various documents pertaining to Marpa (Introduction, FAQ, etc).
+Various documents pertaining to Marpa.
 
 Visit the web version at [the Marpa Papers](http://savage.net.au/Perl-modules/html/marpa.papers/index.html).
 
