@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head>
-<title>Chapter 3 - FAQ</title>
+<title>Chapter 4 - Advanced Usage</title>
 <meta charset='utf-8'>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -10,742 +10,640 @@
 <div class="container">
     <div class="row">
         <div class="offset2 span8">
-<p>Chapter 3</p>
+<p>Chapter 4</p>
 
-<h1>FAQ</h1>
+<h1>Advanced Usage</h1>
 
 <p><a href="index.html">Index</a></p>
 
-<h2>Table of Contents</h2>
+<h2>Conditional preservation of whitespace</h2>
+
+<p>We're all familiar with code which declares a single- or double-quoted string, and expects any whitespace within
+that string to be preserved, while at the same time expecting redundant whitespace in the source code to be
+discarded. This means we can format the source in different ways, and still have specific whitespace preserved because
+it's protected by those quotes. This much is simple.</p>
+
+<p>Well, this is precisely what I mean by <em>conditional</em> preservation of whitespace: Some is preserved and some is
+discarded. So, how do we do that using Marpa?</p>
+
+<p>One way would be to have Marpa preserve all whitespace, and commit ourselves to processing it somehow. Here, I'm
+going to ignore that option, since there's now a rather more sophisticated way to do it.</p>
+
+<p>A stand-alone Perl module, <a href="https://metacpan.org/release/MarpaX-Demo-StringParser">MarpaX::Demo::StringParser</a>,
+was written to showcase the material discussed here, and to give you something to play with.</p>
+
+<h2>Some context this chapter</h2>
+
+<p>There is a wonderful graphics package called <a href="http://graphviz.org">Graphviz</a>, from AT&amp;T. People have written
+various wrappers for Graphviz. Mine is
+<a href="https://metacpan.org/release/Graph-Easy-Marpa">Graph::Easy::Marpa</a>. The module mentioned above,
+MarpaX::Demo::StringParser, is a cut-down version of Graph::Easy::Marpa. both these modules implement a
+<a href="https://en.wikipedia.org/wiki/Little_languages">Little Language</a> whose purpose is to make it easy for users to
+create short text files which are converted by these modules into a form suitable for inputting into programs
+(such as <em>dot</em>) which ship with Graphviz. And yes, the wrappers implemented by these modules are another example
+of <a href="https://en.wikipedia.org/wiki/Domain-specific_language">Domain-specific Languages</a>, just like Marpa's SLIF-DSL.</p>
+
+<p>The grammar in the chapter is taken from MarpaX::Demo::StringParser, and describes nodes, edges, and their
+attributes. See <a href="http://www.graphviz.org/content/attrs">the Graphviz docs</a> for details of these items.</p>
+
+<h2>A sub-grammar for whitespace</h2>
+
+<p>Firstly, here's a tiny fragment of that module's grammar, in Marpa's SLIF-DSL:</p>
+
+<pre class="prettyprint linenums"><code>source       =&gt; \(&lt;&lt;'END_OF_SOURCE'),
+    ...
+:discard     ~ whitespace
+whitespace   ~ [\s]+
+
+END_OF_SOURCE
+</code></pre>
+
+<p>The entire grammar is a reference to a string of rules, whose oddish delimiters are (&lt;&lt;'END_OF_SOURCE') and
+END_OF_SOURCE. The '...' just means the body of the rule set has been suppressed for the moment.</p>
+
+<p>But, see those 2 rules which mention the reserved pseudo-symbol <em>:discard</em> and the token <em>whitespace</em>?
+This is Marpa's way of allowing us to say: Discard <em>all</em> whitespace by default. That token <em>whitespace</em> could
+have been called <em>ws</em>, or anything similar. That is, it is not a reserved word.</p>
+
+<p>For more on <em>:discard</em>, <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL#Discard-rules">see here</a>. And note,
+of course, that these 2 rules are optional. Or, you may wish to discard different characters.</p>
+
+<p>In other words, we're choosing to order Marpa to discard whitespace. Since this conflicts with our stated aim of
+preserving <em>some</em> whitespace, we need a mechanism which allows us to tell Marpa to override this default under
+circumstances chosen by us. Enter the <em>event</em> and <em>pause</em> adverbs.</p>
+
+<h2>A grammar for nodes in a graph</h2>
+
+<p>Here's a bit more of the grammar, given that nodes are declared using the regexp (regular expression)
+/^[.*]$/:</p>
+
+<pre class="prettyprint linenums"><code>node_name   ::= start_node end_node
+
+:lexeme     ~ start_node   pause =&gt; before   event =&gt; start_node
+start_node  ~ '['
+
+:lexeme     ~ end_node
+end_node    ~ ']'
+</code></pre>
+
+<p>I'll explain below why the rule called <em>node_name</em> contains no reference to content (input stream text)
+between any occurances of the delimiters '[' and ']'. See the next section
+<a href="#a_word">A Word on Strings and Invisibility</a>.</p>
+
+<p><em>Pause</em> allows us to specify that at certain locations within the parse, i.e. at certain locations within the
+input stream, we want Marpa to stop parsing <em>for a while</em>, and pass control of the parsing process over to us.</p>
+
+<p>It's that <em>for a while</em> part that makes the <em>pause</em> adverb appropriate. After a while, i.e. whenever we feel
+like it, we simply tell Marpa to resume parsing. This resumption does not have to take place, and will normally
+not take place, at the point the <em>pause</em> was triggered.</p>
+
+<p>And, during that pause, we handle all parsing, and preserve whitespace <em>if we wish</em>. Hence the word
+<em>conditional</em> used above.</p>
+
+<p><em>Event</em> allows us to name <em>pause</em>s, and to query Marpa as to which event triggered any particular pause.</p>
+
+<p><a name="a_word"></a></p>
+
+<h2>A word on strings and invisibility</h2>
+
+<p>Don't get confused by these 2:</p>
 
 <ul>
-<li><a href="#q1">1 Where do I go for help?</a></li>
-<li><a href="#q2">2 What is Libmarpa?</a></li>
-<li><a href="#q3">3 Is Marpa deterministic?</a></li>
-<li><a href="#q4">4 Why doesn't my ambiguous grammar return more than 1 parse tree?</a></li>
-<li><a href="#q5">5 How do I implement disambiguation logic?</a></li>
-<li><a href="#q6">6 Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"</a></li>
-<li><a href="#q7">7 What is the meaning of L0 and G1?</a></li>
-<li><a href="#q8">8 How do I parse comments?</a></li>
-<li><a href="#q9">9 How do I parse numbers?</a></li>
-<li><a href="#q10">10 How do I represent choice in the grammar?</a></li>
-<li><a href="#q11">11 Is there any other way of representing choice?</a></li>
-<li><a href="#q12">12 What's the difference between '|' and '||' in grammar definitions?</a></li>
-<li><a href="#q13">13 What does it mean to hide (mask) tokens?</a></li>
-<li><a href="#q14">14 How do I implement recursion in a grammar?</a></li>
-<li><a href="#q15">15 Why does using '+' or '*' in a rule only work sometimes?</a></li>
-<li><a href="#q16">16 Can a lexeme have length == 0?</a></li>
-<li><a href="#q17">17 How do I find out where I am within the input stream?</a></li>
-<li><a href="#q18">18 How do I find out which rule applies at some point in the input stream (e.g. during a pause)?</a></li>
-<li><a href="#q19">19 What is the meaning of the line number in a Marpa error message?</a></li>
-<li><a href="#q20">20 Can I switch grammars during a parse?</a></li>
-<li><a href="#q21">21 Where is Ruby Slippers parsing documented?</a></li>
-<li><a href="#q22">22 Where can I find code using Ruby Slippers?</a></li>
-<li><a href="#q23">23 How do I associate an action class with my grammar?</a></li>
-<li><a href="#q24">24 Declaring an Action Class</a></li>
-<li><a href="#q25">25 Where can I find code using events?</a></li>
-<li><a href="#q26">26 Where can I find code which builds its grammar on-the-fly?</a></li>
-<li><a href="#q27">27 Other Resources</a></li>
-<li><a href="#q28">28 Papers on Parsing Theory</a></li>
-<li><a href="#q29">29 Are there C/Lua/Python/etc bindings for libmarpa?</a></li>
+<li>The syntax for a node</li>
 </ul>
 
-<p><a name="q1"></a></p>
+<p>For my application, the regexp a node must match is /^[.*]$/.</p>
 
-<h2>1 Where do I go for help?</h2>
+<p>The name of the node is within those '[' and ']' chars.</p>
 
-<p>The IRC channel may get the quickest response: irc.freenode.net#marpa.</p>
-
-<p><a href="https://groups.google.com/forum/#!forum/marpa-parser">The Google Group</a> has message threading,
-and so is good for complex or extended discussions.</p>
-
-<p><a href="http://savage.net.au/Marpa.html">Marpa's homepage</a>.</p>
-
-<p><a name="q2"></a></p>
-
-<h2>2 What is Libmarpa?</h2>
-
-<p>Libmarpa is the core Marpa library, written in C, which implements the Marpa parse engine - the Marpa algorithm itself.
-It is low-level, but it is documented and can be installed and used separately.</p>
-
-<p><a href="https://jeffreykegler.github.io/Marpa-web-site/libmarpa.html">Homepage</a>.</p>
-
-<p><a href="https://jeffreykegler.github.io/Marpa-web-site/libmarpa_api/cpan_indexed/index.html">Formal docs</a>.</p>
-
-<p><a name="q3"></a></p>
-
-<h2>3 Is Marpa deterministic?</h2>
-
-<p>No. Marpa is non-deterministic, unlike traditional parsers. Marpa tries everything, all at once.</p>
-
-<p>This may take some getting used to, in the sense that probably what you're used to is a deterministic parse.</p>
-
-<p>If two alternatives (in a prioritized rule say, separated by '|' or '||') happen to match some source,
-Marpa produces 2 parse trees.</p>
-
-<p>The parser, then, catches all ambiguities, but the SLIF lexer does <em>not</em>, whether it is LTM or LATM.
-LTM is Longest Token Match, and LATM is Longest Acceptable Token Match.</p>
-
-<p>The SLIF lexer does a longest tokens (plural) match. So it does recognize ambiguous tokens if they are longest tokens.</p>
-
-<p>Ambiguous tokens which are shorter than the match one (whether the discipline is "forgiving" or not) are ignored
-by the lexer.</p>
-
-<p>Consequently, this means the ambiguous matched tokens must be all the same length.</p>
-
-<p>See also the next question.</p>
-
-<p><a name="q4"></a></p>
-
-<h2>4 Why doesn't my ambiguous grammar return more than 1 parse tree?</h2>
-
-<p>Probably because your grammar includes</p>
-
-<pre class="prettyprint linenums"><code>lexeme default = latm =&gt; 1 # Active the Longest Acceptable Token Match option.
-</code></pre>
-
-<p>Try commenting that line out after, perhaps, re-reading the previous question's answer.</p>
-
-<p>See also the next 2 questions.</p>
-
-<p><a name="q5"></a></p>
-
-<h2>5 How do I implement disambiguation logic?</h2>
-
-<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Bailing-out-of-parse-evaluation">Bailing-out-of-parse-evaluation in Marpa::R2::Semantics</a>,
-for how to short-circuit semantic analysis.</p>
-
-<p>See also <a href="https://gist.github.com/dginev/6419166">this gist</a>.</p>
-
-<p>See also the previous and next questions.</p>
-
-<p><a name="q6"></a></p>
-
-<h2>6 Why did I get: Parse failed. value() called when recognizer is not in tree mode\nThe current mode is "forest"</h2>
-
-<p>The parse is ambiguous. Instead of getting a tree, you got multiple trees. Hence 'forest'.</p>
-
-<p>See <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Scanless/DSL.pod#rank">this discussion of 'rank'</a>.</p>
-
-<p>Also see the long comment on rank at the start of sub BUILD in MarpaX::Languages::Perl::PackUnpack
-<a href="https://metacpan.org/source/RSAVAGE/MarpaX-Languages-Perl-PackUnpack-1.00/lib/MarpaX/Languages/Perl/PackUnpack.pm#L139">here</a>.</p>
-
-<p>See also the previous 2 questions.</p>
-
-<p><a name="q7"></a></p>
-
-<h2>7 What is the meaning of L0 and G1?</h2>
-
-<p>L0 defines exactly what tokens are acceptable in the input stream. So, these are the rules defining the
-syntax of the tokens, but not the syntax of how these tokens can be combined.</p>
-
-<p>G1 defines the structure of the language. These rules define legal statements within the given language.
-Legal statements are thus legal combinations of tokens.</p>
-
-<p>The idea is that G1 is structural, and grammars are in the Ln series are lexers. ("L" for lexer.)</p>
-
-<p>Also, G1 rules have a semantics, whereas L0 rules do not.</p>
-
-<p>L0 and G1 discussed in <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a>, and, very
-briefly, in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>. In both cases, search for 'L0'.</p>
-
-<p><a name="q8"></a></p>
-
-<h2>8 How do I parse comments?</h2>
-
-<p><a href="https://metacpan.org/module/GraphViz2::Marpa">GraphViz2::Marpa</a> implements comment skipping for C
-and C++ comments, and for #-prefix style comments. Search the source of Marpa.pm for
-'C style comment', 'Cplusplus style comment' and 'hash style comment'.</p>
-
-<p><a name="q9"></a></p>
-
-<h2>9 How do I parse numbers?</h2>
-
-<p>Chapter 2 of <a href="http://marpa-guide.github.io/">Peter Stuifzand's Marpa Guide</a> discusses this issue at length
-And if you fork that project on github, you'll find the directory examples/ contains about a dozen sample programs.</p>
-
-<p>Alternately, download <a href="https://metacpan.org/release/MarpaX-Languages-SVG-Parser">MarpaX::Languages::SVG::Parser</a>,
-which contains similar logic (in data/*.bnf). Further, this latter distro includes sample code (float.pl and number.pl)
-in the scripts/ directory. The last-named script includes grammars for binary, octal and hex numbers which I did
-not need in the SVG parser.</p>
-
-<p><a name="q10"></a></p>
-
-<h2>10 How do I represent choice in the grammar?</h2>
-
-<p>Briefly, use '|'. Sample code from the above named module (data/d.bnf):</p>
-
-<pre class="prettyprint linenums"><code>coordinate  ::= float      action =&gt; float
-                | integer  action =&gt; integer
-</code></pre>
-
-<p>Also note that '||' is available to control the relative priorities of the alternatives.</p>
-
-<p>This issue is expanded upon in the next 2 items in this FAQ.</p>
-
-<p><a name="q11"></a></p>
-
-<h2>11 Is there any other way of representing choice?</h2>
-
-<p>Sure. Consider these L0 rules (also from data/d.bnf):</p>
-
-<pre class="prettyprint linenums"><code>sign_maybe  ~ [+-]
-sign_maybe  ~
-
-digit       ~ [0-9]
-digit_any   ~ digit*
-digit_many  ~ digit+
-
-E           ~ [Ee] sign_maybe digit_many
-E_maybe     ~ E
-E_maybe     ~
-
-:lexeme     ~ float
-float       ~ sign_maybe digit_many E
-              | sign_maybe digit_any '.' digit_many E_maybe
-              | sign_maybe digit_many '.' E_maybe
-              | sign_maybe non_zero digit_any
-</code></pre>
-
-<p>This is saying:</p>
+<p>The name of the node matches /.*/, meaning it can be zero-length as it happens, but you (the reader)
+should not attach any significance to the length.</p>
 
 <ul>
-<li><p>The sign is optional after E or e (sign_maybe)</p></li>
-<li><p>The E is optional (E_maybe)</p></li>
-<li><p>The sign is optional before a digit (the first alternative for 'float')</p></li>
-<li><p>And so on</p></li>
+<li>The syntax for the node's grammar</li>
 </ul>
 
-<p><a name="q12"></a></p>
+<p>The grammar a node must match is 'node_name ::= start_node end_node ...', as above, where start_node is '['
+and end_node is ']'.</p>
 
-<h2>12 What's the difference between '|' and '||' in grammar definitions?</h2>
+<p>The grammar for the node says Marpa is only allowed to see the '[' and the ']'. The node's name is hidden from Marpa
+by the design of the grammar, which forces processing to switch into the code I've written to handle processing
+between those 2 tokens.</p>
 
-<p>'|' expresses a simple alternative, while '||' separates alternatives at different levels of precedence. For example:</p>
+<p>This makes the node's name invisible to Marpa, and explains why the grammar ('...start_node end_node...') says
+that - as far as Marpa is concerned - there is literally nothing between the '[' and the ']'.</p>
 
-<pre class="prettyprint linenums"><code>E ::=    E '*' E
-      |  E '/' E
-      || E '+' E
-      |  E '-' E
-</code></pre>
+<p>Here's <a href="http://savage.net.au/Ron/html/stringparser.grammar.svg">an SVG version</a> of the full grammar implemented
+by MarpaX::Demo::StringParser. The display of the <em>node_name</em> component is at the bottom-left (7 pm position) of
+the graph.</p>
 
-<p>This describes syntax for a simple 4-operation calculator, where multiplication and division take precedence over
-addition and subtraction.</p>
+<h2>An intermediate summary</h2>
 
-<p>This construct forces alternatives before the '||' to have higher precedence than the alternatives after that token.</p>
-
-<p>Each of the alternatives separated by '|' are at the same precedence.</p>
-
-<p>In Mark Dominus's 'Higher-Order Perl' book, he describes how he handles precedence in his recursive descent parsers
-for a similar calculator, beginning on p. 394. This is a good description of how the same situation would be handled
-with pre-Marpa techniques.</p>
-
-<p>If precedence is not an issue for you, just use single bar alternation ('|').</p>
-
-<p>Note also that Marpa supports a 'priority' adverb, discussed in the
-<a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL">Marpa::R2::Scanless::DSL</a> docs mentioned above.</p>
-
-<p><a name="q13"></a></p>
-
-<h2>13 What does it mean to hide (mask) tokens?</h2>
-
-<p>It's possible to design a grammar such that we can say certain tokens are hidden. This is discussed under
-<a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL#RHS-alternatives">RHS-alternatives in Marpa::R2::Scanless::DSL</a>.</p>
-
-<p>Here is an example (from <a href="https://metacpan.org/module/Graph::Easy::Marpa::Parser">Graph::Easy::Marpa::Parser</a>):</p>
-
-<pre class="prettyprint linenums"><code>node_definition  ::= node_statement
-                 | node_statement graph_definition
-
-node_statement   ::= node_name
-                 | node_name attribute_definition
-                 | node_statement (',') node_statement
-
-node_name        ::= start_node end_node
-
-:lexeme          ~ start_node  pause =&gt; before  event =&gt; start_node
-start_node       ~ '['
-
-:lexeme          ~ end_node
-end_node         ~ ']'
-</code></pre>
-
-<p>The comma is hidden. But what does this mean, exactly?</p>
-
-<p>It means the comma may appear in the input stream (in this context), but I am not interested in it. So, Marpa will not
-return this token to me when an action is called. It has become invisible to the semantics.</p>
-
-<p>Semantics are documented in <a href="https://metacpan.org/module/Marpa::R2::Semantics">Marpa::R2::Semantics</a>.</p>
-
-<p>Close study of the above grammar will show that another path is possible thru the grammar, in the case of
-2 nodes side-by-side (i.e. without a comma between them). Thus the grammar accepts both these input streams
-as valid:</p>
-
-<pre class="prettyprint linenums"><code>Stream 1: [node.a], [node.b]
-Stream 2: [node.a]  [node.b]
-</code></pre>
-
-<p>Hence, from the end-user's viewpoint, the comma is defined - at least in this particular grammar - to be optional.</p>
-
-<p><a name="q14"></a></p>
-
-<h2>14 How do I implement recursion in a grammar?</h2>
-
-<p>See the next item.</p>
-
-<p><a name="q15"></a></p>
-
-<h2>15 Why does using '+' or '*' in a rule only work sometimes?</h2>
-
-<p>I assume you're referring to cases like this:</p>
-
-<p>Case 1 (fails):</p>
-
-<pre class="prettyprint linenums"><code>node_definition  ::= node_statement+
-                 | node_statement graph_definition
-</code></pre>
-
-<p>Case 2 (succeeds):</p>
-
-<pre class="prettyprint linenums"><code>coordinate_list  ::= coordinate+
-</code></pre>
-
-<p>Case 3 (succeeds):</p>
-
-<pre class="prettyprint linenums"><code>whitespace       ~ [\s]+
-</code></pre>
-
-<p>Briefly, quantified rules (here, using the '+'), are only allowed when the right-hand side contains a single
-alternative. Thus case 1 fails due to the combination of '+' and '|'.</p>
-
-<p>This is documented under <a href="https://metacpan.org/module/Marpa::R2::Scanless::DSL#Quantified-rules">#Quantified-rules in Marpa::R2::Scanless::DSL</a>.</p>
-
-<p>So we must re-write rule 1 (with some context):</p>
-
-<pre class="prettyprint linenums"><code>graph_definition  ::= node_definition
-                  | edge_definition
-                  | subgraph_definition
-
-node_definition  ::= node_statement
-                 | node_statement graph_definition
-
-node_statement   ::= node_name
-                 | node_name attribute_definition
-                 | node_statement (',') node_statement
-</code></pre>
-
-<p>Now the rule 'node_definition ::= node_statement' allows a node definition to consist of a single node statement.</p>
-
-<p>And the alternative (via the '|') 'node_definition ::= node_statement graph_definition' allows a node
-definition to consist of a node statement followed by a graph definition, which just happens to include the line
-'graph_definition ::= node_definition'!</p>
-
-<p>So we've managed to write the grammar using indirect recursion, thus allowing an indefinite list of node
-definitions to follow one another. And the last rule allows the input stream to separate them with commas as
-well as the usual spaces.</p>
-
-<p>In other words: Why does the SLIF require quantifiers to be separate statements?</p>
-
-<p>It's different from regular expressions, which everyone is accustomed to, and seems awkward.</p>
-
-<p>The reason is that, with a parser, you expect to attach a semantics to all the rules -
-with regular expressions where is no such expectation.</p>
-
-<p>So if Marpa allowed " A ::= B+ (C | D) exp*", how would you specify how the arguments are
-passed to the semantics?</p>
-
-<p>If just as a list, they have to be re-parsed all over again.</p>
-
-<p>This problem can be solved, but the easiest way around it is to write it out as separate
-statements, with the quantifiers by themselves, and the semantics can then be attached to
-the statements.</p>
-
-<p><a name="q16"></a></p>
-
-<h2>16 Can a lexeme have length == 0?</h2>
-
-<p>No.</p>
-
-<p>Marpa allows L0 rules that might be zero-length (for example, "baZ ~ [Z]*") on the idea that it might be convenient
-to write them that way. But no zero-length lexeme will ever be accepted as a result of such rules.</p>
-
-<p>If you think out the conceptual issues, you might see nulled lexemes are "fraught" with them. At any given point,
-which null lexemes should you recognize? And how many of them? A parser could guess what you really mean here, but
-to my (Jeffrey's) mind it is just as well to force you to be explicit on this issue.</p>
-
-<p>Note: I (Ron) think Jeffrey uses pseudo in the name 'nulled pseudo-lexeme' because, being effectively of 0 length,
-they can't actually be lexemes.</p>
-
-<p>For sample code which shows a way of handling such an issue see
-<a href="http://savage.net.au/Perl-modules/html/marpa.papers/null.lexeme.demo.pl">null.lexeme.demo.pl</a> and
-<a href="http://savage.net.au/Perl-modules/html/marpa.papers/null.lexeme.demo.1.pl">null.lexeme.demo.1.pl</a>.</p>
-
-<p><a name="q17"></a></p>
-
-<h2>17 How do I find out where I am within the input stream?</h2>
-
-<p>See <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()">the line_column() method in Marpa::R2::Scanless::R</a>.</p>
-
-<p><a name="q18"></a></p>
-
-<h2>18 How do I find out which rule applies at some point in the input stream (e.g. during a pause)?</h2>
-
-<p>See under <a href="https://metacpan.org/module/Marpa::R2::Semantics#Action-context">Action-context in Marpa::R2::Semantics</a>,
-for access to internal variables in Marpa which do what you want.</p>
-
-<p><a name="q19"></a></p>
-
-<h2>19 What is the meaning of the line number in a Marpa error message?</h2>
-
-<p>It is the line number within the BNF of the rule being processed.</p>
-
-<p>Note: If your grammar uses \r, that will affect the line count.</p>
-
-<p>Further, see <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#line_column()">the line_column() method in Marpa::R2::Scanless::R</a>
-for various special characters some of which may affect this line count.</p>
-
-<p><a name="q20"></a></p>
-
-<h2>20 Can I switch grammars during a parse?</h2>
-
-<p>No - You can't just change Marpa's grammar object during a parse (by calling
-Marpa::R2::Scanless::G -> new() with a new BNF), and expect everything else to keep working.</p>
-
-<p>Nevertheless, there are techniques which can probably do what you want.</p>
+<p>We've actually touched on a number of topics already, ofter interrelated ones, so here's a list:</p>
 
 <ul>
-<li><p>1: Combine the grammars</p></li>
-<li><p>2: Use 'parse before' and switch grammars twice</p></li>
-<li><p>3: Use an action, change the grammar, and re-parse</p></li>
-</ul>
+<li><p>Ways to handle whitespace</p>
 
-<p>In a bit more detail:</p>
-
-<p>1: 'Combine the grammars': Perhaps you are convinced this can't be done, but you are urged to try
-it. Focus on the problem of defining the lexemes.</p>
-
-<p>You may find your solution involves switching lexers rather than switching grammars.</p>
-
-<p>2: 'Use parse before and switch grammars twice': This technique is used in
-<a href="https://metacpan.org/module/GraphViz2::Marpa">GraphViz2::Marpa</a>.</p>
-
-<p>The idea is to pause at the start of a substring you want to parse using a different grammar. Then,
-parse just that substring using a different grammar object and a different recognizer object.</p>
-
-<p>At the end of the substring, tell the first grammar to resume at the first character after the end
-of the substring.</p>
-
-<p>This works in my (Ron's) code because the second grammar ends with a known, matching, delimiter.
-When Marpa encounters the next character, it generates the infamous error: "Parsing complete
-but lexemes remain". Luckily for me, this just means there is (and there must be) tokens in the
-input stream after the end of the substring which needed to be parsed using the second grammar. So
-it's just a matter of asking Marpa if that particular error arose, processing the output from using
-the second grammar, and returning to the parse which is using first grammar.</p>
-
-<p>In the code referenced, search for '$self -> grammar' and '$self -> grammar4html'.</p>
-
-<p>Your problem will obviously be: What happens at the end of the substring? I.e. How do you know it's
-time to switch back to the previous grammar?</p>
-
-<p>Also, this approach creates the problem of having the semantics defined in 2 different places. So
-combining them may add complexity to your code.</p>
-
-<p>3: 'Use an action, change the grammar, and re-parse': This technique is used in
-<a href="https://github.com/jddurand/MarpaX-Languages-SQL2003-AST/blob/master/lib/MarpaX/Languages/SQL2003/AST/Actions.pm">MarpaX::Languages::SQL2003::AST</a>.</p>
-
-<p>See <a href="http://irclog.perlgeek.de/marpa/2014-12-12#i_9797844">this IRC backlog entry</a> for a discussion
-by the author, Jean-Damien Durand, for why he does things this way.</p>
-
-<p>Briefly, the parse of a substring (call it 'a') requires knowledge of what follows that substring
-(call the second substring 'b'). So, parse it all ('a + b'), and when the action is triggered for
-'b', use the information found to change the grammar used to parse 'a', and re-parse 'a'.</p>
-
-<p>The effect (in Jean-Damien's case at least) is to use the result of a sub-grammar as a token value.</p>
-
-<p>You may safely assume this latter method is a very advanced technique!</p>
-
-<p><a name="q21"></a></p>
-
-<h2>21 Where is Ruby Slippers parsing documented?</h2>
-
-<p>Start with <a href="https://metacpan.org/module/Marpa::R2::Recognizer#Ruby-Slippers-parsing">Marpa::R2::Semantics</a>.
-This document has several references to Ruby Slippers.</p>
-
-<p>See also Jeffrey's articles: <a href="http://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/marpa-and-the-ruby-slippers.html">Ruby Slippers parsing</a>,
-and the series beginning with <a href="https://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2011/11/how-to-parse-html.html">parsing HTML part 1</a>.</p>
-
-<p><a name="q22"></a></p>
-
-<h2>22 Where can I find code using Ruby Slippers?</h2>
-
-<p>See the script scripts/match.parentheses.02.pl, which ships with the module
-<a href="https://metacpan.org/module/MarpaX::Demo::SampleScripts">MarpaX::Demo::SampleScripts</a>.</p>
-
-<p><a name="q23"></a></p>
-
-<h2>23 How do I associate an action class with my grammar?</h2>
-
-<p>This discussion assumes you're using Marpa::R2 V 3.0 or later. Prior to that, there was complications
-using the per-parse parameter to value(), and elsewhere.</p>
-
-<p>See also: The next FAQ item, 'Declaring an Action Class'.</p>
-
-<p>References:</p>
-
-<p>1: <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Semantics.pod#The-per-parse-argument">The per-parse argument to value()</a></p>
-
-<p>2: <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Semantics.pod#The-per-parse-constructor">The per-parse constructor</a></p>
-
-<p>3: <a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Scanless/R.pod#value">Calling value(...)</a></p>
-
-<p>Here's how I declare a recognizer in one package:</p>
-
-<pre class="prettyprint linenums"><code>$self -&gt; recce
-(
-    Marpa::R2::Scanless::R -&gt; new
-    ({
-        grammar           =&gt; $self -&gt; grammar,
-        semantics_package =&gt; 'MarpaX::Languages::SVG::Parser::Actions',
-    })
-);
-</code></pre>
-
-<p>Now actions referenced in the grammar, as in:</p>
-
-<pre class="prettyprint linenums"><code>coordinate  ::= float      action =&gt; float
-                | integer  action =&gt; integer
-</code></pre>
-
-<p>must be declared as functions in the named semantics package, because that's where Marpa looks for them.</p>
-
-<p><a name="q24"></a></p>
-
-<h2>24 Declaring an Action Class</h2>
-
-<p>The previous item in this FAQ discussed at length various issues regarding how to cleanly generate data within action
-subs, and how to pass that data back to the main-line code which called Marpa.</p>
-
-<p>Here I explain the standard solution as used in a module,
-<a href="https://metacpan.org/release/MarpaX-Languages-SVG-Parser">MarpaX::Languages::SVG::Parser</a>, on CPAN. Briefly:</p>
+<p>In short, these are:</p>
 
 <ul>
-<li>Each action sub returns a <em>hashref</em> to Marpa</li>
+<li>Preserve all whitespace by default</li>
 </ul>
 
-<p>This is because Marpa is the one calling the subs and gathering the results. And the hashrefs of course suit my code,
-whereas you may prefer to use a different data structure.</p>
+<p>I.e. Design a grammar where whitespace is never discarded.</p>
 
 <ul>
-<li>After a successful parse, the result of the parse is processed to recover those hashrefs</li>
+<li>Preserve some whitespace</li>
 </ul>
 
-<p>This result is returned by the value() method of the recognizer class.
-See <a href="https://metacpan.org/module/Marpa::R2::Scanless::R#value()">value() in Marpa::R2::Scanless::R</a>.</p>
+<p>That is, preserve whitespace by default, while overriding that sometimes, by using <em>pause</em>, to handle the
+precise way whitespace is <em>conditionally</em> discarded.</p>
 
-<p>There is one basic problem to solve along the way: The data structure Marpa makes available as the result of the parse
-can be a deeply nested set of <em>arrayrefs</em>, depending on how deeply within the grammar the action sub is named.</p>
+<ul>
+<li>Discard all whitespace by default</li>
+</ul>
 
-<p>So, we have to unravel the <em>arrayrefs</em> to recover the <em>hashrefs</em>.</p>
+<p>I.e. Design a grammar where whitespace is always discarded.</p>
 
-<p>Conside this fragment of the SVG grammar from
-<a href="https://metacpan.org/release/MarpaX-Languages-SVG-Parser">MarpaX::Languages::SVG::Parser</a>:</p>
+<ul>
+<li>Discard some whitespace</li>
+</ul>
 
-<pre class="prettyprint linenums"><code>curve_to            ::= Cc curve_to_arguments  action =&gt; command
+<p>That is, discard whitespace by default, while overriding that sometimes, by using <em>pause</em>, to handle the
+precise way whitespace is <em>conditionally</em> preserved.</p>
 
-curve_to_arguments  ::= coordinate_triple
-                        | coordinate_triple curve_to_arguments
+<p>This last mechanism is the topic of this article.</p></li>
+<li><p>Pseudo-symbols such as <em>:discard</em></p></li>
+</ul>
+
+<p>These allow us to specify <em>static</em> aspects of how we want Marpa to act.</p>
+
+<ul>
+<li>Adverbs such as <em>event</em></li>
+</ul>
+
+<p>These allow us to name <em>pause</em>s, and to query Marpa as to which event triggered any particular pause.</p>
+
+<ul>
+<li>Adverbs such as <em>pause</em></li>
+</ul>
+
+<p>These allow us to specify <em>dynamic</em> aspects of how our code interacts with the parsing process.</p>
+
+<p>Other languages implement the command (verb) <em>yield</em>, which transfers the flow of control back and forth in a
+vaguely similar fashion.</p>
+
+<ul>
+<li>Getting Marpa to resume parsing after the callback</li>
+</ul>
+
+<p>Here we control the manner in which Marpa resumes. We do this by moving the offset within the input stream at
+which Marpa resumes.</p>
+
+<p>Clearly this could involve moving that pointer backwards or forwards.</p>
+
+<p>Since this determines the next token Marpa sees, it thus directly controls the next rule triggered. Naturally that
+could be the same rule as the last one triggered.</p>
+
+<p>In this article, I'll always be moving it forwards, I assure you!</p>
+
+<p>The direct implication of all this (i.e. the grammar fragment above) is that I am saying these 4 things:</p>
+
+<ul>
+<li>I tell Marpa I accept responsibility for processing a certain subset of the input stream</li>
+</ul>
+
+<p>This is specified in the grammar, using <em>pause</em>.</p>
+
+<ul>
+<li>I respond when Marpa tells me it's reached such a point</li>
+</ul>
+
+<p>This is part of my code, where I check for which <em>event</em> triggered the <em>pause</em>.</p>
+
+<ul>
+<li>I finish processing that part of the input stream</li>
+</ul>
+
+<p>So I return control back to Marpa. And then ...</p>
+
+<ul>
+<li>I tell Marpa to treat that subset as invisible, and to resume parsing after it</li>
+</ul>
+
+<p>This happens because I tell Marpa whereabouts within the input stream to resume at when I next call
+<em>sub resume()</em>. And I do that with the call <em>resume($pos)</em>. See line 20 of the code in the section
+<a href="#pause">Handling the pause on the Perl side of things</a>.</p>
+
+<p>Neat, huh?</p>
+
+<h2>Some sample input</h2>
+
+<p>These graphs are copied from the docs for
+<a href="https://metacpan.org/release/MarpaX-Demo-StringParser">MarpaX::Demo::StringParser</a>.
+Since I've called them graphs, that means each line below is a complete input stream. Further, all sample lines
+below can be combined into a single file, shipped as data/graph.04.ge within the distro.</p>
+
+<ul>
+<li><p>Edges</p>
+
+<p>'->'<br>
+'--'</p></li>
+</ul>
+
+<p>These single-quotes are to force Markdown to display this text properly, and are not needed in the input stream.</p>
+
+<ul>
+<li><p>Graphs</p>
+
+<p>[node]<br>
+[node] -><br>
+-> {label: Start} -> {color: red} [node.1] {color: green} -> [node.2]<br>
+[node.1] [node.2] [node.3]</p></li>
+<li><p>Nodes</p>
+
+<p>[]<br>
+[node.1]<br>
+[node 1]<br>
+[[node]]<br>
+["[node]"]<br>
+[     From here     ] -> [     To there     ]</p></li>
+</ul>
+
+<h2>The full grammar of MarpaX::Demo::StringParser</h2>
+
+<p>Before discussing the Perl code for handling pauses, I want to mention a trap in grammar design.</p>
+
+<pre class="prettyprint linenums"><code>01    source                 =&gt; \(&lt;&lt;'END_OF_SOURCE'),
+02
+03    :default               ::= action =&gt; [values]
+04
+05    # Overall stuff.
+06
+07    :start                 ::= graph_grammar
+08
+09    graph_grammar          ::= graph_definition    action =&gt; graph
+10
+11    # Graph stuff.
+12
+13    graph_definition       ::= node_definition
+14                               | edge_definition
+15    # Node stuff
+16
+17    node_definition        ::= node_statement
+18                               | node_statement graph_definition
+19
+20    node_statement         ::= node_name
+21                               | node_name attribute_definition
+22                               | node_statement (',') node_statement
+23
+24    node_name              ::= start_node end_node
+25
+26    :lexeme                ~ start_node        pause =&gt; before        event =&gt; start_node
+27    start_node             ~ '['
+28
+29    :lexeme                ~ end_node
+30    end_node               ~ ']'
+31
+32    # Edge stuff
+33
+34    edge_definition        ::= edge_statement
+35                               | edge_statement graph_definition
+36
+37    edge_statement         ::= edge_name
+38                               | edge_name attribute_definition
+39                               | edge_statement (',') edge_statement
+40
+41    edge_name              ::= directed_edge
+42                               | undirected_edge
+43
+44    :lexeme                ~ directed_edge      pause =&gt; before        event =&gt; directed_edge
+45    directed_edge          ~ '-&gt;'
+46
+47    :lexeme                ~ undirected_edge    pause =&gt; before        event =&gt; undirected_edge
+48    undirected_edge        ~ '--'
+49
+50    # Attribute stuff.
+51
+52    attribute_definition   ::= attribute_statement*
+53
+54    attribute_statement    ::= start_attributes end_attributes
+55
+56    :lexeme                ~ start_attributes   pause =&gt; before        event =&gt; start_attributes
+57    start_attributes       ~ '{'
+58
+59    :lexeme                ~ end_attributes
+60    end_attributes         ~ '}'
+61
+62    # Boilerplate.
+63
+64    :discard               ~ whitespace
+65    whitespace             ~ [\s]+
+66
+67    END_OF_SOURCE
+</code></pre>
+
+<p>You might be tempted to change the edge stuff from this:</p>
+
+<pre class="prettyprint linenums"><code>41    edge_name              ::= directed_edge
+42                               | undirected_edge
+43
+44    :lexeme                ~ directed_edge      pause =&gt; before        event =&gt; directed_edge
+45    directed_edge          ~ '-&gt;'
+46
+47    :lexeme                ~ undirected_edge    pause =&gt; before        event =&gt; undirected_edge
+48    undirected_edge        ~ '--'
+</code></pre>
+
+<p>To this:</p>
+
+<pre class="prettyprint linenums"><code>41    edge_name              ::= directed_edge
+42                               | undirected_edge
+43
+44    directed_edge          ::= '-&gt;'   action =&gt; edge
+45
+46    undirected_edge        ::= '--'   action =&gt; edge
+</code></pre>
+
+<p>It certainly looks simpler, doesn't it?</p>
+
+<p>Then, your Perl would not need to contain code to handle those 2 pauses, since Marpa would just trigger
+calls to the action <em>sub edge()</em>.</p>
+
+<p>Don't do that!</p>
+
+<p>What happens is that <em>sub edge()</em> is now called at a different time in the flow of processing than it is with
+the original grammar.</p>
+
+<p>Recall this from Chapter 1: "... by the time the first action is executed, the last event is ancient
+history."</p>
+
+<p>Thus: Any call to <em>sub edge()</em> is made after all the calls to <em>pause</em>-related code.</p>
+
+<p>And now it's time to <em>pause</em> ...</p>
+
+<p><a name="pause"></a></p>
+
+<h2>Handling the pause on the Perl side of things</h2>
+
+<p>Item 1: The process as whole</p>
+
+<p>If Marpa is going to yield processing, we need to explicitly code for this.</p>
+
+<p>BTW, a grammar without any <em>pause</em>s can process a string in one hit:</p>
+
+<pre class="prettyprint linenums"><code>my($string) = 'Input stream...';
+my($result) = $recognizer -&gt; read(\$string);
 ...
-coordinate_triple   ::= coordinate coordinate coordinate
-...
-coordinate          ::= float  action =&gt; float
-...
-Cc                  ~ [Cc]
 </code></pre>
 
-<p>Thus, given a curve - say the string 'C 10,11 20,21 30,31' - Marpa will call both <em>float()</em> and <em>command()</em>.</p>
+<p>To handle <em>pause</em>s however, we switch to a loop, since we must call <em>sub resume()</em> after each pause, until Marpa
+hits the end of the input stream.</p>
 
-<p>(Elsewhere the grammar says commas are to be discarded).</p>
+<p>So, here is the <em>sub process()</em> method of MarpaX::Demo::StringParser:</p>
 
-<p>What happens in practice? Firstly, the code:</p>
-
-<pre class="prettyprint linenums"><code>sub command
-{
-    my($hashref, $t1, @t2) = @_;
-    $param_count = 0;
-
-    return
-    {
-        count =&gt; ++$item_count,
-        name  =&gt; $t1,
-        type  =&gt; 'command',
-        value =&gt; [@t2],
-    };
-
-} # End of command.
-
-# -----------------
-
-sub float
-{
-    my($hashref, $t1) = @_;
-
-    return
-    {
-        count =&gt; ++$item_count,
-        name  =&gt; ++$param_count,
-        type  =&gt; 'float',
-        value =&gt; $t1,
-    };
-
-} # End of float.
+<pre class="prettyprint linenums"><code>01    sub process
+02    {
+03        my($self)   = @_;
+04        my($string) = $self -&gt; graph_text;
+05        my($length) = length $string;
+06
+07        # We use read()/lexeme_read()/resume() because we pause at each lexeme.
+08
+09        my($attribute_list);
+10        my($do_lexeme_read);
+11        my(@event, $event_name);
+12        my($lexeme_name, $lexeme);
+13        my($node_name);
+14        my($span, $start);
+15
+16        for
+17        (
+18            my $pos = $self -&gt; recce -&gt; read(\$string);
+19            $pos &lt; $length;
+20            $pos = $self -&gt; recce -&gt; resume($pos)
+21        )
+22        {
+23            print "read() =&gt; pos: $pos\n" if ($self -&gt; verbose &gt; 1);
+24
+25            $do_lexeme_read = 1;
+26            @event          = @{$self -&gt; recce -&gt; events};
+27            $event_name     = ${$event[0]}[0];
+28            ($start, $span) = $self -&gt; recce -&gt; pause_span;
+29            $lexeme_name    = $self -&gt; recce -&gt; pause_lexeme;
+30            $lexeme         = $self -&gt; recce -&gt; literal($start, $span);
+31
+32            print "pause_span($lexeme_name) =&gt; start: $start. span: $span. " .
+33                "lexeme: $lexeme. event: $event_name\n" if ($self -&gt; verbose &gt; 1);
+34
+35            if ($event_name eq 'start_attributes')
+36            {
+37                # Read the attribute_start lexeme, but don't do lexeme_read()
+38                # at the bottom of the for loop, because we're just about
+39                # to fiddle $pos to skip the attributes.
+40
+41                $pos            = $self -&gt; recce -&gt; lexeme_read($lexeme_name);
+42                $pos            = $self -&gt; find_terminator(\$string, qr/}/, $start);
+43                $attribute_list = substr($string, $start + 1, $pos - $start - 1);
+44                $do_lexeme_read = 0;
+45
+46                print "index() =&gt; attribute list: $attribute_list\n" if ($self -&gt; verbose &gt; 1);
+47
+48                $self -&gt; attribute_list($attribute_list);
+49            }
+50            elsif ($event_name eq 'start_node')
+51            {
+52                # Read the node_start lexeme, but don't do lexeme_read()
+53                # at the bottom of the for loop, because we're just about
+54                # to fiddle $pos to skip the node's name.
+55
+56                $pos            = $self -&gt; recce -&gt; lexeme_read($lexeme_name);
+57                $pos            = $self -&gt; find_terminator(\$string, qr/]/, $start);
+58                $node_name      = substr($string, $start + 1, $pos - $start - 1);
+59                $do_lexeme_read = 0;
+60
+61                print "index() =&gt; node name: $node_name\n" if ($self -&gt; verbose &gt; 1);
+62
+63                $self -&gt; node($node_name);
+64            }
+65            elsif ($event_name eq 'directed_edge')
+66            {
+67                $self -&gt; edge($lexeme);
+68            }
+69            elsif ($event_name eq 'undirected_edge')
+70            {
+71                $self -&gt; edge($lexeme);
+72            }
+73            else
+74            {
+75                die "Unexpected lexeme '$lexeme_name' with a pause\n";
+76            }
+77
+78            $pos = $self -&gt; recce -&gt; lexeme_read($lexeme_name) if ($do_lexeme_read);
+79
+80            print "lexeme_read($lexeme_name) =&gt; $pos\n" if ($self -&gt; verbose &gt; 1);
+81        }
+82
+83        # Return a defined value for success and undef for failure.
+84
+85        return $self -&gt; recce -&gt; value;
+86
+87    } # End of process.
 </code></pre>
 
-<p>Things to note:</p>
+<p>Item 2: Lines 16 .. 21 - The Loop</p>
+
+<p>Lines 16 .. 21 are saying that since we put at least one <em>pause</em> in the grammar, we must expect Marpa to exit from
+<em>sub read()</em> before the end of the input stream, and that we must immediately:</p>
 
 <ul>
-<li>We don't count the floats, to ensure there are 6, or 8, ...</li>
+<li>Handle the pause</li>
 </ul>
 
-<p>This is because the input stream is deemed to have been validatated as being SVG.</p>
+<p>That's lines 25 .. 76.</p>
 
 <ul>
-<li><p>A global variable counts output hashrefs</p></li>
-<li><p>A global variable counts parameters per command</p></li>
-<li><p><em>float()</em> is called for every number</p></li>
+<li>Handle the fact that Marpa paused <em>before</em> the lexeme declaring the <em>pause</em></li>
 </ul>
 
-<p>This includes the fact that the grammar says there are at least 3 coordinates (float pairs) per <em>curve</em> command.</p>
+<p>That's lines 41, 56 and 78, which tell Marpa to move past the lexeme with <em>sub lexeme_read()</em>
+(discarding it in the process). Then, at the top of the loop, we call <em>sub resume()</em>.</p>
 
-<p>This is not a problem, just a fact. We handle it with a Perl array, as explained next.</p>
+<p>So, we just have to explain lines 25 .. 76.</p>
+
+<p>And 78 actually, since the call to <em>sub lexeme_read()</em> is dependent on something via the <em>$do_lexeme_read</em> variable.</p>
+
+<p>Item 3: Lines 25 .. 76 - The Context and The Code</p>
+
+<p>Here we stockpile values for use below:</p>
+
+<p>Line 25: $do_lexeme_read = 1</p>
+
+<p>We set a flag so that by default we read and hence skip the lexeme where Marpa paused. See line 78.</p>
+
+<p>We reset this flag in some cases, as explained next. See lines 44 and 59.</p>
+
+<p>The structure of this particular grammar has a feature you might not be using: Each <em>pause</em> is at the start of a
+<em>pair</em> of delimiters. That is, the expected input includes '[ ... ]' and '{ ... }'.</p>
+
+<p>So, the code now has to do 2 things:</p>
 
 <ul>
-<li><em>command()</em> is called at the end of the string</li>
+<li>Step 1: Skip the lexeme Marpa paused at, i.e. the opening delimiter</li>
 </ul>
 
-<p>Again, this is not a problem. On the contrary - it is an inescapable part of the solution!</p>
+<p>And that's the first token of each pair, '[' or '{'. This is easy, since Marpa tells us where it paused.</p>
 
-<p>But it does mean that we need to be aware of what Marpa does with the results of calling <em>float()</em>, i.e. where
-are they, when Marpa calls <em>command()</em>.</p>
+<p>See the calls to <em>sub lexeme_read()</em> at lines 41 and 56.</p>
 
-<p>It is simple. The results of the 6+ (in this grammar) calls to <em>float()</em>, 6+ <em>hashrefs</em>, are passed as the trailing
-parameters in the call to   <em>command()</em>. That explains the @t2 parameter in the first line of <em>command()</em>.</p>
+<p>But, and it's a huge but, in these 2 cases we can't use the <em>sub lexeme_read()</em> at line 78, because we need its
+return value, <em>$pos</em>, at lines 43, 58 and, later, 20.</p>
 
-<p>Likewise, we can say that since, in the grammar, nothing is subservient to <em>float</em>, then no action subs can possibly
-be called in the processing of a float. So, when <em>float()</em> is called, it <em>cannot have</em> any such trailing parameters.</p>
-
-<p>Where does this leave us? It means that the @t2 parameter to <em>command()</em> contains a set of 6+ floats packaged as
-<em>hahsrefs</em> inside an unknown number of <em>arrayrefs</em>.</p>
-
-<p>The same logic applies to the output of <em>command()</em> within the context of the output of parsing the whole input stream.</p>
-
-<p>Our final task then will be to recover the result of the parse and unravel and discard the <em>arrayrefs</em>. This will
-leave us with a set of <em>hashrefs</em>, which was the point of the exercise. I should repeat: This structure suits my
-purpose. Adapt as required.</p>
-
-<p>The remainder of the code:</p>
-
-<pre class="prettyprint linenums"><code>my($result) = $self -&gt; recce -&gt; value;
-
-die "Marpa's parse failed\n" if (! defined $result);
-
-# Unravel whatever Marpa gives us.
-
-for my $item (@{$self -&gt; decode_result($$result)})
-{
-    # If it's a command, unravel the 'value =&gt; [@t2]' component.
-
-    if ($$item{type} eq 'command')
-    {
-        $self -&gt; new_item($$item{type}, $$item{name}, '-');
-
-        for my $param (@{$self -&gt; decode_result($$item{value})})
-        {
-            $self -&gt; new_item($$param{type}, $$param{name}, $$param{value});
-        }
-    }
-    else
-    {
-        $self -&gt; new_item($$item{type}, $$item{name}, $$item{value});
-    }
-}
-</code></pre>
-
-<p>Lastly, the workhorse sub:</p>
-
-<pre class="prettyprint linenums"><code>sub decode_result
-{
-    my($self, $result) = @_;
-    my(@worklist) = $result;
-
-    my($obj);
-    my($ref_type);
-    my(@stack);
-
-    do
-    {
-        $obj      = shift @worklist;
-        $ref_type = ref $obj;
-
-        if ($ref_type eq 'ARRAY')
-        {
-            unshift @worklist, @$obj; # Unravel Marpa's handiwork.
-        }
-        elsif ($ref_type eq 'HASH')
-        {
-            push @stack, {%$obj}; # Build array of results.
-        }
-        else
-        {
-            die "Unsupported object type $ref_type\n" if ($ref_type);
-        }
-    } while (@worklist);
-
-    return [@stack]; # Return an arrayref of hashrefs.
-
-} # End of decode_result.
-</code></pre>
-
-<p>I must acknowledge the work done by the authors of <a href="https://metacpan.org/release/Data-Find">Data::Find</a>,
-<a href="https://metacpan.org/release/Data-Recursive-Encode">Data::Recursive::Encode</a> and
-<a href="https://metacpan.org/release/MarpaX-Languages-C-AST" title="In *::Util::Data::Find">MarpaX::Languages::C::AST</a>.
-They all use similar mechanisms for unravelling data structures.</p>
-
-<p><a name="q25"></a></p>
-
-<h2>25 Where can I find code using events?</h2>
-
-<p>The are many Perl modules which use events.</p>
-
-<p>Try <a href="https://metacpan.org/release/MarpaX-Languages-Perl-PackUnpack">MarpaX::Languages::Perl::PackUnpack</a>
-or <a href="https://metacpan.org/release/MarpaX-Languages-Perl-PackUnpack">GraphViz2::Marpa</a>.</p>
-
-<p><a name="q26"></a></p>
-
-<h2>26 Where can I find code which builds its grammar on-the-fly?</h2>
-
-<p>A simple case: <a href="https://metacpan.org/release/Text-Balanced-Marpa">Text::Balanced::Marpa</a>.</p>
-
-<p>A complex case: <a href="https://metacpan.org/release/MarpaX-Languages-SQL2003-AST">MarpaX::Languages::SQL2003::AST</a>.</p>
-
-<p><a name="q27"></a></p>
-
-<h2>27 Other Resources</h2>
+<p>Hence we call <em>sub lexeme_read()</em> at lines 41 and 56, <em>and</em> we use <em>$do_lexeme_read</em> to disable the call at
+line 78.</p>
 
 <ul>
-<li><p>http://jeffreykegler.github.io/Ocean-of-Awareness-blog/metapages/annotated.html</p></li>
-<li><p>The list of features in <a href="chapter2.html">Chapter 2 - Marpa's Advantages</a></p></li>
+<li>Step 2: Skip the lexeme which is the closing delimiter of each pair</li>
 </ul>
 
-<p><a name="q28"></a></p>
+<p>That's just the closing ']' or '}'. But this just happens automatically when we return to the top of the loop.</p>
 
-<h2>28 Papers on Parsing Theory</h2>
+<p>Well, not quite automatically. The calls to <em>sub find_terminator()</em>, at lines 42 and 57, do what the method name
+says, and also return <em>$pos</em>, which we use in lines 43 and 58 (discussed below), and which we pass back to
+Marpa at line 20 when we call <em>sub resume()</em>.</p>
 
-<p><a href="http://dinhe.net/~aredridel/.notmine/PDFs/Parsing/">Aria's list</a>.</p>
+<p>This ties in with the grammar, lines 29 .. 30 and 59 .. 60, where we do <em>not</em> specify any pause for the closing
+delimiters, so Marpa just continues right on past them.</p>
 
-<p><a name="q29"></a></p>
+<p>Item 4: Line 26: @event = @{$self -> recce -> events}</p>
 
-<h2>29 Are there C/Lua/Python/etc bindings for libmarpa?</h2>
+<p>... and ...</p>
 
-<p><a href="https://github.com/rns/libmarpa-bindings">Various language bindings for libmarpa</a></p>
+<p>Item 5: Line 27: $event_name = ${$event[0]}[0]</p>
+
+<p>We ask Marpa which <em>event</em> triggered the <em>pause</em>.</p>
+
+<p>That allows us to handle each case in the multi-branched 'if' starting at line 35.</p>
+
+<p>Since the 'if's do simple string comparisons, there is no gain from using a smart-match module such as
+<a href="https://metacpan.org/module/match::simple">match::simple</a>.</p>
+
+<p>Item 6: Line 28: ($start, $span) = $self -> recce -> pause_span()</p>
+
+<p>This tells us the offset within the input stream at which Marpa paused. So, we use this as the starting point
+for our scan of the input, looking for the closing delimiter matching the opening one found by Marpa.</p>
+
+<p>See lines 42 and 57.</p>
+
+<p>Item 7: Line 29: $lexeme_name = $self -> recce -> pause_lexeme()</p>
+
+<p>This tells us the name of lexeme at which Marpa paused. We use it to tell Marpa to step over it before resuming.</p>
+
+<p>See lines 41, 56, and, for the other cases, 78.</p>
+
+<p>Item 8: Line 30: $lexeme = $self -> recce -> literal($start, $span)</p>
+
+<p>This is the string we need in those cases where we don't need to search between delimiters for our text.</p>
+
+<p>We just pass this to the <em>sub edge()</em>, to be pushed on to a stack of interesting things.</p>
+
+<p>See lines 67 and 71, and the matching grammar at lines 44 .. 48.</p>
+
+<p>Item 9: Line 42: $pos = $self -> find_terminator(\$string, qr/}/, $start);</p>
+
+<p>... and ...</p>
+
+<p>Item 10: Line 57: $pos = $self -> find_terminator(\$string, qr/]/, $start);</p>
+
+<p>These set <em>$pos</em>, i.e. the offset within the input stream, to the closing delimiter matching the opening one
+found by Marpa (as stated just above).</p>
+
+<p>We do this because back at the top of the loop, <em>$pos</em> is passed to <em>sub resume()</em>, telling Marpa where exactly
+we want it to resume parsing.</p>
+
+<p>Item 11: Line 43: $attribute_list = substr($string, $start + 1, $pos - $start - 1)</p>
+
+<p>... and ...</p>
+
+<p>Item 12: Line 48: $self -> attribute_list($attribute_list)</p>
+
+<p>These, together with the matching pair, lines 58 and 63, preserve all our work by pushing the list of attributes
+on to the stack mentioned above.</p>
+
+<h2>A final summary</h2>
+
+<p>The stack built is due to Marpa pausing, and then we call subs directly, rather than have Marpa call <em>action</em> subs.</p>
+
+<p>All this must take place in a choreographed manner, so that the calls to those subs are in the correct
+chronological order.</p>
+
+<p>This order (at least for my app, and I'm sure for any typical app) must correspond exactly to the order in
+which Marpa detects tokens of interest.</p>
+
+<p>And this order is of course the order in which those tokens appear in the input stream.</p>
+
+<h2>Some general notes about the code</h2>
+
+<p>It's not obvious from the code shown, but <em>sub process()</em> is called (from <em>sub run()</em>) within a
+try ... catch structure, handled by the fine module <a href="https://metacpan.org/module/Try::Tiny">Try::Tiny</a>.</p>
+
+<p>When <em>sub process()</em> exits successfully, the stack is analyzed in various ways.</p>
+
+<p>Firstly, it's printed in a formatted manner if that's what the user asked for.</p>
+
+<p>Secondly, also optionally, it's written to a CSV file for further processing at the user's leisure.</p>
+
+<h2>Finally</h2>
+
+<p>I hope I've made it easier to approach the dread topic of lexing and parsing. The simple fact is that with
+Marpa's new SLIF we can pass over to Marpa almost all the work, and just write code to handle precisely targeted
+places of interest within the input stream.</p>
+
+<p>Overall, this should make clear the astonishing power of Marpa to relieve the programmer of what in
+the past was a huge component of such work.</p>
+
+<p>This is combined with an almost-always clean interface, allowing our code to interact with Marpa neatly and
+efficiently.</p>
 
 <p><a href="index.html">Index</a></p>
         </div>

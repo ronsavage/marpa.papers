@@ -2,7 +2,7 @@
 
 perl scripts/guide.pl
 
-DIR=Perl-modules/html/marpa.papers
+DIR=Perl-modules/html/marpa.faq
 export DIR
 
 # $DR is doc root: /dev/shm/html
