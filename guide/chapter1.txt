@@ -3,12 +3,19 @@ Chapter 1 - Getting Started
 
 !include "guide/menu.inc"
 
-Where is the Marpa FAQ?
------------------------
+On-line docs
+------------
 
-[The FAQ](http://savage.net.au/Perl-modules/html/marpa.faq/faq.html)
+[The Marpa FAQ on-line](http://savage.net.au/Perl-modules/html/marpa.faq/)
 
-[The github repo](https://github.com/ronsavage/marpa.faq.git)
+[The Marpa Papers](http://savage.net.au/Perl-modules/html/marpa.papers/)
+
+Github repos
+------------
+
+[The Marpa FAQ repo](https://github.com/ronsavage/marpa.faq.git)
+
+[The Marpa Papers repo](https://github.com/ronsavage/marpa.papers.git)
 
 What is Marpa?
 --------------
